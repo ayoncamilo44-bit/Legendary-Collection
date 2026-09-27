@@ -1,10 +1,8 @@
 import { supabase } from './supabase.js';
 
-// Restrict access to logged-in users only
 window.addEventListener('DOMContentLoaded', async () => {
     const { data: { session } } = await supabase.auth.getSession();
     
-    // Redirect unauthenticated visitors back to main page
     if (!session) {
         window.location.href = 'index.html';
         return;
@@ -13,9 +11,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     loadPersonalTTMLogs(session.user.id);
 });
 
-/**
- * Fetch and render personal TTM requests for the logged-in user
- */
 async function loadPersonalTTMLogs(userId) {
     const container = document.getElementById('personal-ttm-list');
     if (!container) return;
@@ -34,23 +29,23 @@ async function loadPersonalTTMLogs(userId) {
         .order('sent_date', { ascending: false });
 
     if (error) {
-        console.error('Error fetching personal logs:', error.message);
+        container.innerHTML = `<p class="text-red-400 text-xs">Error loading collection logs: ${error.message}</p>`;
         return;
     }
 
     if (!logs || logs.length === 0) {
-        container.innerHTML = `<p class="text-gray-400 text-sm">No TTM requests logged yet.</p>`;
+        container.innerHTML = `<p class="text-gray-400 text-xs py-6 text-center">No TTM requests logged yet.</p>`;
         return;
     }
 
     container.innerHTML = logs.map(log => `
-        <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl mb-3 flex justify-between items-center text-sm">
+        <div class="bg-darkBg border border-darkBorder p-4 rounded-xl flex justify-between items-center text-xs">
             <div>
-                <h4 class="font-bold text-white">${log.signers?.name || 'Unknown Signer'}</h4>
-                <p class="text-xs text-gray-400">Sent: ${log.sent_date} ${log.returned_date ? `| Returned: ${log.returned_date}` : ''}</p>
-                ${log.notes ? `<p class="text-xs text-gray-500 mt-1 italic">${log.notes}</p>` : ''}
+                <h4 class="font-bold text-white text-sm">${log.signers?.name || 'Unknown Signer'}</h4>
+                <p class="text-gray-400 mt-0.5">Sent: ${log.sent_date} ${log.returned_date ? `| Returned: ${log.returned_date}` : ''}</p>
+                ${log.notes ? `<p class="text-gray-500 mt-1 italic">${log.notes}</p>` : ''}
             </div>
-            <span class="text-xs px-2.5 py-1 rounded-md font-semibold bg-gray-800 text-amber-400 border border-gray-700">
+            <span class="px-2.5 py-1 rounded-md font-semibold bg-darkCard text-amber-400 border border-darkBorder">
                 ${log.status}
             </span>
         </div>

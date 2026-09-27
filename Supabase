@@ -71,3 +71,40 @@ using (is_for_sale = true or is_for_trade = true or auth.uid() = user_id);
 create policy "Users can manage their own vault items" 
 on vault_items for all 
 using (auth.uid() = user_id);
+// js/auth.js
+import { supabase } from './supabase.js';
+
+// Check user status on page load
+window.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    const authBtn = document.getElementById('auth-nav-btn');
+    
+    if (session) {
+        // User is logged in
+        if (authBtn) {
+            authBtn.innerHTML = `
+                <a href="dashboard.html" class="px-3.5 py-1.5 rounded-lg bg-amber-500 text-black font-bold text-xs">
+                    My Vault Dashboard
+                </a>
+            `;
+        }
+    } else {
+        // User is logged out
+        if (authBtn) {
+            authBtn.innerHTML = `
+                <button onclick="loginWithGoogle()" class="px-3.5 py-1.5 rounded-lg bg-darkBorder text-white text-xs font-semibold">
+                    Sign In
+                </button>
+            `;
+        }
+    }
+});
+
+// Trigger OAuth sign-in
+async function loginWithGoogle() {
+    await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/dashboard.html' }
+    });
+}

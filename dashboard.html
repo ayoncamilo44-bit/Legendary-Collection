@@ -1,53 +1,91 @@
-import { supabase } from './supabase.js';
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vault & TTM Tracker | Collector Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d16',
+                        darkCard: '#111827',
+                        darkBorder: '#1f293d',
+                        goldPrimary: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #090d16; color: #f3f4f6; }
+        .glass-panel { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.07); }
+        .gold-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col">
 
-window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-        window.location.href = 'index.html';
-        return;
-    }
+    <header class="sticky top-0 z-40 glass-panel border-b border-darkBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-lg gold-btn flex items-center justify-center text-black font-extrabold text-base shadow">
+                    <i class="fa-solid fa-box-archive"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-white leading-tight">Collector Vault</h1>
+                    <p class="text-[11px] text-amber-400 font-medium">Personal TTM Dashboard</p>
+                </div>
+            </a>
 
-    loadPersonalTTMLogs(session.user.id);
-});
+            <nav class="hidden md:flex items-center space-x-6 text-xs font-semibold text-gray-300">
+                <a href="index.html#directory" class="hover:text-amber-400 transition-colors">Signer Directory</a>
+                <a href="dashboard.html" class="text-amber-400 font-bold">My TTM Manager</a>
+            </nav>
 
-async function loadPersonalTTMLogs(userId) {
-    const container = document.getElementById('personal-ttm-list');
-    if (!container) return;
-
-    const { data: logs, error } = await supabase
-        .from('ttm_logs')
-        .select(`
-            id,
-            sent_date,
-            returned_date,
-            status,
-            notes,
-            signers ( name )
-        `)
-        .eq('user_id', userId)
-        .order('sent_date', { ascending: false });
-
-    if (error) {
-        container.innerHTML = `<p class="text-red-400 text-xs">Error loading collection logs: ${error.message}</p>`;
-        return;
-    }
-
-    if (!logs || logs.length === 0) {
-        container.innerHTML = `<p class="text-gray-400 text-xs py-6 text-center">No TTM requests logged yet.</p>`;
-        return;
-    }
-
-    container.innerHTML = logs.map(log => `
-        <div class="bg-darkBg border border-darkBorder p-4 rounded-xl flex justify-between items-center text-xs">
-            <div>
-                <h4 class="font-bold text-white text-sm">${log.signers?.name || 'Unknown Signer'}</h4>
-                <p class="text-gray-400 mt-0.5">Sent: ${log.sent_date} ${log.returned_date ? `| Returned: ${log.returned_date}` : ''}</p>
-                ${log.notes ? `<p class="text-gray-500 mt-1 italic">${log.notes}</p>` : ''}
-            </div>
-            <span class="px-2.5 py-1 rounded-md font-semibold bg-darkCard text-amber-400 border border-darkBorder">
-                ${log.status}
-            </span>
+            <div id="auth-nav-btn"></div>
         </div>
-    `).join('');
-}
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+
+        <section class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-darkBorder pb-6">
+            <div>
+                <h2 class="text-2xl font-black text-white">My TTM Collection Tracker</h2>
+                <p class="text-xs text-gray-400 mt-1">Manage outgoing requests and track returns.</p>
+            </div>
+            <button class="gold-btn text-black font-bold px-4 py-2 rounded-xl text-xs shadow flex items-center space-x-2 shrink-0">
+                <i class="fa-solid fa-plus"></i>
+                <span>Log New Request</span>
+            </button>
+        </section>
+
+        <section class="glass-card rounded-2xl p-6 border border-darkBorder space-y-4">
+            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-paper-plane text-amber-400"></i>
+                <span>Recent Outgoing & Returned Mailings</span>
+            </h3>
+
+            <div id="personal-ttm-list" class="space-y-3 pt-2">
+                <div class="text-center py-8 text-gray-500 text-xs">
+                    <i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i>
+                    <p>Loading collection vault...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="glass-panel border-t border-darkBorder py-6 mt-auto text-center text-xs text-gray-500">
+        <p>Collector Hub Platform • Multi-Tenant Community Network</p>
+    </footer>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

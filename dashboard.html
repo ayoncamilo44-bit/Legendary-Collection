@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Vault & TTM Tracker | Collector Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+<script> src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://blpptyfncuxyygmumvok.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJscHB0eWZuY3V4eXlnbXVtdm9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNzEwMDAsImV4cCI6MjA3NDY0NzAwMH0.YOUR_KEY_CONTINUED';
+
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
     <script>
         tailwind.config = {
             darkMode: 'class',

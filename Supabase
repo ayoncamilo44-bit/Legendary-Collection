@@ -1,0 +1,43 @@
+-- Public user profiles linked to Supabase Auth
+create table profiles (
+  id uuid references auth.users primary key,
+  username text unique not null,
+  avatar_url text,
+  bio text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- Master directory of signers/players
+create table signers (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  sport_team text,
+  active_address text,
+  success_rate numeric default 0,
+  avg_days_return integer default 0
+);
+
+-- User TTM logs (Feeds public signer stats)
+create table ttm_logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references profiles(id) on delete cascade,
+  signer_id uuid references signers(id),
+  sent_date date not null,
+  returned_date date,
+  status text check (status in ('Pending', 'Success', 'RTS', 'Fee Required')),
+  is_public boolean default true,
+  notes text
+);
+
+-- Vault items & Marketplace listings
+create table vault_items (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references profiles(id) on delete cascade,
+  title text not null,
+  category text,
+  grade text,
+  is_for_sale boolean default false,
+  is_for_trade boolean default false,
+  price numeric,
+  image_url text
+);

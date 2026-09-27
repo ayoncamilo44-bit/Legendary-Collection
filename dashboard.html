@@ -85,7 +85,17 @@
                 </div>
             </div>
         </section>
-
+<!-- Card Entry Form -->
+<form id="addCardForm" class="p-4 bg-darkCard rounded-lg border border-darkBorder mb-6">
+  <h3 class="text-lg font-bold text-goldPrimary mb-3">Add New Card</h3>
+  <div class="flex flex-col gap-3">
+    <input type="text" id="playerNameInput" placeholder="Player Name" required class="p-2 bg-darkBg border border-darkBorder rounded text-white" />
+    <input type="text" id="yearInput" placeholder="Year (e.g. 1981)" required class="p-2 bg-darkBg border border-darkBorder rounded text-white" />
+    <button type="submit" class="bg-goldPrimary text-black font-bold p-2 rounded hover:opacity-90">
+      Add Card to Database
+    </button>
+  </div>
+</form>
     </main>
 
     <footer class="glass-panel border-t border-darkBorder py-6 mt-auto text-center text-xs text-gray-500">
@@ -94,5 +104,26 @@
 
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/dashboard.js"></script>
+<script>
+ document.getElementById('addCardForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const playerName = document.getElementById('playerNameInput').value;
+    const cardYear = document.getElementById('yearInput').value;
+
+    const { data, error } = await supabase
+      .from('cards table')
+      .insert([
+        { players_name: playerName, year: cardYear }
+      ]);
+
+    if (error) {
+      alert('Error adding card: ' + error.message);
+    } else {
+      alert('Card added successfully!');
+      document.getElementById('addCardForm').reset();
+    }
+  });
+</script>
 </body>
 </html>

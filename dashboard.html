@@ -155,7 +155,7 @@ container.innerHTML = cards.map(card => `
       <li class="p-2 bg-darkBg border border-darkBorder rounded flex justify-between items-center">
         <div>
           <span class="font-semibold text-white">${card.players_name}</span>
-          <span class="text-goldPrimary text-sm font-bold ml-2">(${card.year || 'N/A'})</span>
+          <span class="text-goldPrimary text-sm font-bold ml-2">(${card.year || 'N/A'})
         </div>
         <button onclick="deleteCard('${card.id}')" class="text-red-400 hover:text-red-300 text-xs font-bold border border-red-500/30 px-2 py-1 rounded hover:bg-red-500/10 transition">
           Delete

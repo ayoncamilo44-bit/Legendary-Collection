@@ -1,0 +1,14 @@
+my-collector-hub/
+│
+├── index.html            <-- Public Community Hub (Directory search, feed, marketplace)
+├── dashboard.html        <-- User Vault & Personal TTM Log (Your existing tracking page!)
+├── signer.html           <-- Individual Player Detail Page (Addresses, stats, community logs)
+│
+├── css/
+│   └── styles.css        <-- Custom styles & Tailwind imports
+│
+└── js/
+    ├── supabase.js       <-- Supabase initialization & client setup
+    ├── auth.js           <-- Login, logout, and session checks
+    ├── directory.js      <-- Public signer search & feed logic
+    └── dashboard.js      <-- User vault & personal TTM submission logic

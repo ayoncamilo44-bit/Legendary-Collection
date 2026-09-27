@@ -41,3 +41,33 @@ create table vault_items (
   price numeric,
   image_url text
 );
+-- 1. Enable Row Level Security on your existing tables
+alter table ttm_logs enable row level security;
+alter table vault_items enable row level security;
+
+-- 2. TTM LOGS POLICIES
+-- Anyone (even logged-out users) can view public TTM entries for the directory
+create policy "Public TTM entries are viewable by everyone" 
+on ttm_logs for select 
+using (is_public = true);
+
+-- Users can insert their own TTM logs
+create policy "Users can insert their own TTM logs" 
+on ttm_logs for insert 
+with check (auth.uid() = user_id);
+
+-- Users can update/delete only their own TTM logs
+create policy "Users can update their own TTM logs" 
+on ttm_logs for update 
+using (auth.uid() = user_id);
+
+-- 3. VAULT ITEMS POLICIES
+-- Anyone can view items marked for sale or trade in the marketplace
+create policy "Marketplace items are viewable by everyone" 
+on vault_items for select 
+using (is_for_sale = true or is_for_trade = true or auth.uid() = user_id);
+
+-- Users can manage their own vault items
+create policy "Users can manage their own vault items" 
+on vault_items for all 
+using (auth.uid() = user_id);

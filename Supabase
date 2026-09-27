@@ -1,14 +1,14 @@
--- Public user profiles linked to Supabase Auth
-create table profiles (
-  id uuid references auth.users primary key,
+-- 1. PUBLIC USER PROFILES
+create table if not exists profiles (
+  id uuid references auth.users on delete cascade primary key,
   username text unique not null,
   avatar_url text,
   bio text,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
--- Master directory of signers/players
-create table signers (
+-- 2. MASTER DIRECTORY OF SIGNERS
+create table if not exists signers (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   sport_team text,
@@ -17,11 +17,11 @@ create table signers (
   avg_days_return integer default 0
 );
 
--- User TTM logs (Feeds public signer stats)
-create table ttm_logs (
+-- 3. USER TTM LOGS
+create table if not exists ttm_logs (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references profiles(id) on delete cascade,
-  signer_id uuid references signers(id),
+  user_id uuid references profiles(id) on delete cascade not null,
+  signer_id uuid references signers(id) on delete cascade,
   sent_date date not null,
   returned_date date,
   status text check (status in ('Pending', 'Success', 'RTS', 'Fee Required')),
@@ -29,10 +29,10 @@ create table ttm_logs (
   notes text
 );
 
--- Vault items & Marketplace listings
-create table vault_items (
+-- 4. VAULT ITEMS & MARKETPLACE LISTINGS
+create table if not exists vault_items (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references profiles(id) on delete cascade,
+  user_id uuid references profiles(id) on delete cascade not null,
   title text not null,
   category text,
   grade text,
@@ -41,70 +41,46 @@ create table vault_items (
   price numeric,
   image_url text
 );
--- 1. Enable Row Level Security on your existing tables
+
+-- 5. AUTOMATIC PROFILE CREATION TRIGGER ON OAUTH SIGN-UP
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, username, avatar_url)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+    new.raw_user_meta_data->>'avatar_url'
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create or replace trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- 6. ENABLE ROW LEVEL SECURITY
+alter table profiles enable row level security;
+alter table signers enable row level security;
 alter table ttm_logs enable row level security;
 alter table vault_items enable row level security;
 
--- 2. TTM LOGS POLICIES
--- Anyone (even logged-out users) can view public TTM entries for the directory
-create policy "Public TTM entries are viewable by everyone" 
-on ttm_logs for select 
-using (is_public = true);
+-- PROFILES POLICIES
+create policy "Public profiles are viewable by everyone" on profiles for select using (true);
+create policy "Users can update their own profile" on profiles for update using (auth.uid() = id);
 
--- Users can insert their own TTM logs
-create policy "Users can insert their own TTM logs" 
-on ttm_logs for insert 
-with check (auth.uid() = user_id);
+-- SIGNERS POLICIES
+create policy "Signers are viewable by everyone" on signers for select using (true);
+create policy "Authenticated users can add signers" on signers for insert with check (auth.role() = 'authenticated');
 
--- Users can update/delete only their own TTM logs
-create policy "Users can update their own TTM logs" 
-on ttm_logs for update 
-using (auth.uid() = user_id);
+-- TTM LOGS POLICIES
+create policy "Public TTM entries are viewable by everyone" on ttm_logs for select using (is_public = true or auth.uid() = user_id);
+create policy "Users can insert their own TTM logs" on ttm_logs for insert with check (auth.uid() = user_id);
+create policy "Users can update their own TTM logs" on ttm_logs for update using (auth.uid() = user_id);
+create policy "Users can delete their own TTM logs" on ttm_logs for delete using (auth.uid() = user_id);
 
--- 3. VAULT ITEMS POLICIES
--- Anyone can view items marked for sale or trade in the marketplace
-create policy "Marketplace items are viewable by everyone" 
-on vault_items for select 
-using (is_for_sale = true or is_for_trade = true or auth.uid() = user_id);
-
--- Users can manage their own vault items
-create policy "Users can manage their own vault items" 
-on vault_items for all 
-using (auth.uid() = user_id);
-// js/auth.js
-import { supabase } from './supabase.js';
-
-// Check user status on page load
-window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    const authBtn = document.getElementById('auth-nav-btn');
-    
-    if (session) {
-        // User is logged in
-        if (authBtn) {
-            authBtn.innerHTML = `
-                <a href="dashboard.html" class="px-3.5 py-1.5 rounded-lg bg-amber-500 text-black font-bold text-xs">
-                    My Vault Dashboard
-                </a>
-            `;
-        }
-    } else {
-        // User is logged out
-        if (authBtn) {
-            authBtn.innerHTML = `
-                <button onclick="loginWithGoogle()" class="px-3.5 py-1.5 rounded-lg bg-darkBorder text-white text-xs font-semibold">
-                    Sign In
-                </button>
-            `;
-        }
-    }
-});
-
-// Trigger OAuth sign-in
-async function loginWithGoogle() {
-    await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin + '/dashboard.html' }
-    });
-}
+-- VAULT ITEMS POLICIES
+create policy "Marketplace items are viewable by everyone" on vault_items for select using (is_for_sale = true or is_for_trade = true or auth.uid() = user_id);
+create policy "Users can manage their own vault items" on vault_items for all using (auth.uid() = user_id);

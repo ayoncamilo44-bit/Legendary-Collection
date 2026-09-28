@@ -1,64 +1,113 @@
-<!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signer Profile | Collector Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#090d16',
-                        darkCard: '#111827',
-                        darkBorder: '#1f293d',
-                        goldPrimary: '#f59e0b',
-                    }
-                }
-            }
+<!-- Drag & Drop CSV Section -->
+<div class="glass-card rounded-2xl p-6 border border-darkBorder mb-6">
+  <h3 class="text-lg font-bold text-amber-400 mb-2">
+    <i class="fa-solid fa-file-csv mr-2"></i>Bulk Import CSV
+  </h3>
+  <p class="text-xs text-gray-400 mb-4">
+    Drag & drop your <code>players.csv</code> file here to instantly insert all records into your database.
+  </p>
+
+  <div id="dropZone" class="border-2 border-dashed border-darkBorder hover:border-goldPrimary rounded-xl p-8 text-center bg-darkBg/50 cursor-pointer transition">
+    <i class="fa-solid fa-cloud-arrow-up text-3xl text-goldPrimary mb-2"></i>
+    <p class="text-sm font-semibold text-white">Drag & drop your CSV file here</p>
+    <p class="text-xs text-gray-500 mt-1">or click to choose a file from your computer</p>
+    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+  </div>
+
+  <div id="uploadStatus" class="mt-3 text-xs hidden"></div>
+</div>
+
+<!-- Include PapaParse library for easy client-side CSV parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+  const dropZone = document.getElementById('dropZone');
+  const csvFileInput = document.getElementById('csvFileInput');
+  const uploadStatus = document.getElementById('uploadStatus');
+
+  // Open file selector when clicking the drop zone
+  dropZone.addEventListener('click', () => csvFileInput.click());
+
+  // Drag over effects
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-goldPrimary', 'bg-darkBg');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-goldPrimary', 'bg-darkBg');
+  });
+
+  // Handle dropped files
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-goldPrimary', 'bg-darkBg');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      processCSV(files[0]);
+    }
+  });
+
+  // Handle selected files via input
+  csvFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      processCSV(e.target.files[0]);
+    }
+  });
+
+  // Parse CSV and batch insert into Supabase
+  function processCSV(file) {
+    if (!file.name.endsWith('.csv')) {
+      showStatus('Please upload a valid .csv file.', 'text-red-400');
+      return;
+    }
+
+    showStatus('Parsing CSV file...', 'text-amber-400');
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async function(results) {
+        const rows = results.data;
+        if (!rows || rows.length === 0) {
+          showStatus('CSV file appears to be empty.', 'text-red-400');
+          return;
         }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #090d16; color: #f3f4f6; }
-        .glass-panel { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-card { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.07); }
-        .gold-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    </style>
-</head>
-<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col">
 
-    <header class="sticky top-0 z-40 glass-panel border-b border-darkBorder">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-lg gold-btn flex items-center justify-center text-black font-extrabold text-base shadow">
-                    <i class="fa-solid fa-address-book"></i>
-                </div>
-                <div>
-                    <h1 class="text-base font-bold text-white leading-tight">Signer Directory</h1>
-                    <p class="text-[11px] text-amber-400 font-medium">Public TTM Database</p>
-                </div>
-            </a>
+        // Map CSV headers to Supabase database columns
+        const formattedRecords = rows.map(row => ({
+          player_name: row['Name'] || row['player_name'] || '',
+          date_received_wait: row['Received / Wait'] || row['date_received_wait'] || '',
+          address: row['Address'] || row['address'] || '',
+          success_ratio: row['Success/Sent Ratio'] || row['success_ratio'] || '',
+          comments: row['Comments'] || row['comments'] || ''
+        }));
 
-            <div id="auth-nav-btn"></div>
-        </div>
-    </header>
+        showStatus(`Uploading ${formattedRecords.length} records to Supabase...`, 'text-amber-400');
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
-        <div class="glass-card rounded-2xl p-6 border border-darkBorder">
-            <h2 class="text-xl font-bold text-white">Signer Profile View</h2>
-            <p class="text-xs text-gray-400 mt-1">Select a player from the directory to inspect success stats and tested addresses.</p>
-        </div>
-    </main>
+        // Insert into Supabase
+        const { data, error } = await supabase
+          .from('cards table')
+          .insert(formattedRecords);
 
-    <footer class="glass-panel border-t border-darkBorder py-6 mt-auto text-center text-xs text-gray-500">
-        <p>Collector Hub Platform • Multi-Tenant Community Network</p>
-    </footer>
+        if (error) {
+          showStatus(`Error uploading records: ${error.message}`, 'text-red-400');
+        } else {
+          showStatus(`Successfully imported ${formattedRecords.length} player records!`, 'text-green-400');
+          if (typeof fetchAndRenderCards === 'function') {
+            fetchAndRenderCards();
+          }
+        }
+      },
+      error: function(err) {
+        showStatus(`CSV Parse Error: ${err.message}`, 'text-red-400');
+      }
+    });
+  }
 
-    <script type="module" src="js/auth.js"></script>
-    <script type="module" src="js/directory.js"></script>
-</body>
-</html>
+  function showStatus(message, textClass) {
+    uploadStatus.className = `mt-3 text-xs ${textClass}`;
+    uploadStatus.textContent = message;
+    uploadStatus.classList.remove('hidden');
+  }
+</script>

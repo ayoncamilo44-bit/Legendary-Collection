@@ -37,44 +37,46 @@ async function loadPersonalTTMLogs(userId) {
         container.innerHTML = `<p class="text-gray-400 text-xs py-6 text-center">No TTM requests logged yet.</p>`;
         return;
     }
-container.innerHTML = logs.map(log => {
-  const signerName = log.signers?.name || 'Unknown Signer';
-  const ebayUrl = getEbayAffiliateUrl(signerName);
-  const sportlotsUrl = getSportlotsUrl(signerName);
-  const scnUrl = getScnUrl(signerName);
 
-  return `
-    <div class="bg-darkBg border border-darkBorder p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div>
-        <h4 class="font-bold text-white text-sm">${signerName}</h4>
-        <p class="text-gray-400 mt-0.5 text-xs">Sent: ${log.sent_date} ${log.returned_date ? `| Returned: ${log.returned_date}` : ''}</p>
-        ${log.notes ? `<p class="text-gray-500 mt-1 italic text-xs">${log.notes}</p>` : ''}
-      </div>
+    container.innerHTML = logs.map(log => {
+        const signerName = log.signers?.name || 'Unknown Signer';
+        const ebayUrl = getEbayAffiliateUrl(signerName);
+        const sportlotsUrl = getSportlotsUrl(signerName);
+        const scnUrl = getScnUrl(signerName);
 
-      <div class="flex items-center gap-2 flex-wrap">
-        <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" 
-           class="px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded-md text-xs hover:bg-amber-400 hover:text-black transition">
-          eBay
-        </a>
-        <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" 
-           class="px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded-md text-xs hover:bg-amber-400 hover:text-black transition">
-          Sportlots
-        </a>
-        <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" 
-           class="px-2.5 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded-md text-xs hover:border-goldPrimary hover:text-white transition">
-          SCN
-        </a>
-        <span class="px-2.5 py-1 rounded-md font-semibold bg-darkCard text-amber-400 border border-darkBorder text-xs">
-          ${log.status}
-        </span>
-      </div>
-    </div>
-  `;
-}).join('');
+        return `
+            <div class="bg-darkBg border border-darkBorder p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h4 class="font-bold text-white text-sm">${signerName}</h4>
+                <p class="text-gray-400 mt-0.5 text-xs">Sent: ${log.sent_date} ${log.returned_date ? `| Returned: ${log.returned_date}` : ''}</p>
+                ${log.notes ? `<p class="text-gray-500 mt-1 italic text-xs">${log.notes}</p>` : ''}
+              </div>
+
+              <div class="flex items-center gap-2 flex-wrap">
+                <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" 
+                   class="px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded-md text-xs hover:bg-amber-400 hover:text-black transition">
+                  eBay
+                </a>
+                <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" 
+                   class="px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded-md text-xs hover:bg-amber-400 hover:text-black transition">
+                  Sportlots
+                </a>
+                <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" 
+                   class="px-2.5 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded-md text-xs hover:border-goldPrimary hover:text-white transition">
+                  SCN
+                </a>
+                <span class="px-2.5 py-1 rounded-md font-semibold bg-darkCard text-amber-400 border border-darkBorder text-xs">
+                  ${log.status}
+                </span>
+              </div>
+            </div>
+        `;
+    }).join('');
+}
 
 function getEbayAffiliateUrl(playerName) {
   const query = encodeURIComponent(`${playerName} autographed card`);
-  return `https://www.ebay.com/sch/i.html?_nkw=${query}&mkevt=1&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=YOUR_CAMPID_HERE&toolid=10001`;
+  return `https://www.ebay.com/sch/i.html?_nkw=${query}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339215575&customid=LegitimateCollector&toolid=10001&mkevt=1`;
 }
 
 function getSportlotsUrl(playerName) {
@@ -86,4 +88,3 @@ function getScnUrl(playerName) {
   const query = encodeURIComponent(playerName);
   return `https://www.sportscollectors.net/Search.aspx?search=${query}`;
 }
-  

@@ -43,8 +43,7 @@ async function loadPersonalTTMLogs(userId) {
   const ebayUrl = getEbayAffiliateUrl(signerName);
   const sportlotsUrl = getSportlotsUrl(signerName);
   const scnUrl = getScnUrl(signerName);
-
-  return `
+ return `
     <div class="bg-darkBg border border-darkBorder p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <h4 class="font-bold text-white text-sm">${signerName}</h4>

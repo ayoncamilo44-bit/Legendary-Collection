@@ -1,20 +1,21 @@
 import { supabase } from './supabase.js';
 
 window.addEventListener('DOMContentLoaded', async () => {
+    // Check authentication
     const { data: { session } } = await supabase.auth.getSession();
-    
     if (!session) {
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
         return;
     }
 
-    loadPersonalTTMLogs(session.user.id);
+    loadDashboardLogs();
 });
 
-async function loadPersonalTTMLogs(userId) {
-    const container = document.getElementById('personal-ttm-list');
-    if (!container) return;
+async function loadDashboardLogs() {
+    const tbody = document.querySelector('tbody');
+    if (!tbody) return;
 
+    // Fetch user TTM logs along with signer details
     const { data: logs, error } = await supabase
         .from('ttm_logs')
         .select(`
@@ -23,68 +24,73 @@ async function loadPersonalTTMLogs(userId) {
             returned_date,
             status,
             notes,
-            signers ( name )
+            signers (
+                id,
+                name,
+                sport,
+                team,
+                tested_address
+            )
         `)
-        .eq('user_id', userId)
         .order('sent_date', { ascending: false });
 
     if (error) {
-        container.innerHTML = `<p class="text-red-400 text-xs">Error loading collection logs: ${error.message}</p>`;
+        console.error('Database query error:', error);
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-red-400 text-xs text-center">Error loading logs: ${error.message}</td></tr>`;
         return;
     }
 
     if (!logs || logs.length === 0) {
-        container.innerHTML = `<p class="text-gray-400 text-xs py-6 text-center">No TTM requests logged yet.</p>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-gray-400 text-xs text-center">No active TTM requests logged yet.</td></tr>`;
         return;
     }
 
-    container.innerHTML = logs.map(log => {
+    tbody.innerHTML = logs.map(log => {
         const signerName = log.signers?.name || 'Unknown Signer';
         const ebayUrl = getEbayAffiliateUrl(signerName);
         const sportlotsUrl = getSportlotsUrl(signerName);
         const scnUrl = getScnUrl(signerName);
 
         return `
-            <div class="bg-darkBg border border-darkBorder p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <h4 class="font-bold text-white text-sm">${signerName}</h4>
-                <p class="text-gray-400 mt-0.5 text-xs">Sent: ${log.sent_date} ${log.returned_date ? `| Returned: ${log.returned_date}` : ''}</p>
-                ${log.notes ? `<p class="text-gray-500 mt-1 italic text-xs">${log.notes}</p>` : ''}
-              </div>
-
-              <div class="flex items-center gap-2 flex-wrap">
-                <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" 
-                   class="px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded-md text-xs hover:bg-amber-400 hover:text-black transition">
-                  eBay
-                </a>
-                <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" 
-                   class="px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded-md text-xs hover:bg-amber-400 hover:text-black transition">
-                  Sportlots
-                </a>
-                <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" 
-                   class="px-2.5 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded-md text-xs hover:border-goldPrimary hover:text-white transition">
-                  SCN
-                </a>
-                <span class="px-2.5 py-1 rounded-md font-semibold bg-darkCard text-amber-400 border border-darkBorder text-xs">
-                  ${log.status}
-                </span>
-              </div>
-            </div>
+            <tr class="border-b border-darkBorder hover:bg-darkCard/50 transition">
+                <td class="px-4 py-3 font-semibold text-white">${signerName}</td>
+                <td class="px-4 py-3 text-gray-400">${log.signers?.sport || '-'} / ${log.signers?.team || '-'}</td>
+                <td class="px-4 py-3 text-amber-400 font-semibold">${log.sent_date || '-'}</td>
+                <td class="px-4 py-3 text-green-400 font-semibold">${log.returned_date || 'Pending'}</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">${log.notes || '-'}</td>
+                <td class="px-4 py-3 text-right">
+                    <div class="flex items-center justify-end gap-1.5">
+                        <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" 
+                           class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">
+                            eBay
+                        </a>
+                        <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" 
+                           class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">
+                            Sportlots
+                        </a>
+                        <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" 
+                           class="px-2 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded text-xs hover:border-goldPrimary hover:text-white transition">
+                            SCN
+                        </a>
+                    </div>
+                </td>
+            </tr>
         `;
     }).join('');
 }
 
+// Affiliate Link Generators
 function getEbayAffiliateUrl(playerName) {
-  const query = encodeURIComponent(`${playerName} autographed card`);
-  return `https://www.ebay.com/sch/i.html?_nkw=${query}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339215575&customid=LegitimateCollector&toolid=10001&mkevt=1`;
+    const query = encodeURIComponent(`${playerName} autographed card`);
+    return `https://www.ebay.com/sch/i.html?_nkw=${query}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339215575&customid=LegitimateCollector&toolid=10001&mkevt=1`;
 }
 
 function getSportlotsUrl(playerName) {
-  const query = encodeURIComponent(playerName);
-  return `https://www.sportlots.com/inven/invenbin/dealnew.tpl?pname=${query}&Ref=Bets1202`;
+    const query = encodeURIComponent(playerName);
+    return `https://www.sportlots.com/inven/invenbin/dealnew.tpl?pname=${query}&Ref=Bets1202`;
 }
 
 function getScnUrl(playerName) {
-  const query = encodeURIComponent(playerName);
-  return `https://www.sportscollectors.net/Search.aspx?search=${query}`;
+    const query = encodeURIComponent(playerName);
+    return `https://www.sportscollectors.net/Search.aspx?search=${query}`;
 }

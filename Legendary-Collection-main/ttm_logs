@@ -1,0 +1,32 @@
+import { supabase } from './js/supabase.js';
+
+// Submit Event Listener
+document.getElementById('addCardForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const playerName = document.getElementById('playerName').value;
+  const dateWait = document.getElementById('dateWait').value;
+  const address = document.getElementById('address').value;
+  const ratio = document.getElementById('ratio').value;
+  const comments = document.getElementById('comments').value;
+
+  const { data, error } = await supabase
+    .from('cards table')
+    .insert([
+      { 
+        player_name: playerName, 
+        date_received_wait: dateWait, 
+        address: address, 
+        success_ratio: ratio, 
+        comments: comments 
+      }
+    ]);
+
+  if (error) {
+    alert('Error adding entry: ' + error.message);
+  } else {
+    alert('TTM entry added successfully!');
+    document.getElementById('addCardForm').reset();
+    fetchAndRenderCards();
+  }
+});

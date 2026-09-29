@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legitimate Collector - TTM & Sports Card Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkBorder: '#334155',
+                        goldPrimary: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
+
+    <!-- Header Navigation -->
+    <header class="bg-darkCard/80 backdrop-blur-md border-b border-darkBorder sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl font-black text-amber-400 tracking-wider">LEGITIMATE COLLECTOR</span>
+            </div>
+            <nav class="flex items-center gap-6 text-sm font-semibold">
+                <a href="directory.html" class="text-gray-400 hover:text-amber-400 transition">Directory</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-amber-400 transition">Dashboard</a>
+                <a href="signer.html" class="text-gray-400 hover:text-amber-400 transition">Add Signer</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-20 px-4">
+        <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-purple-500/10"></div>
+        <div class="max-w-7xl mx-auto relative">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-black text-white mb-6">
+                    Your <span class="text-amber-400">Through The Mail</span> Community
+                </h1>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+                    Connect with fellow collectors, track TTM success rates, and build your autograph collection with verified addresses and community insights.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="directory.html" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg transition transform hover:scale-105 shadow-lg">
+                        Browse Directory
+                    </a>
+                    <a href="dashboard.html" class="px-8 py-4 bg-darkCard border border-darkBorder hover:border-amber-400 text-white font-semibold rounded-lg transition">
+                        Access Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold text-amber-400 mb-2">500+</div>
+                    <div class="text-sm text-gray-400">Verified Signers</div>
+                </div>
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-2">85%</div>
+                    <div class="text-sm text-gray-400">Success Rate</div>
+                </div>
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold text-blue-400 mb-2">1,200+</div>
+                    <div class="text-sm text-gray-400">TTM Entries</div>
+                </div>
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold text-purple-400 mb-2">Active</div>
+                    <div class="text-sm text-gray-400">Community</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 px-4 bg-darkCard/30">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-white text-center mb-12">Why Join Our Community?</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-8 hover:border-amber-400 transition">
+                    <div class="w-12 h-12 bg-amber-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Comprehensive Directory</h3>
+                    <p class="text-gray-400">Access thousands of verified athlete addresses with success rates, response times, and community reviews.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-8 hover:border-amber-400 transition">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Track Your Progress</h3>
+                    <p class="text-gray-400">Monitor your TTM success rates, track response times, and maintain your personal collection dashboard.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-darkCard border border-darkBorder rounded-xl p-8 hover:border-amber-400 transition">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Community Driven</h3>
+                    <p class="text-gray-400">Share your successes, learn from others' experiences, and contribute to the collective knowledge base.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-white text-center mb-12">How It Works</h2>
+            
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-darkBg">1</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Browse Directory</h3>
+                    <p class="text-sm text-gray-400">Find athletes you want to collect with verified addresses</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-darkBg">2</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Send Your Request</h3>
+                    <p class="text-sm text-gray-400">Prepare your card and letter using our best practices</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-darkBg">3</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Track & Wait</h3>
+                    <p class="text-sm text-gray-400">Monitor your requests using our dashboard tools</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-darkBg">4</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Share Results</h3>
+                    <p class="text-sm text-gray-400">Update the community with your success or learning</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-r from-amber-500/20 to-purple-500/20">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Ready to Start Your Collection?</h2>
+            <p class="text-gray-400 mb-8">Join thousands of collectors who are building their autograph collections the legitimate way.</p>
+            <a href="directory.html" class="inline-block px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg transition transform hover:scale-105 shadow-lg">
+                Explore the Directory
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-darkCard border-t border-darkBorder py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <span class="text-xl font-black text-amber-400 tracking-wider">LEGITIMATE COLLECTOR</span>
+                    <p class="text-sm text-gray-400 mt-4">Your trusted resource for TTM collecting and sports card community insights.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="directory.html" class="hover:text-amber-400 transition">Directory</a></li>
+                        <li><a href="dashboard.html" class="hover:text-amber-400 transition">Dashboard</a></li>
+                        <li><a href="signer.html" class="hover:text-amber-400 transition">Add Signer</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-amber-400 transition">TTM Guide</a></li>
+                        <li><a href="#" class="hover:text-amber-400 transition">Best Practices</a></li>
+                        <li><a href="#" class="hover:text-amber-400 transition">Community Forum</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Connect</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-amber-400 transition">Twitter</a></li>
+                        <li><a href="#" class="hover:text-amber-400 transition">Discord</a></li>
+                        <li><a href="#" class="hover:text-amber-400 transition">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-darkBorder pt-8 text-center text-xs text-gray-500">
+                &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

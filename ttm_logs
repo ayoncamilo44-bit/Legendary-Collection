@@ -1,3 +1,5 @@
+import { supabase } from './js/supabase.js';
+
 // Submit Event Listener
 document.getElementById('addCardForm').addEventListener('submit', async (e) => {
   e.preventDefault();

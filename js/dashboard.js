@@ -4,11 +4,9 @@ let allSigners = [];
 
 window.addEventListener('DOMContentLoaded', () => {
     loadDashboard();
-    setupSearch();
     setupDragAndDrop();
 });
 
-// --- 1. LOAD DATA FROM SUPABASE ---
 async function loadDashboard() {
     const tbody = document.getElementById('dashboardTableBody') || document.querySelector('tbody');
     if (!tbody) return;
@@ -20,123 +18,12 @@ async function loadDashboard() {
 
     if (error) {
         console.error('Supabase Query Error:', error);
-        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-red-400 text-center">Error loading directory: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-red-400 text-center">Error loading dashboard: ${error.message}</td></tr>`;
         return;
     }
 
     if (!signers || signers.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-gray-400 text-center">No signers found in database.</td></tr>`;
-        return;
-    }
-
-    allSigners = signers;
-    renderTable(allSigners);
-}
-
-// --- 2. RENDER TABLE WITH AFFILIATE BUTTONS ---
-function renderTable(data) {
-    const tbody = document.getElementById('dashboardTableBody') || document.querySelector('tbody');
-    if (!tbody) return;
-
-    if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-gray-400 text-center">No matching signers found.</td></tr>`;
-        return;
-    }
-
-    tbody.innerHTML = data.map(signer => {
-        const ebayUrl = getEbayAffiliateUrl(signer.name);
-        const sportlotsUrl = getSportlotsUrl(signer.name);
-        const scnUrl = getScnUrl(signer.name);
-
-        return `
-            <tr class="border-b border-darkBorder hover:bg-darkBg/40 transition">
-                <td class="px-4 py-3 font-semibold text-white">${signer.name || '-'}</td>
-                <td class="px-4 py-3 text-gray-300">${signer.sport || '-'} / ${signer.team || '-'}</td>
-                <td class="px-4 py-3 text-amber-400 font-semibold">${signer.success_rate || 'N/A'}</td>
-                <td class="px-4 py-3 text-green-400 font-semibold">${signer.avg_response || 'Pending'}</td>
-                <td class="px-4 py-3 text-gray-400 text-xs font-mono">${signer.tested_address || '-'}</td>
-                <td class="px-4 py-3 text-right">
-                    <div class="flex items-center justify-end gap-1.5">
-                        <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" 
-                           class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">
-                            eBay
-                        </a>
-                        <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" 
-                           class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">
-                            Sportlots
-                        </a>
-                        <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" 
-                           class="px-2 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded text-xs hover:border-amber-400 hover:text-white transition">
-                            SCN
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join('');
-}
-
-// --- 3. SEARCH FILTER ---
-function setupSearch() {
-    const searchInput = document.getElementById('searchInput');
-    if (!searchInput) return;
-
-    searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const filtered = allSigners.filter(s => 
-            (s.name && s.name.toLowerCase().includes(term)) ||
-            (s.sport && s.sport.toLowerCase().includes(term)) ||
-            (s.team && s.team.toLowerCase().includes(term)) ||
-            (s.tested_address && s.tested_address.toLowerCase().includes(term))
-        );
-        renderTable(filtered);
-    });
-}
-
-// --- 4. DRAG AND DROP CSV UPLOADER ---
-function setupDragAndDrop() {
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-
-    if (!dropZone || !fileInput) return;
-
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('border-amber-400');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('border-amber-4Here is the exact JavaScript code for **`js/dashboard.js`** updated to work with your current modular setup:
-
-```javascript
-import { supabase } from './supabase.js';
-
-window.addEventListener('DOMContentLoaded', () => {
-    loadDashboard();
-    setupDragAndDrop();
-});
-
-let allSigners = [];
-
-async function loadDashboard() {
-    const tbody = document.getElementById('dashboardTableBody') || document.querySelector('tbody');
-    if (!tbody) return;
-
-    const { data: signers, error } = await supabase
-        .from('signers')
-        .select('*')
-        .order('name', { ascending: true });
-
-    if (error) {
-        console.error('Supabase Query Error:', error);
-        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-red-400 text-center">Error loading dashboard: ${error.message}</td></tr>`;
-        return;
-    }
-
-    if (!signers || signers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-gray-400 text-center">No signers found in database.</td></tr>`;
         return;
     }
 
@@ -148,15 +35,28 @@ function renderDashboardTable(data) {
     const tbody = document.getElementById('dashboardTableBody') || document.querySelector('tbody');
     if (!tbody) return;
 
-    tbody.innerHTML = data.map(signer => `
+    tbody.innerHTML = data.map(signer => {
+        const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(signer.name + ' autographed card')}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339215575&customid=LegitimateCollector&toolid=10001&mkevt=1`;
+        const sportlotsUrl = `https://www.sportlots.com/inven/invenbin/dealnew.tpl?pname=${encodeURIComponent(signer.name)}&Ref=Bets1202`;
+        const scnUrl = `https://www.sportscollectors.net/Search.aspx?search=${encodeURIComponent(signer.name)}`;
+
+        return `
         <tr class="border-b border-darkBorder hover:bg-darkBg/40 transition">
             <td class="px-4 py-3 font-semibold text-white">${signer.name || '-'}</td>
             <td class="px-4 py-3 text-gray-300">${signer.sport || '-'} / ${signer.team || '-'}</td>
             <td class="px-4 py-3 text-amber-400 font-semibold">${signer.success_rate || 'N/A'}</td>
             <td class="px-4 py-3 text-green-400 font-semibold">${signer.avg_response || 'Pending'}</td>
             <td class="px-4 py-3 text-gray-400 text-xs font-mono">${signer.tested_address || '-'}</td>
+            <td class="px-4 py-3 text-right">
+                <div class="flex items-center justify-end gap-1.5">
+                    <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">eBay</a>
+                    <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">Sportlots</a>
+                    <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded text-xs hover:border-amber-400 hover:text-white transition">SCN</a>
+                </div>
+            </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function setupDragAndDrop() {

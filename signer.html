@@ -1,113 +1,224 @@
-<!-- Drag & Drop CSV Section -->
-<div class="glass-card rounded-2xl p-6 border border-darkBorder mb-6">
-  <h3 class="text-lg font-bold text-amber-400 mb-2">
-    <i class="fa-solid fa-file-csv mr-2"></i>Bulk Import CSV
-  </h3>
-  <p class="text-xs text-gray-400 mb-4">
-    Drag & drop your <code>players.csv</code> file here to instantly insert all records into your database.
-  </p>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Signer - Legitimate Collector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkBorder: '#334155',
+                        goldPrimary: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans flex flex-col">
 
-  <div id="dropZone" class="border-2 border-dashed border-darkBorder hover:border-goldPrimary rounded-xl p-8 text-center bg-darkBg/50 cursor-pointer transition">
-    <i class="fa-solid fa-cloud-arrow-up text-3xl text-goldPrimary mb-2"></i>
-    <p class="text-sm font-semibold text-white">Drag & drop your CSV file here</p>
-    <p class="text-xs text-gray-500 mt-1">or click to choose a file from your computer</p>
-    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
-  </div>
+    <!-- Header Navigation -->
+    <header class="bg-darkCard border-b border-darkBorder sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl font-black text-amber-400 tracking-wider">LEGITIMATE COLLECTOR</span>
+            </div>
+            <nav class="flex items-center gap-6 text-sm font-semibold">
+                <a href="index.html" class="text-gray-400 hover:text-amber-400 transition">Home</a>
+                <a href="directory.html" class="text-gray-400 hover:text-amber-400 transition">Directory</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-amber-400 transition">Dashboard</a>
+                <a href="signer.html" class="text-amber-400 border-b-2 border-amber-400 pb-1">Add Signer</a>
+            </nav>
+        </div>
+    </header>
 
-  <div id="uploadStatus" class="mt-3 text-xs hidden"></div>
-</div>
+    <main class="max-w-7xl mx-auto w-full px-4 py-8 flex-grow">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2">Add New Signer</h1>
+            <p class="text-gray-400">Add a new athlete to the directory or bulk import from CSV</p>
+        </div>
 
-<!-- Include PapaParse library for easy client-side CSV parsing -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Manual Entry Form -->
+            <div class="bg-darkCard border border-darkBorder rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-6">Manual Entry</h2>
+                <form id="addSignerForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
+                        <input type="text" id="playerName" required
+                               class="w-full px-4 py-2 bg-darkBg border border-darkBorder rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Sport</label>
+                            <input type="text" id="sport" required
+                                   class="w-full px-4 py-2 bg-darkBg border border-darkBorder rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Team</label>
+                            <input type="text" id="team"
+                                   class="w-full px-4 py-2 bg-darkBg border border-darkBorder rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Success Rate (%)</label>
+                        <input type="number" id="successRate" min="0" max="100"
+                               class="w-full px-4 py-2 bg-darkBg border border-darkBorder rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Average Response Time</label>
+                        <input type="text" id="avgResponse"
+                               class="w-full px-4 py-2 bg-darkBg border border-darkBorder rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Tested Address</label>
+                        <textarea id="testedAddress" rows="3"
+                                  class="w-full px-4 py-2 bg-darkBg border border-darkBorder rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full px-4 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg transition">
+                        Add Signer
+                    </button>
+                </form>
+            </div>
 
-<script>
-  const dropZone = document.getElementById('dropZone');
-  const csvFileInput = document.getElementById('csvFileInput');
-  const uploadStatus = document.getElementById('uploadStatus');
+            <!-- CSV Upload Section -->
+            <div class="bg-darkCard border border-darkBorder rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-6">Bulk Import CSV</h2>
+                <p class="text-sm text-gray-400 mb-4">
+                    Drag & drop your CSV file here to instantly insert all records into your database.
+                    Required columns: <code>name, sport, team, success_rate, avg_response, tested_address</code>
+                </p>
 
-  // Open file selector when clicking the drop zone
-  dropZone.addEventListener('click', () => csvFileInput.click());
+                <div id="dropZone" class="border-2 border-dashed border-darkBorder hover:border-amber-400 rounded-xl p-8 text-center bg-darkBg/50 cursor-pointer transition">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    <p class="text-sm text-gray-300 font-semibold">Drag & drop your CSV file here</p>
+                    <p class="text-xs text-gray-500 mt-1">or click to choose a file from your computer</p>
+                    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+                </div>
+                <div id="uploadStatus" class="mt-3 text-xs hidden"></div>
+            </div>
+        </div>
+    </main>
 
-  // Drag over effects
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('border-goldPrimary', 'bg-darkBg');
-  });
+    <footer class="bg-darkCard border-t border-darkBorder py-6 text-center text-xs text-gray-500 mt-auto">
+        &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+    </footer>
 
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('border-goldPrimary', 'bg-darkBg');
-  });
+    <!-- Include PapaParse library for easy client-side CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script type="module">
+        import { supabase } from './js/supabase.js';
 
-  // Handle dropped files
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('border-goldPrimary', 'bg-darkBg');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      processCSV(files[0]);
-    }
-  });
+        // Manual Form Submission
+        document.getElementById('addSignerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-  // Handle selected files via input
-  csvFileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      processCSV(e.target.files[0]);
-    }
-  });
+            const newSigner = {
+                name: document.getElementById('playerName').value,
+                sport: document.getElementById('sport').value,
+                team: document.getElementById('team').value,
+                success_rate: document.getElementById('successRate').value,
+                avg_response: document.getElementById('avgResponse').value,
+                tested_address: document.getElementById('testedAddress').value
+            };
 
-  // Parse CSV and batch insert into Supabase
-  function processCSV(file) {
-    if (!file.name.endsWith('.csv')) {
-      showStatus('Please upload a valid .csv file.', 'text-red-400');
-      return;
-    }
+            const { data, error } = await supabase.from('signers').insert([newSigner]);
 
-    showStatus('Parsing CSV file...', 'text-amber-400');
+            if (error) {
+                alert('Error adding signer: ' + error.message);
+            } else {
+                alert('Signer added successfully!');
+                document.getElementById('addSignerForm').reset();
+            }
+        });
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async function(results) {
-        const rows = results.data;
-        if (!rows || rows.length === 0) {
-          showStatus('CSV file appears to be empty.', 'text-red-400');
-          return;
+        // CSV Upload
+        const dropZone = document.getElementById('dropZone');
+        const csvFileInput = document.getElementById('csvFileInput');
+        const uploadStatus = document.getElementById('uploadStatus');
+
+        dropZone.addEventListener('click', () => csvFileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-amber-400', 'bg-darkBg');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-amber-400', 'bg-darkBg');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-amber-400', 'bg-darkBg');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processCSV(files[0]);
+            }
+        });
+
+        csvFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processCSV(e.target.files[0]);
+            }
+        });
+
+        function processCSV(file) {
+            if (!file.name.endsWith('.csv')) {
+                showStatus('Please upload a valid .csv file.', 'text-red-400');
+                return;
+            }
+
+            showStatus('Parsing CSV file...', 'text-amber-400');
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async function(results) {
+                    const rows = results.data;
+                    if (!rows || rows.length === 0) {
+                        showStatus('CSV file appears to be empty.', 'text-red-400');
+                        return;
+                    }
+
+                    const formattedRecords = rows.map(row => ({
+                        name: row['name'] || row['Name'] || '',
+                        sport: row['sport'] || row['Sport'] || '',
+                        team: row['team'] || row['Team'] || '',
+                        success_rate: row['success_rate'] || row['Success Rate'] || '',
+                        avg_response: row['avg_response'] || row['Avg Response'] || '',
+                        tested_address: row['tested_address'] || row['Tested Address'] || ''
+                    }));
+
+                    showStatus(`Uploading ${formattedRecords.length} records to database...`, 'text-amber-400');
+
+                    const { data, error } = await supabase.from('signers').insert(formattedRecords);
+
+                    if (error) {
+                        showStatus(`Error uploading records: ${error.message}`, 'text-red-400');
+                    } else {
+                        showStatus(`Successfully imported ${formattedRecords.length} player records!`, 'text-green-400');
+                    }
+                },
+                error: function(err) {
+                    showStatus(`CSV Parse Error: ${err.message}`, 'text-red-400');
+                }
+            });
         }
 
-        // Map CSV headers to Supabase database columns
-        const formattedRecords = rows.map(row => ({
-          player_name: row['Name'] || row['player_name'] || '',
-          date_received_wait: row['Received / Wait'] || row['date_received_wait'] || '',
-          address: row['Address'] || row['address'] || '',
-          success_ratio: row['Success/Sent Ratio'] || row['success_ratio'] || '',
-          comments: row['Comments'] || row['comments'] || ''
-        }));
-
-        showStatus(`Uploading ${formattedRecords.length} records to Supabase...`, 'text-amber-400');
-
-        // Insert into Supabase
-        const { data, error } = await supabase
-          .from('cards table')
-          .insert(formattedRecords);
-
-        if (error) {
-          showStatus(`Error uploading records: ${error.message}`, 'text-red-400');
-        } else {
-          showStatus(`Successfully imported ${formattedRecords.length} player records!`, 'text-green-400');
-          if (typeof fetchAndRenderCards === 'function') {
-            fetchAndRenderCards();
-          }
+        function showStatus(message, textClass) {
+            uploadStatus.className = `mt-3 text-xs ${textClass}`;
+            uploadStatus.textContent = message;
+            uploadStatus.classList.remove('hidden');
         }
-      },
-      error: function(err) {
-        showStatus(`CSV Parse Error: ${err.message}`, 'text-red-400');
-      }
-    });
-  }
-
-  function showStatus(message, textClass) {
-    uploadStatus.className = `mt-3 text-xs ${textClass}`;
-    uploadStatus.textContent = message;
-    uploadStatus.classList.remove('hidden');
-  }
-</script>
+    </script>
+</body>
+</html>

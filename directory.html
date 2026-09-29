@@ -3,64 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legitimate Collector - TTM & Card Directory</title>
+    <title>Directory - Legitimate Collector</title>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
-                        darkBg: '#0f172a',
-                        darkCard: '#1e293b',
-                        darkBorder: '#334155',
-                        goldPrimary: '#f59e0b'
-                    }
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    },
                 }
             }
         }
     </script>
+    
+    <style>
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0f1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1e2535;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
 </head>
-<body class="bg-darkBg text-gray-200 min-h-screen font-sans flex flex-col">
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
 
-    <!-- Header Navigation -->
-    <header class="bg-darkCard border-b border-darkBorder sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Premium Header Navigation -->
+    <header class="glass sticky top-0 z-50 smooth-transition">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <span class="text-2xl font-black text-amber-400 tracking-wider">LEGITIMATE COLLECTOR</span>
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">Legitimate Collector</span>
             </div>
-            <nav class="flex items-center gap-6 text-sm font-semibold">
-                <a href="index.html" class="text-gray-400 hover:text-amber-400 transition">Home</a>
-                <a href="directory.html" class="text-amber-400 border-b-2 border-amber-400 pb-1">Directory</a>
-                <a href="dashboard.html" class="text-gray-400 hover:text-amber-400 transition">Dashboard & Upload</a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Home</a>
+                <a href="directory.html" class="text-white smooth-transition text-sm font-medium">Directory</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
+                <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Community</a>
+                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Add Signer</a>
+                <div id="auth-nav-btn">
+                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        Sign In
+                    </button>
+                </div>
             </nav>
+            <button class="md:hidden text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
         </div>
     </header>
 
     <!-- Main Directory Content -->
-    <main class="max-w-7xl mx-auto w-full px-4 py-8 flex-grow">
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-            <h1 class="text-2xl font-bold text-white">Signer Directory & TTM Logs</h1>
-            <input type="text" id="searchInput" placeholder="Search player, team, or sport..." 
-                   class="w-full sm:w-80 px-4 py-2 bg-darkCard border border-darkBorder rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-400 transition text-sm">
+    <main class="max-w-7xl mx-auto w-full px-6 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Signer Directory</h1>
+                <p class="text-gray-400">Browse verified athlete addresses and TTM success rates</p>
+            </div>
+            <div class="relative w-full md:w-96">
+                <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="searchInput" placeholder="Search player, team, or sport..." 
+                       class="w-full pl-12 pr-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+            </div>
         </div>
 
-        <div class="bg-darkCard border border-darkBorder rounded-xl shadow-lg overflow-hidden">
+        <div class="glass-card rounded-2xl overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-darkBg/50 text-gray-400 uppercase text-xs border-b border-darkBorder">
+                <table class="w-full text-left">
+                    <thead class="bg-darkHover/50 text-gray-400 uppercase text-xs border-b border-darkBorder">
                         <tr>
-                            <th class="px-4 py-3">Player Name</th>
-                            <th class="px-4 py-3">Sport / Team</th>
-                            <th class="px-4 py-3">Success Rate</th>
-                            <th class="px-4 py-3">Avg Response</th>
-                            <th class="px-4 py-3">Address</th>
-                            <th class="px-4 py-3 text-right">Affiliate Search</th>
+                            <th class="px-6 py-4 font-semibold">Player Name</th>
+                            <th class="px-6 py-4 font-semibold">Sport / Team</th>
+                            <th class="px-6 py-4 font-semibold">Success Rate</th>
+                            <th class="px-6 py-4 font-semibold">Avg Response</th>
+                            <th class="px-6 py-4 font-semibold">Address</th>
+                            <th class="px-6 py-4 font-semibold text-right">Affiliate Search</th>
                         </tr>
                     </thead>
                     <tbody id="directoryTableBody">
                         <tr>
-                            <td colspan="6" class="p-6 text-center text-gray-400 animate-pulse">Loading database records...</td>
+                            <td colspan="6" class="p-12 text-center text-gray-400 animate-pulse">Loading database records...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -68,10 +159,17 @@
         </div>
     </main>
 
-    <footer class="bg-darkCard border-t border-darkBorder py-6 text-center text-xs text-gray-500 mt-auto">
-        &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+    <!-- Footer -->
+    <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+        </div>
     </footer>
 
     <script type="module" src="./js/directory.js"></script>
+    <script type="module" src="./js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

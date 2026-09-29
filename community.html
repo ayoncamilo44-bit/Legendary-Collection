@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Feed - Legitimate Collector</title>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0f1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1e2535;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
+
+    <!-- Premium Header Navigation -->
+    <header class="glass sticky top-0 z-50 smooth-transition">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">Legitimate Collector</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Home</a>
+                <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Directory</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
+                <a href="community.html" class="text-white smooth-transition text-sm font-medium">Community</a>
+                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Add Signer</a>
+                <div id="auth-nav-btn">
+                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        Sign In
+                    </button>
+                </div>
+            </nav>
+            <button class="md:hidden text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-6 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Community Feed</h1>
+                <p class="text-gray-400">Share your TTM successes and see what the community is receiving</p>
+            </div>
+            <button onclick="openShareModal()" class="px-6 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                Share Success
+            </button>
+        </div>
+
+        <!-- Feed Posts -->
+        <div class="space-y-6" id="feedContainer">
+            <!-- Sample Post 1 -->
+            <div class="glass-card rounded-2xl p-6 smooth-transition hover:shadow-glow">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-semibold text-white">CollectorMike</span>
+                            <span class="text-gray-500 text-sm">2 hours ago</span>
+                            <span class="px-2 py-1 bg-success/20 text-success text-xs rounded-full">Success!</span>
+                        </div>
+                        <p class="text-gray-300 mb-4">Finally got a response from <span class="text-accent font-semibold">Mike Trout</span>! Took 45 days but totally worth it. Signed my 2018 Topps Chrome beautifully.</p>
+                        
+                        <div class="flex items-center gap-4 mt-4 pt-4 border-t border-darkBorder">
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                                <span class="text-sm">24</span>
+                            </button>
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                <span class="text-sm">8</span>
+                            </button>
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                                <span class="text-sm">Share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Post 2 -->
+            <div class="glass-card rounded-2xl p-6 smooth-transition hover:shadow-glow">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-semibold text-white">AutographHunter</span>
+                            <span class="text-gray-500 text-sm">5 hours ago</span>
+                            <span class="px-2 py-1 bg-success/20 text-success text-xs rounded-full">Success!</span>
+                        </div>
+                        <p class="text-gray-300 mb-4">Mail day! Received <span class="text-accent font-semibold">Patrick Mahomes</span> signed card. The address from the directory worked perfectly. 37 days turnaround.</p>
+                        
+                        <div class="flex items-center gap-4 mt-4 pt-4 border-t border-darkBorder">
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                                <span class="text-sm">42</span>
+                            </button>
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                <span class="text-sm">15</span>
+                            </button>
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                                <span class="text-sm">Share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Post 3 -->
+            <div class="glass-card rounded-2xl p-6 smooth-transition hover:shadow-glow">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-warning flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-semibold text-white">CardCollector88</span>
+                            <span class="text-gray-500 text-sm">1 day ago</span>
+                            <span class="px-2 py-1 bg-warning/20 text-warning text-xs rounded-full">No Response</span>
+                        </div>
+                        <p class="text-gray-300 mb-4">Sent to <span class="text-accent font-semibold">Derek Jeter</span> 90 days ago with no response yet. Going to give it another month before trying a different address.</p>
+                        
+                        <div class="flex items-center gap-4 mt-4 pt-4 border-t border-darkBorder">
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                                <span class="text-sm">12</span>
+                            </button>
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                <span class="text-sm">3</span>
+                            </button>
+                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                                <span class="text-sm">Share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder">
+                Load More Posts
+            </button>
+        </div>
+    </main>
+
+    <!-- Share Success Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl max-w-lg w-full">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i>
+                        Share Your Success
+                    </h3>
+                    <button onclick="closeShareModal()" class="text-gray-400 hover:text-white smooth-transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
+                        <input type="text" placeholder="e.g., Mike Trout" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Result</label>
+                        <select class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
+                            <option value="success">Success - Got it back!</option>
+                            <option value="pending">Still Waiting</option>
+                            <option value="no-response">No Response</option>
+                            <option value="returned">Returned Unsigned</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Days to Response</label>
+                        <input type="number" placeholder="e.g., 45" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
+                        <textarea rows="3" placeholder="Share your experience with the community..." class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Upload Photo (Optional)</label>
+                        <div class="border-2 border-dashed border-darkBorder hover:border-accent rounded-xl p-6 text-center cursor-pointer smooth-transition hover:bg-darkHover/50">
+                            <i data-lucide="image-plus" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+                            <p class="text-sm text-gray-400">Click to upload or drag and drop</p>
+                            <p class="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        Share with Community
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+        </div>
+    </footer>
+
+    <script type="module" src="./js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        // Modal Functions
+        window.openShareModal = function() {
+            const modal = document.getElementById('shareModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                lucide.createIcons();
+            }
+        };
+        
+        window.closeShareModal = function() {
+            const modal = document.getElementById('shareModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        };
+        
+        // Close modal on backdrop click
+        document.getElementById('shareModal').addEventListener('click', (e) => {
+            if (e.target.id === 'shareModal') {
+                closeShareModal();
+            }
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeShareModal();
+            }
+        });
+    </script>
+</body>
+</html>

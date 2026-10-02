@@ -1,40 +1,76 @@
 import { supabase } from './supabase.js';
 
+function showAuthMessage(message) {
+    const container = document.getElementById('auth-nav-btn');
+    if (!container) return;
+
+    let status = document.getElementById('auth-status');
+    if (!status) {
+        status = document.createElement('p');
+        status.id = 'auth-status';
+        status.setAttribute('role', 'alert');
+        status.className = 'mt-2 max-w-xs text-xs text-red-300';
+        container.append(status);
+    }
+    status.textContent = message;
+}
+
 window.loginWithGoogle = async function() {
-    const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: `${window.location.origin}/dashboard.html` }
-    });
-    if (error) console.error('Auth login error:', error.message);
+    try {
+        const redirectUrl = new URL(window.location.href);
+        redirectUrl.search = '';
+        redirectUrl.hash = '';
+
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: redirectUrl.toString() }
+        });
+        if (error) throw error;
+    } catch (error) {
+        console.error('Google sign-in error:', error);
+        showAuthMessage('Google sign-in could not start. Check the Supabase project settings and Google provider configuration.');
+    }
 };
 
 window.logout = async function() {
-    await supabase.auth.signOut();
-    window.location.href = 'index.html';
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        window.location.href = new URL('./index.html', window.location.href).toString();
+    } catch (error) {
+        console.error('Sign-out error:', error);
+        showAuthMessage('Sign-out failed. Please try again.');
+    }
 };
 
 window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await supabase.auth.getSession();
     const authBtnContainer = document.getElementById('auth-nav-btn');
-
     if (!authBtnContainer) return;
 
-    if (session) {
-        authBtnContainer.innerHTML = `
-            <div class="flex items-center space-x-2">
-                <a href="dashboard.html" class="px-3.5 py-1.5 rounded-lg bg-amber-500 text-black font-bold text-xs hover:bg-amber-400 transition-colors shadow">
-                    My Vault
-                </a>
-                <button onclick="logout()" class="px-2.5 py-1.5 text-xs text-gray-400 hover:text-white transition-colors">
-                    Logout
+    try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+
+        authBtnContainer.innerHTML = session
+            ? `
+                <div class="flex items-center gap-3">
+                    <a href="dashboard.html" class="px-4 py-2 glass-card text-white rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover">
+                        My Dashboard
+                    </a>
+                    <button onclick="logout()" class="px-3 py-2 text-gray-400 hover:text-white smooth-transition">
+                        Sign Out
+                    </button>
+                </div>
+            `
+            : `
+                <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-white rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover border border-darkBorder">
+                    Sign in with Google
                 </button>
-            </div>
-        `;
-    } else {
-        authBtnContainer.innerHTML = `
-            <button onclick="loginWithGoogle()" class="px-3.5 py-1.5 rounded-lg bg-darkBorder text-white text-xs font-semibold hover:bg-gray-800 transition-colors border border-gray-700">
-                Sign In with Google
-            </button>
-        `;
+            `;
+    } catch (error) {
+        console.error('Unable to check sign-in status:', error);
+        showAuthMessage('Sign-in status is unavailable. Check the Supabase project URL and publishable key.');
     }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 });

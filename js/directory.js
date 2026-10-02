@@ -39,8 +39,8 @@ async function loadSigners(query = '') {
             <td class="px-4 py-3 text-gray-400 truncate max-w-xs">${signer.tested_address || 'Verified Address'}</td>
             <td class="px-4 py-3 text-right">
                 <div class="flex items-center justify-end gap-1.5">
-                    <a href="${ebayUrl}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">eBay</a>
-                    <a href="${sportlotsUrl}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">Sportlots</a>
+                    <a href="${ebayUrl}" target="_blank" rel="sponsored nofollow noopener noreferrer" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">eBay</a>
+                    <a href="${sportlotsUrl}" target="_blank" rel="sponsored nofollow noopener noreferrer" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">Sportlots</a>
                     <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded text-xs hover:border-amber-400 hover:text-white transition">SCN</a>
                 </div>
             </td>

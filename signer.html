@@ -171,6 +171,7 @@
                         <textarea id="testedAddress" rows="3"
                                   class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
                     </div>
+                    <p id="signerFormStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
                     <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
                         <i data-lucide="plus" class="w-5 h-5"></i>
                         Add Signer
@@ -215,114 +216,8 @@
         </div>
     </footer>
 
-    <!-- Include PapaParse library for easy client-side CSV parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script type="module">
-        import { supabase } from './js/supabase.js';
-
-        // Manual Form Submission
-        document.getElementById('addSignerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const newSigner = {
-                name: document.getElementById('playerName').value,
-                sport: document.getElementById('sport').value,
-                team: document.getElementById('team').value,
-                success_rate: document.getElementById('successRate').value,
-                avg_response: document.getElementById('avgResponse').value,
-                tested_address: document.getElementById('testedAddress').value
-            };
-
-            const { data, error } = await supabase.from('signers').insert([newSigner]);
-
-            if (error) {
-                alert('Error adding signer: ' + error.message);
-            } else {
-                alert('Signer added successfully!');
-                document.getElementById('addSignerForm').reset();
-            }
-        });
-
-        // CSV Upload
-        const dropZone = document.getElementById('dropZone');
-        const csvFileInput = document.getElementById('csvFileInput');
-        const uploadStatus = document.getElementById('uploadStatus');
-
-        dropZone.addEventListener('click', () => csvFileInput.click());
-
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('border-accent', 'bg-darkHover');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('border-accent', 'bg-darkHover');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-accent', 'bg-darkHover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                processCSV(files[0]);
-            }
-        });
-
-        csvFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                processCSV(e.target.files[0]);
-            }
-        });
-
-        function processCSV(file) {
-            if (!file.name.endsWith('.csv')) {
-                showStatus('Please upload a valid .csv file.', 'text-danger');
-                return;
-            }
-
-            showStatus('Parsing CSV file...', 'text-accent');
-
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: async function(results) {
-                    const rows = results.data;
-                    if (!rows || rows.length === 0) {
-                        showStatus('CSV file appears to be empty.', 'text-danger');
-                        return;
-                    }
-
-                    const formattedRecords = rows.map(row => ({
-                        name: row['name'] || row['Name'] || '',
-                        sport: row['sport'] || row['Sport'] || '',
-                        team: row['team'] || row['Team'] || '',
-                        success_rate: row['success_rate'] || row['Success Rate'] || '',
-                        avg_response: row['avg_response'] || row['Avg Response'] || '',
-                        tested_address: row['tested_address'] || row['Tested Address'] || ''
-                    }));
-
-                    showStatus(`Uploading ${formattedRecords.length} records to database...`, 'text-accent');
-
-                    const { data, error } = await supabase.from('signers').insert(formattedRecords);
-
-                    if (error) {
-                        showStatus(`Error uploading records: ${error.message}`, 'text-danger');
-                    } else {
-                        showStatus(`Successfully imported ${formattedRecords.length} player records!`, 'text-success');
-                    }
-                },
-                error: function(err) {
-                    showStatus(`CSV Parse Error: ${err.message}`, 'text-danger');
-                }
-            });
-        }
-
-        function showStatus(message, textClass) {
-            uploadStatus.className = `mt-4 text-sm font-semibold ${textClass}`;
-            uploadStatus.textContent = message;
-            uploadStatus.classList.remove('hidden');
-        }
-    </script>
+    <script type="module" src="./js/signer-form.js"></script>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script>

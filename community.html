@@ -135,119 +135,25 @@
             </button>
         </div>
 
-        <!-- Feed Posts -->
-        <div class="space-y-6" id="feedContainer">
-            <!-- Sample Post 1 -->
-            <div class="glass-card rounded-2xl p-6 smooth-transition hover:shadow-glow">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="font-semibold text-white">CollectorMike</span>
-                            <span class="text-gray-500 text-sm">2 hours ago</span>
-                            <span class="px-2 py-1 bg-success/20 text-success text-xs rounded-full">Success!</span>
-                        </div>
-                        <p class="text-gray-300 mb-4">Finally got a response from <span class="text-accent font-semibold">Mike Trout</span>! Took 45 days but totally worth it. Signed my 2018 Topps Chrome beautifully.</p>
-                        
-                        <div class="flex items-center gap-4 mt-4 pt-4 border-t border-darkBorder">
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                                <span class="text-sm">24</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                                <span class="text-sm">8</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Post 2 -->
-            <div class="glass-card rounded-2xl p-6 smooth-transition hover:shadow-glow">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="font-semibold text-white">AutographHunter</span>
-                            <span class="text-gray-500 text-sm">5 hours ago</span>
-                            <span class="px-2 py-1 bg-success/20 text-success text-xs rounded-full">Success!</span>
-                        </div>
-                        <p class="text-gray-300 mb-4">Mail day! Received <span class="text-accent font-semibold">Patrick Mahomes</span> signed card. The address from the directory worked perfectly. 37 days turnaround.</p>
-                        
-                        <div class="flex items-center gap-4 mt-4 pt-4 border-t border-darkBorder">
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                                <span class="text-sm">42</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                                <span class="text-sm">15</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Post 3 -->
-            <div class="glass-card rounded-2xl p-6 smooth-transition hover:shadow-glow">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full bg-warning flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="font-semibold text-white">CardCollector88</span>
-                            <span class="text-gray-500 text-sm">1 day ago</span>
-                            <span class="px-2 py-1 bg-warning/20 text-warning text-xs rounded-full">No Response</span>
-                        </div>
-                        <p class="text-gray-300 mb-4">Sent to <span class="text-accent font-semibold">Derek Jeter</span> 90 days ago with no response yet. Going to give it another month before trying a different address.</p>
-                        
-                        <div class="flex items-center gap-4 mt-4 pt-4 border-t border-darkBorder">
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                                <span class="text-sm">12</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                                <span class="text-sm">3</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-400 hover:text-accent smooth-transition">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Community posts are loaded from Supabase. -->
+        <div class="space-y-6" id="feedContainer" aria-live="polite">
+            <div class="glass-card rounded-2xl p-6 text-center text-gray-400">Loading community posts...</div>
         </div>
 
         <!-- Load More Button -->
         <div class="text-center mt-8">
-            <button class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder">
+            <button id="loadMorePosts" type="button" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder hidden">
                 Load More Posts
             </button>
         </div>
     </main>
 
     <!-- Share Success Modal -->
-    <div id="shareModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card rounded-2xl max-w-lg w-full">
+    <div id="shareModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+        <div class="glass-card rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                    <h3 id="shareModalTitle" class="text-xl font-bold text-white flex items-center gap-3">
                         <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i>
                         Share Your Success
                     </h3>
@@ -256,15 +162,15 @@
                     </button>
                 </div>
                 
-                <form class="space-y-4">
+                <form id="communityPostForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
-                        <input type="text" placeholder="e.g., Mike Trout" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                        <label for="postPlayerName" class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
+                        <input id="postPlayerName" name="player_name" type="text" maxlength="120" required placeholder="e.g., Mike Trout" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Result</label>
-                        <select class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
+                        <label for="postResult" class="block text-sm font-medium text-gray-400 mb-2">Result</label>
+                        <select id="postResult" name="result" required class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
                             <option value="success">Success - Got it back!</option>
                             <option value="pending">Still Waiting</option>
                             <option value="no-response">No Response</option>
@@ -273,23 +179,16 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Days to Response</label>
-                        <input type="number" placeholder="e.g., 45" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                        <label for="postDays" class="block text-sm font-medium text-gray-400 mb-2">Days to Response</label>
+                        <input id="postDays" name="days_to_response" type="number" min="0" max="3650" placeholder="e.g., 45" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
-                        <textarea rows="3" placeholder="Share your experience with the community..." class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
+                        <label for="postExperience" class="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
+                        <textarea id="postExperience" name="experience" rows="4" maxlength="2000" required placeholder="Share what happened. Please don't include private mailing addresses." class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Upload Photo (Optional)</label>
-                        <div class="border-2 border-dashed border-darkBorder hover:border-accent rounded-xl p-6 text-center cursor-pointer smooth-transition hover:bg-darkHover/50">
-                            <i data-lucide="image-plus" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
-                            <p class="text-sm text-gray-400">Click to upload or drag and drop</p>
-                            <p class="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
-                        </div>
-                    </div>
+
+                    <p id="communityFormStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
                     
                     <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
                         <i data-lucide="send" class="w-5 h-5"></i>
@@ -309,40 +208,6 @@
 
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
-    <script>
-        lucide.createIcons();
-        
-        // Modal Functions
-        window.openShareModal = function() {
-            const modal = document.getElementById('shareModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                lucide.createIcons();
-            }
-        };
-        
-        window.closeShareModal = function() {
-            const modal = document.getElementById('shareModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-        };
-        
-        // Close modal on backdrop click
-        document.getElementById('shareModal').addEventListener('click', (e) => {
-            if (e.target.id === 'shareModal') {
-                closeShareModal();
-            }
-        });
-        
-        // Close modal on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeShareModal();
-            }
-        });
-    </script>
+    <script type="module" src="./js/community.js"></script>
 </body>
 </html>

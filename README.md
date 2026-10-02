@@ -17,6 +17,12 @@ The sign-in button returns users to the page where they started. A Google `redir
 
 The Excel-processing Python script runs on your computer and exports `master_data.csv`; it does not update the website or Supabase by itself. Run it where the Excel files are available, then sign in to the site, open **Dashboard**, and upload `master_data.csv` in the CSV import area. The importer handles quoted CSV fields such as addresses containing commas and maps the supported signer columns into the database.
 
+## Add Signer and Community setup
+
+Both pages write through Supabase and require Google sign-in. Before using them, open the Supabase **SQL Editor**, paste and run the contents of `supabase-setup.sql`, then refresh the site. This creates the community-post table, allows public reading of signers and community posts, and limits new signer records and community posts to authenticated users. Without this one-time database setup, Supabase rejects submissions and the community feed cannot load.
+
+Community posts are text-only; the form does not collect autograph photos or mailing addresses.
+
 ## Affiliate partners
 
 Affiliate placements appear on each page and are defined in `js/affiliates.js`. The current eBay and Sportlots tracking links reuse the affiliate IDs already present in the signer search links. Replace or update the URLs there with your active partner links. Affiliate links are marked as sponsored and accompanied by a disclosure.

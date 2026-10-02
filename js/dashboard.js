@@ -99,6 +99,12 @@ async function parseAndUploadCSV(file) {
     }
 
     try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session) {
+            throw new Error('Sign in with Google before uploading signer records.');
+        }
+
         const text = await file.text();
         if (!window.Papa) {
             throw new Error('The CSV parser failed to load. Refresh the page and try again.');
@@ -132,7 +138,9 @@ async function parseAndUploadCSV(file) {
 
         if (error) {
             if (status) {
-                status.textContent = `Upload failed: ${error.message}`;
+                status.textContent = error.code === '42501' || /row-level security/i.test(error.message)
+                    ? 'Upload failed: run supabase-setup.sql in the Supabase SQL Editor, then sign in again.'
+                    : `Upload failed: ${error.message}`;
                 status.classList.add('text-red-400');
             }
         } else {

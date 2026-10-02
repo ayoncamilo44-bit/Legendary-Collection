@@ -37,7 +37,7 @@ function renderDashboardTable(data) {
 
     tbody.innerHTML = data.map(signer => {
         const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(signer.name + ' autographed card')}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339215575&customid=LegitimateCollector&toolid=10001&mkevt=1`;
-        const sportlotsUrl = `https://www.sportlots.com/inven/invenbin/dealnew.tpl?pname=${encodeURIComponent(signer.name)}&Ref=Bets1202`;
+        const sportlotsUrl = `https://www.sportlots.com/b/ui/search.tpl?search_val=${encodeURIComponent(signer.name)}&Ref=Bets1202`;
         const scnUrl = `https://www.sportscollectors.net/Search.aspx?search=${encodeURIComponent(signer.name)}`;
 
         return `
@@ -100,21 +100,33 @@ async function parseAndUploadCSV(file) {
 
     try {
         const text = await file.text();
-        const lines = text.split('\n').filter(line => line.trim() !== '');
-        if (lines.length < 2) {
-            throw new Error('CSV file must contain a header row and at least one data row.');
+        if (!window.Papa) {
+            throw new Error('The CSV parser failed to load. Refresh the page and try again.');
         }
 
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-
-        const rows = lines.slice(1).map(line => {
-            const values = line.split(',').map(v => v.trim());
-            let row = {};
-            headers.forEach((h, i) => { 
-                row[h] = values[i] || ''; 
-            });
-            return row;
+        const parsed = window.Papa.parse(text, {
+            header: true,
+            skipEmptyLines: 'greedy',
+            transformHeader: header => header.trim().toLowerCase()
         });
+        if (parsed.errors.length) {
+            throw new Error(`Could not read CSV row ${parsed.errors[0].row + 1}: ${parsed.errors[0].message}`);
+        }
+        if (!parsed.meta.fields || !parsed.meta.fields.includes('name')) {
+            throw new Error('CSV file needs a "name" column. Exported spreadsheet CSV files are supported.');
+        }
+
+        const supportedFields = ['name', 'sport', 'team', 'success_rate', 'avg_response', 'tested_address'];
+        const rows = parsed.data
+            .filter(row => String(row.name || '').trim())
+            .map(row => Object.fromEntries(
+                supportedFields
+                    .filter(field => parsed.meta.fields.includes(field))
+                    .map(field => [field, String(row[field] || '').trim()])
+            ));
+        if (rows.length === 0) {
+            throw new Error('CSV file must contain a header row and at least one data row.');
+        }
 
         const { error } = await supabase.from('signers').insert(rows);
 
@@ -125,7 +137,7 @@ async function parseAndUploadCSV(file) {
             }
         } else {
             if (status) {
-                status.textContent = `Successfully uploaded ${rows.length} records!`;
+                status.textContent = `Successfully uploaded ${rows.length} records.`;
                 status.classList.add('text-green-400');
             }
             loadDashboard();

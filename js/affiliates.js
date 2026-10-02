@@ -9,7 +9,7 @@ const partners = [
         name: 'Sportlots',
         description: 'Browse sports cards and supplies for your collection.',
         icon: 'shopping-cart',
-        url: 'https://www.sportlots.com/inven/invenbin/dealnew.tpl?Ref=Bets1202'
+        url: 'https://www.sportlots.com/b/ui/search.tpl?search_val=sports+cards&Ref=Bets1202'
     }
 ];
 

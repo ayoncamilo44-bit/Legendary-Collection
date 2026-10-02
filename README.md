@@ -13,6 +13,10 @@ The site uses Supabase Auth for Google OAuth. Configure these exact URLs:
 
 The sign-in button returns users to the page where they started. A Google `redirect_uri_mismatch` means the callback in step 3 is missing or does not match exactly. Verify that the OAuth client ID and secret in Supabase belong to the same Google Cloud project/client where the callback is registered; if the consent screen shows an unexpected app name, check that you have not entered credentials for the wrong app. The publishable key is intended for browser use; never put a Supabase service-role key in this static site.
 
+## Importing spreadsheet signers
+
+The Excel-processing Python script runs on your computer and exports `master_data.csv`; it does not update the website or Supabase by itself. Run it where the Excel files are available, then sign in to the site, open **Dashboard**, and upload `master_data.csv` in the CSV import area. The importer handles quoted CSV fields such as addresses containing commas and maps the supported signer columns into the database.
+
 ## Affiliate partners
 
 Affiliate placements appear on each page and are defined in `js/affiliates.js`. The current eBay and Sportlots tracking links reuse the affiliate IDs already present in the signer search links. Replace or update the URLs there with your active partner links. Affiliate links are marked as sponsored and accompanied by a disclosure.

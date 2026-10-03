@@ -59,13 +59,13 @@ async function loadSigners(query = '') {
                 <td class="px-6 py-4 text-gray-400 truncate max-w-xs">${escapeHtml(signer.tested_address || 'Address not listed')}</td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-2">
-                        <a href="${ebayUrl}" target="_blank" rel="sponsored nofollow noopener noreferrer" class="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent font-semibold rounded-lg text-xs hover:bg-accent hover:text-white smooth-transition flex items-center gap-1">
+                        <a href="${ebayUrl}" rel="sponsored nofollow" class="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent font-semibold rounded-lg text-xs hover:bg-accent hover:text-white smooth-transition flex items-center gap-1">
                             <i data-lucide="shopping-bag" class="w-3 h-3"></i>eBay
                         </a>
-                        <a href="${sportlotsUrl}" target="_blank" rel="sponsored nofollow noopener noreferrer" class="px-3 py-1.5 bg-success/10 border border-success/30 text-success font-semibold rounded-lg text-xs hover:bg-success hover:text-white smooth-transition flex items-center gap-1">
+                        <a href="${sportlotsUrl}" rel="sponsored nofollow" class="px-3 py-1.5 bg-success/10 border border-success/30 text-success font-semibold rounded-lg text-xs hover:bg-success hover:text-white smooth-transition flex items-center gap-1">
                             <i data-lucide="shopping-cart" class="w-3 h-3"></i>Sportlots
                         </a>
-                        <a href="${scnUrl}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded-lg text-xs hover:border-purple-400 hover:text-purple-400 smooth-transition flex items-center gap-1">
+                        <a href="${scnUrl}" class="px-3 py-1.5 bg-darkCard border border-darkBorder text-gray-300 font-semibold rounded-lg text-xs hover:border-purple-400 hover:text-purple-400 smooth-transition flex items-center gap-1">
                             <i data-lucide="globe" class="w-3 h-3"></i>SCN
                         </a>
                     </div>

@@ -38,7 +38,7 @@ function renderAffiliatePartners() {
             </div>
             <div class="affiliate-grid">
                 ${partners.map(partner => `
-                    <a class="affiliate-card" href="${partner.url}" target="_blank" rel="sponsored nofollow noopener noreferrer">
+                    <a class="affiliate-card" href="${partner.url}" rel="sponsored nofollow">
                         <span class="affiliate-icon" aria-hidden="true"><i data-lucide="${partner.icon}"></i></span>
                         <span class="affiliate-copy">
                             <span class="affiliate-name">${partner.name}</span>

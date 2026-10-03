@@ -1,0 +1,259 @@
+body {
+    isolation: isolate;
+}
+
+#collector-atmosphere {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+}
+
+.ambient-paused .collector-card,
+.ambient-paused .collector-mist {
+    animation-play-state: paused;
+}
+
+.collector-mist {
+    position: absolute;
+    width: min(52vw, 46rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.12;
+    animation: mist-drift 42s ease-in-out infinite alternate;
+}
+
+.collector-mist-one {
+    top: -24rem;
+    left: 12%;
+    background: radial-gradient(circle, #6366f1 0%, #8b5cf6 28%, transparent 70%);
+}
+
+.collector-mist-two {
+    right: -15rem;
+    bottom: -28rem;
+    background: radial-gradient(circle, #f59e0b 0%, #ec4899 25%, transparent 68%);
+    opacity: 0.08;
+    animation-delay: -18s;
+}
+
+.collector-card {
+    --card-tint: 165, 180, 252;
+    position: absolute;
+    width: clamp(152px, 16vw, 228px);
+    overflow: hidden;
+    border: 1px solid rgba(var(--card-tint), 0.26);
+    border-radius: 16px;
+    background:
+        linear-gradient(145deg, rgba(var(--card-tint), 0.08), transparent 58%),
+        rgba(13, 19, 32, 0.82);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.08);
+    opacity: 0.42;
+    will-change: transform;
+}
+
+.collector-card::before {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 16px;
+    left: 16px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgb(var(--card-tint)), transparent);
+    content: "";
+}
+
+.collector-card-art {
+    position: relative;
+    display: grid;
+    min-height: clamp(132px, 14vw, 184px);
+    place-items: center;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 62%, rgba(var(--card-tint), 0.18), transparent 56%),
+        repeating-linear-gradient(135deg, transparent 0 16px, rgba(255, 255, 255, 0.018) 16px 17px);
+}
+
+.collector-card-art::after {
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(var(--card-tint), 0.14);
+    border-radius: 10px;
+    content: "";
+}
+
+.collector-card-art svg {
+    width: 76%;
+    max-height: 120px;
+    overflow: visible;
+    fill: none;
+    stroke: rgba(var(--card-tint), 0.74);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.collector-card-football .collector-card-art svg path:first-child {
+    fill: rgba(var(--card-tint), 0.1);
+}
+
+.collector-card-racing .collector-card-art svg path:first-child {
+    fill: rgba(var(--card-tint), 0.08);
+}
+
+.collector-card-sport,
+.collector-card-mark {
+    position: absolute;
+    z-index: 2;
+    color: rgba(var(--card-tint), 0.78);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.collector-card-sport {
+    top: 18px;
+    left: 20px;
+}
+
+.collector-card-mark {
+    right: 20px;
+    bottom: 15px;
+    font-size: 0.7rem;
+}
+
+.collector-card-caption {
+    display: grid;
+    gap: 4px;
+    padding: 12px 16px 15px;
+    border-top: 1px solid rgba(var(--card-tint), 0.15);
+}
+
+.collector-card-caption span {
+    color: rgba(203, 213, 225, 0.7);
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.collector-card-caption strong {
+    color: rgba(248, 250, 252, 0.9);
+    font-size: clamp(0.78rem, 1.1vw, 0.95rem);
+    font-weight: 650;
+}
+
+.collector-card-baseball {
+    --card-tint: 251, 191, 36;
+    top: 18%;
+    left: max(2%, calc((100vw - 1440px) / 2));
+    animation: card-drift-one 54s ease-in-out infinite;
+}
+
+.collector-card-football {
+    --card-tint: 103, 232, 249;
+    top: 24%;
+    right: max(3%, calc((100vw - 1420px) / 2));
+    animation: card-drift-two 62s ease-in-out infinite;
+}
+
+.collector-card-basketball {
+    --card-tint: 196, 181, 253;
+    bottom: 10%;
+    left: max(11%, calc((100vw - 1260px) / 2));
+    animation: card-drift-three 58s ease-in-out infinite;
+}
+
+.collector-card-racing {
+    --card-tint: 251, 146, 60;
+    right: max(11%, calc((100vw - 1260px) / 2));
+    bottom: 8%;
+    animation: card-drift-four 66s ease-in-out infinite;
+}
+
+.home-primary-cta {
+    box-shadow: 0 10px 35px rgba(99, 102, 241, 0.24), 0 0 0 1px rgba(251, 191, 36, 0.28);
+}
+
+.home-primary-cta:hover,
+.home-primary-cta:focus-visible {
+    box-shadow: 0 12px 42px rgba(99, 102, 241, 0.32), 0 0 0 1px rgba(251, 191, 36, 0.7);
+}
+
+.home-primary-cta:focus-visible {
+    outline: 2px solid #fbbf24;
+    outline-offset: 4px;
+}
+
+@keyframes card-drift-one {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-7deg); }
+    50% { transform: translate3d(22px, -18px, 0) rotate(-3deg); }
+}
+
+@keyframes card-drift-two {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(6deg); }
+    50% { transform: translate3d(-18px, 21px, 0) rotate(2deg); }
+}
+
+@keyframes card-drift-three {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(5deg); }
+    50% { transform: translate3d(18px, -16px, 0) rotate(1deg); }
+}
+
+@keyframes card-drift-four {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-5deg); }
+    50% { transform: translate3d(-20px, -17px, 0) rotate(-1deg); }
+}
+
+@keyframes mist-drift {
+    from { transform: translate3d(-3%, 0, 0) scale(0.96); }
+    to { transform: translate3d(4%, 5%, 0) scale(1.04); }
+}
+
+@media (max-width: 760px) {
+    .collector-card {
+        width: 146px;
+        border-radius: 12px;
+        opacity: 0.25;
+    }
+
+    .collector-card-art {
+        min-height: 118px;
+    }
+
+    .collector-card-baseball {
+        top: 14%;
+        left: -72px;
+    }
+
+    .collector-card-football {
+        top: 30%;
+        right: -74px;
+    }
+
+    .collector-card-basketball {
+        bottom: 15%;
+        left: -76px;
+    }
+
+    .collector-card-racing {
+        right: -76px;
+        bottom: 7%;
+    }
+
+    .collector-mist {
+        width: 78vw;
+        filter: blur(54px);
+        opacity: 0.09;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .collector-card,
+    .collector-mist {
+        animation: none;
+        will-change: auto;
+    }
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ayoncamilo44-bit.github.io/Legendary-Collection/sitemap.xml

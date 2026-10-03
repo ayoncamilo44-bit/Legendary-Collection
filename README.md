@@ -26,3 +26,14 @@ Community posts are text-only; the form does not collect autograph photos or mai
 ## Affiliate partners
 
 Affiliate placements appear on each page and are defined in `js/affiliates.js`. The current eBay and Sportlots tracking links reuse the affiliate IDs already present in the signer search links. Replace or update the URLs there with your active partner links. Affiliate links are marked as sponsored and accompanied by a disclosure.
+
+## Site identity, search, and analytics
+
+- The site currently uses the GitHub Pages address `https://ayoncamilo44-bit.github.io/Legendary-Collection/`. Canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml` use this address. If you add a custom domain, configure it in GitHub Pages and your DNS provider, then update canonical/Open Graph URLs in the HTML pages and the sitemap and robots files. Also update Supabase **Authentication → URL Configuration** with the new site URL and allowed redirects, then add the new domain to Google Search Console and the GA4 web stream. The Supabase OAuth callback URI itself remains the same.
+- `favicon.svg` and `assets/legitimate-collector-social.png` provide the browser icon and social-share preview.
+- Public pages have page-specific titles and descriptions. The dashboard and signer-entry form are marked `noindex`; the sitemap includes public-facing pages only.
+- To enable Google Analytics 4, create a GA4 property and web data stream for the site at [analytics.google.com](https://analytics.google.com/), then copy its Measurement ID (format `G-XXXXXXXXXX`) into `GA_MEASUREMENT_ID` in `js/site-config.js`. The integration does not load Google Analytics until a visitor opts in. It records page views, sign-in button clicks, directory search activity without search text, and affiliate destination hostnames. Visitors can change their choice using **Cookie settings** in the footer.
+- To register the site with [Google Search Console](https://search.google.com/search-console), add the current full GitHub Pages URL as a URL-prefix property. Choose HTML-tag verification and add the `google-site-verification` meta tag Google provides to each page's `<head>` (or at minimum `index.html`), then submit `https://ayoncamilo44-bit.github.io/Legendary-Collection/sitemap.xml`. Search Console verification and indexing requests require signing in to the site owner's Google account and cannot be completed by this static repository alone.
+- A dedicated public contact email has not been configured. Create a separate site email rather than publishing a personal inbox, then set `SITE_CONTACT_EMAIL` in `js/site-config.js`. The Contact page will display it automatically.
+
+Privacy and terms pages describe the current static site and its integrations in plain language. Review them against the site owner's location and the laws that apply before relying on them as legal documents.

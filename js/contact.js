@@ -12,4 +12,15 @@ if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         emailSection.hidden = false;
         pendingSection.hidden = true;
     }
+
+    document.querySelectorAll('[data-contact-email]').forEach(contactLink => {
+        contactLink.href = `mailto:${email}`;
+        contactLink.textContent = email;
+    });
+    document.querySelectorAll('[data-email-ready]').forEach(section => {
+        section.hidden = false;
+    });
+    document.querySelectorAll('[data-email-pending]').forEach(section => {
+        section.hidden = true;
+    });
 }

@@ -51,7 +51,7 @@ body {
     transform: translate3d(-42vw, -50vh, 0) rotateZ(-24deg) rotateY(-28deg) scale(0.58);
     transform-style: preserve-3d;
     will-change: transform, opacity;
-    animation: card-flight 20s linear infinite;
+    animation: card-flight 20s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
 }
 
 .collector-card-inner,

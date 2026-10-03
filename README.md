@@ -25,7 +25,11 @@ Community posts are text-only; the form does not collect autograph photos or mai
 
 ## Affiliate partners
 
-Affiliate placements appear on each page and are defined in `js/affiliates.js`. The current eBay and Sportlots tracking links reuse the affiliate IDs already present in the signer search links. Replace or update the URLs there with your active partner links. Affiliate links are marked as sponsored and accompanied by a disclosure.
+Affiliate placements appear on the main collecting pages and beginner guide, and are defined in `js/affiliates.js`. The eBay and Sportlots links reuse the tracking IDs already present in signer search links; the Amazon card-supplies link uses the Associates tag supplied for the site. Replace or update the URLs there with your active partner links. Affiliate links are marked as sponsored and accompanied by a disclosure, including Amazon's qualifying-purchases statement.
+
+## Collector guides
+
+`guides.html` contains original introductory guidance informed by the linked independent resources. It is linked from site navigation and the sitemap. Add future original guides as separate public pages and update the sitemap and navigation; attribute and link to source material rather than copying third-party article text or images.
 
 ## Site identity, search, and analytics
 

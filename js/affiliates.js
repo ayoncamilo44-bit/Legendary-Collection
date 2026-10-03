@@ -10,6 +10,12 @@ const partners = [
         description: 'Browse sports cards and supplies for your collection.',
         icon: 'shopping-cart',
         url: 'https://www.sportlots.com/b/ui/search.tpl?search_val=sports+cards&Ref=Bets1202'
+    },
+    {
+        name: 'Amazon',
+        description: 'Browse card sleeves, holders, mailers, and collecting supplies.',
+        icon: 'package-open',
+        url: 'https://www.amazon.com/s?k=card+collecting+supplies&tag=mh0b-20'
     }
 ];
 
@@ -28,7 +34,7 @@ function renderAffiliatePartners() {
                     <p class="affiliate-eyebrow">Featured partners</p>
                     <h2 id="affiliate-partners-title">Shop for your next great find</h2>
                 </div>
-                <p class="affiliate-disclosure">Some links are affiliate links. We may earn a commission at no extra cost to you.</p>
+                <p class="affiliate-disclosure">Some links are affiliate links. We may earn a commission at no extra cost to you. As an Amazon Associate I earn from qualifying purchases.</p>
             </div>
             <div class="affiliate-grid">
                 ${partners.map(partner => `

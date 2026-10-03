@@ -55,6 +55,63 @@
     line-height: 1.75;
 }
 
+.guide-article {
+    width: min(100% - 2rem, 74ch);
+}
+
+.guide-article article {
+    overflow-wrap: anywhere;
+}
+
+.guide-article h1 {
+    max-width: 19ch;
+}
+
+.guide-article h2 {
+    scroll-margin-top: 5.5rem;
+}
+
+.guide-byline {
+    color: #94a3b8 !important;
+    font-size: 0.9rem;
+}
+
+.guide-contents {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem 1rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    padding: 1rem 0;
+}
+
+.guide-contents strong {
+    flex-basis: 100%;
+    color: #f8fafc;
+}
+
+.guide-article section {
+    margin-top: 2.6rem;
+}
+
+.guide-article section h2 {
+    margin-top: 0;
+}
+
+.guide-article li {
+    padding-left: 0.25rem;
+}
+
+.guide-sources {
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    padding-top: 1.5rem;
+}
+
+.guide-sources h2 {
+    margin-top: 0 !important;
+}
+
 .site-info-content h1,
 .site-info-content h2,
 .site-info-content h3 {

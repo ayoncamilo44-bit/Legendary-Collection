@@ -21,103 +21,31 @@
     <meta name="twitter:description" content="Suggest a sports signer or import community TTM records.">
     <meta name="twitter:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
     <link rel="stylesheet" href="./affiliates.css">
-    
-    <!-- Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        darkBg: '#0a0f1a',
-                        darkCard: '#131824',
-                        darkBorder: '#1e2535',
-                        darkHover: '#1a2133',
-                        accent: '#6366f1',
-                        accentHover: '#818cf8',
-                        success: '#10b981',
-                        warning: '#f59e0b',
-                        danger: '#ef4444',
-                    },
-                    boxShadow: {
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
-                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                    },
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { darkBg: '#0a0f1a', darkCard: '#131824', darkBorder: '#1e2535', darkHover: '#1a2133', accent: '#6366f1', accentHover: '#818cf8', success: '#10b981', warning: '#f59e0b', danger: '#ef4444' }, boxShadow: { glass: '0 8px 32px 0 rgba(0, 0, 0, 0.37)', glow: '0 0 20px rgba(99, 102, 241, 0.3)', card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' } } } };
     </script>
-    
     <style>
-        .glass {
-            background: rgba(19, 24, 36, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backbackdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .glass-card {
-            background: rgba(19, 24, 36, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-        }
-        
-        .smooth-transition {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #0a0f1a;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #1e2535;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6366f1;
-        }
+        .glass { background: rgba(19, 24, 36, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(19, 24, 36, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); }
+        .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0f1a; }
+        ::-webkit-scrollbar-thumb { background: #1e2535; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
     </style>
 </head>
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans">
-
-    <!-- Premium Header Navigation -->
     <header class="glass sticky top-0 z-50 smooth-transition">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
-                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
-                </div>
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow"><i data-lucide="sparkles" class="w-5 h-5 text-white"></i></div>
                 <span class="text-xl font-bold text-white tracking-tight">Legitimate Collector</span>
             </div>
             <nav class="hidden md:flex items-center gap-8">
@@ -128,97 +56,36 @@
                 <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
                 <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Community</a>
                 <a href="signer.html" class="text-white smooth-transition text-sm font-medium">Add Signer</a>
-                <div id="auth-nav-btn">
-                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
-                        <i data-lucide="user" class="w-4 h-4"></i>
-                        Sign In
-                    </button>
-                </div>
+                <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg text-sm font-medium bg-amber-500 text-slate-900 hover:bg-amber-400 smooth-transition">Buy Me a Coffee</a>
+                <div id="auth-nav-btn"><button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder"><i data-lucide="user" class="w-4 h-4"></i>Sign In</button></div>
             </nav>
-            <button class="md:hidden text-white">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
+            <button class="md:hidden text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto w-full px-6 py-12">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-white mb-2">Add New Signer</h1>
-            <p class="text-gray-400">Add a new athlete to the directory or bulk import from CSV</p>
-        </div>
-
+        <div class="mb-8"><h1 class="text-3xl font-bold text-white mb-2">Add New Signer</h1><p class="text-gray-400">Add a new athlete to the directory or bulk import from CSV</p></div>
         <div class="grid lg:grid-cols-2 gap-8">
-            <!-- Manual Entry Form -->
             <div class="glass-card rounded-2xl p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
-                        <i data-lucide="user-plus" class="w-5 h-5 text-accent"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-white">Manual Entry</h2>
-                </div>
+                <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center"><i data-lucide="user-plus" class="w-5 h-5 text-accent"></i></div><h2 class="text-xl font-bold text-white">Manual Entry</h2></div>
                 <form id="addSignerForm" class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
-                        <input type="text" id="playerName" required
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-2">Sport</label>
-                            <input type="text" id="sport" required
-                                   class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-2">Team</label>
-                            <input type="text" id="team"
-                                   class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Success Rate (%)</label>
-                        <input type="number" id="successRate" min="0" max="100"
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Average Response Time</label>
-                        <input type="text" id="avgResponse"
-                               class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Tested Address</label>
-                        <textarea id="testedAddress" rows="3"
-                                  class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
-                    </div>
+                    <div><label class="block text-sm font-medium text-gray-400 mb-2">Player Name</label><input type="text" id="playerName" required class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></div>
+                    <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-400 mb-2">Sport</label><input type="text" id="sport" required class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></div><div><label class="block text-sm font-medium text-gray-400 mb-2">Team</label><input type="text" id="team" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></div></div>
+                    <div><label class="block text-sm font-medium text-gray-400 mb-2">Success Rate (%)</label><input type="number" id="successRate" min="0" max="100" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></div>
+                    <div><label class="block text-sm font-medium text-gray-400 mb-2">Average Response Time</label><input type="text" id="avgResponse" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></div>
+                    <div><label class="block text-sm font-medium text-gray-400 mb-2">Tested Address</label><textarea id="testedAddress" rows="3" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea></div>
                     <p id="signerFormStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
-                    <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
-                        <i data-lucide="plus" class="w-5 h-5"></i>
-                        Add Signer
-                    </button>
+                    <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2"><i data-lucide="plus" class="w-5 h-5"></i>Add Signer</button>
                 </form>
             </div>
 
-            <!-- CSV Upload Section -->
             <div class="glass-card rounded-2xl p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center">
-                        <i data-lucide="file-csv" class="w-5 h-5 text-success"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-white">Bulk Import CSV</h2>
-                </div>
-                <p class="text-sm text-gray-400 mb-6">
-                    Drag & drop your CSV file here to instantly insert all records into your database.
-                    Required columns: <code class="px-2 py-1 bg-darkHover rounded text-accent">name, sport, team, success_rate, avg_response, tested_address</code>
-                </p>
-
+                <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center"><i data-lucide="file-csv" class="w-5 h-5 text-success"></i></div><h2 class="text-xl font-bold text-white">Bulk Import CSV</h2></div>
+                <p class="text-sm text-gray-400 mb-6">Drag & drop your CSV file here to instantly insert all records into your database. Required columns: <code class="px-2 py-1 bg-darkHover rounded text-accent">name, sport, team, success_rate, avg_response, tested_address</code></p>
                 <div id="dropZone" class="border-2 border-dashed border-darkBorder hover:border-accent rounded-xl p-12 text-center bg-darkHover/30 cursor-pointer smooth-transition">
                     <div class="flex flex-col items-center gap-4">
-                        <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center">
-                            <i data-lucide="cloud-upload" class="w-8 h-8 text-accent"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-white">Drag & drop your CSV file here</p>
-                            <p class="text-xs text-gray-500 mt-1">or click to choose a file from your computer</p>
-                        </div>
+                        <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center"><i data-lucide="cloud-upload" class="w-8 h-8 text-accent"></i></div>
+                        <div><p class="text-sm font-semibold text-white">Drag & drop your CSV file here</p><p class="text-xs text-gray-500 mt-1">or click to choose a file from your computer</p></div>
                     </div>
                     <input type="file" id="csvFileInput" accept=".csv" class="hidden">
                 </div>
@@ -227,11 +94,11 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
         <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
             <nav class="mb-4 flex flex-wrap justify-center gap-4" aria-label="Information">
                 <a href="./guides.html">Guides</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a>
+                <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" class="text-amber-300 hover:text-amber-200">Support</a>
                 <button type="button" data-analytics-settings hidden>Cookie settings</button>
             </nav>
             &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
@@ -243,8 +110,6 @@
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script type="module" src="./js/analytics.js"></script>
-    <script>
-        lucide.createIcons();
-    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

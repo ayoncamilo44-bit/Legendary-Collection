@@ -1,12 +1,14 @@
 import { supabase } from './supabase.js';
 
 const PAGE_SIZE = 20;
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 let nextOffset = 0;
 let hasMorePosts = true;
 
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('feedContainer').replaceChildren();
     setupModal();
+    setupImagePreview();
     setupPostForm();
     loadPosts();
 });
@@ -20,8 +22,10 @@ window.openShareModal = function() {
 };
 
 window.closeShareModal = function() {
-    document.getElementById('shareModal')?.classList.add('hidden');
+    const modal = document.getElementById('shareModal');
+    modal?.classList.add('hidden');
     document.body.style.overflow = '';
+    clearSelectedImagePreview();
 };
 
 function setupModal() {
@@ -34,6 +38,53 @@ function setupModal() {
     document.getElementById('loadMorePosts')?.addEventListener('click', () => loadPosts());
 }
 
+function setupImagePreview() {
+    const input = document.getElementById('postImageInput');
+    const preview = document.getElementById('postImagePreview');
+    if (!input || !preview) return;
+
+    input.addEventListener('change', () => {
+        const file = input.files?.[0];
+        if (!file) {
+            clearSelectedImagePreview();
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            preview.innerHTML = '<p class="text-sm text-red-300">Please choose an image file.</p>';
+            preview.classList.remove('hidden');
+            input.value = '';
+            return;
+        }
+
+        if (file.size > MAX_IMAGE_SIZE) {
+            preview.innerHTML = '<p class="text-sm text-red-300">Image must be smaller than 5MB.</p>';
+            preview.classList.remove('hidden');
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = event => {
+            preview.innerHTML = `
+                <img src="${event.target.result}" alt="Selected upload preview" class="max-h-48 w-full rounded-xl object-cover border border-darkBorder" />
+            `;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function clearSelectedImagePreview() {
+    const input = document.getElementById('postImageInput');
+    const preview = document.getElementById('postImagePreview');
+    if (input) input.value = '';
+    if (preview) {
+        preview.innerHTML = '';
+        preview.classList.add('hidden');
+    }
+}
+
 async function loadPosts() {
     const feed = document.getElementById('feedContainer');
     const loadMore = document.getElementById('loadMorePosts');
@@ -44,7 +95,7 @@ async function loadPosts() {
     try {
         const { data: posts, error } = await supabase
             .from('community_posts')
-            .select('id, user_id, author_name, player_name, result, days_to_response, experience, created_at')
+            .select('id, user_id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
             .order('created_at', { ascending: false })
             .range(nextOffset, nextOffset + PAGE_SIZE - 1);
         if (error) throw error;
@@ -83,6 +134,9 @@ function renderPost(post) {
             ? 'bg-accent/20 text-accent'
             : 'bg-warning/20 text-warning';
     const response = post.days_to_response == null ? '' : `<span class="text-gray-400">${escapeHtml(post.days_to_response)} days</span>`;
+    const imageMarkup = post.image_url
+        ? `<img src="${escapeHtml(post.image_url)}" alt="${escapeHtml(post.player_name)} proof photo" class="mt-4 max-h-80 w-full rounded-xl border border-darkBorder object-cover" loading="lazy" />`
+        : '';
 
     return `
         <article class="glass-card rounded-2xl p-6">
@@ -99,10 +153,39 @@ function renderPost(post) {
                     </div>
                     <h2 class="mb-2 font-semibold text-accent">${escapeHtml(post.player_name)}</h2>
                     <p class="whitespace-pre-wrap break-words text-gray-300">${escapeHtml(post.experience)}</p>
+                    ${imageMarkup}
                 </div>
             </div>
         </article>
     `;
+}
+
+async function uploadCommunityImage(file, userId) {
+    if (!file) return null;
+
+    if (!file.type.startsWith('image/')) {
+        throw new Error('Please choose an image file for your community post.');
+    }
+
+    if (file.size > MAX_IMAGE_SIZE) {
+        throw new Error('Image must be smaller than 5MB.');
+    }
+
+    const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+    const filePath = `${userId}/${safeName}`;
+
+    const { error } = await supabase.storage
+        .from('community-posts')
+        .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: file.type
+        });
+
+    if (error) throw error;
+
+    const { data } = supabase.storage.from('community-posts').getPublicUrl(filePath);
+    return data.publicUrl;
 }
 
 function setupPostForm() {
@@ -130,18 +213,24 @@ function setupPostForm() {
                 || user.email?.split('@')[0]
                 || 'Collector';
             const daysValue = document.getElementById('postDays').value;
+            const selectedFile = document.getElementById('postImageInput')?.files?.[0];
+            const imageUrl = selectedFile ? await uploadCommunityImage(selectedFile, user.id) : null;
+
             const post = {
                 user_id: user.id,
                 author_name: authorName,
                 player_name: document.getElementById('postPlayerName').value.trim(),
                 result: document.getElementById('postResult').value,
                 days_to_response: daysValue === '' ? null : Number(daysValue),
-                experience: document.getElementById('postExperience').value.trim()
+                experience: document.getElementById('postExperience').value.trim(),
+                image_url: imageUrl
             };
+
             const { error } = await supabase.from('community_posts').insert(post);
             if (error) throw error;
 
             form.reset();
+            clearSelectedImagePreview();
             showFormStatus(status, 'Your post was shared.', false);
             nextOffset = 0;
             hasMorePosts = true;

@@ -39,6 +39,7 @@ create table if not exists public.community_posts (
     result text not null check (result in ('success', 'pending', 'no-response', 'returned')),
     days_to_response integer check (days_to_response between 0 and 3650),
     experience text not null check (char_length(experience) between 1 and 2000),
+    image_url text check (image_url is null or char_length(image_url) between 1 and 500),
     created_at timestamptz not null default now()
 );
 
@@ -61,6 +62,31 @@ create policy lc_community_posts_owner_insert
 
 grant select on public.community_posts to anon, authenticated;
 grant insert on public.community_posts to authenticated;
+
+insert into storage.buckets (id, name, public)
+values ('community-posts', 'community-posts', true)
+on conflict (id) do nothing;
+
+create policy "authenticated-upload-community-posts"
+on storage.objects for insert
+to authenticated
+with check (
+    bucket_id = 'community-posts'
+    and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+create policy "public-read-community-posts"
+on storage.objects for select
+to public
+using (bucket_id = 'community-posts');
+
+create policy "authenticated-delete-own-community-posts"
+on storage.objects for delete
+to authenticated
+using (
+    bucket_id = 'community-posts'
+    and (storage.foldername(name))[1] = auth.uid()::text
+);
 
 notify pgrst, 'reload schema';
 

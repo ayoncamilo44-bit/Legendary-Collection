@@ -12,6 +12,12 @@ const partners = [
         url: 'https://www.sportlots.com/b/ui/search.tpl?search_val=sports+cards&Ref=Bets1202'
     },
     {
+        name: 'Sports Card Forum',
+        description: 'A community hub for sports card collectors, discussion, and trading news.',
+        icon: 'shield-check',
+        url: 'https://www.sportscardforum.com/'
+    },
+    {
         name: 'Amazon',
         description: 'Browse card sleeves, holders, mailers, and collecting supplies.',
         icon: 'package-open',

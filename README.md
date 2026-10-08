@@ -21,7 +21,7 @@ The Excel-processing Python script runs on your computer and exports `master_dat
 
 Both pages write through Supabase and require Google sign-in. Before using them, open the Supabase **SQL Editor**, paste and run the contents of `supabase-setup.sql`, then refresh the site. This creates the community-post table, allows public reading of signers and community posts, and limits new signer records and community posts to authenticated users. Without this one-time database setup, Supabase rejects submissions and the community feed cannot load.
 
-Community posts are text-only; the form does not collect autograph photos or mailing addresses.
+Community posts can include one optional photo (JPG, PNG, or WebP, up to 5 MB), stored in the `community-posts` Supabase Storage bucket created by `supabase-setup.sql`. The form does not collect mailing addresses.
 
 ## Affiliate partners
 

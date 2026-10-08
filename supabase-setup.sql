@@ -13,7 +13,9 @@ create table if not exists public.signers (
 
 create index if not exists signers_name_idx
     on public.signers (name);
-
+alter table public.community_posts
+    add column if not exists image_url text
+    check (image_url is null or char_length(image_url) between 1 and 500);
 alter table public.signers enable row level security;
 
 drop policy if exists lc_signers_public_read on public.signers;
@@ -62,11 +64,11 @@ create policy lc_community_posts_owner_insert
 
 grant select on public.community_posts to anon, authenticated;
 grant insert on public.community_posts to authenticated;
-
 insert into storage.buckets (id, name, public)
 values ('community-posts', 'community-posts', true)
 on conflict (id) do nothing;
 
+drop policy if exists "authenticated-upload-community-posts" on storage.objects;
 create policy "authenticated-upload-community-posts"
 on storage.objects for insert
 to authenticated
@@ -75,11 +77,13 @@ with check (
     and (storage.foldername(name))[1] = auth.uid()::text
 );
 
+drop policy if exists "public-read-community-posts" on storage.objects;
 create policy "public-read-community-posts"
 on storage.objects for select
 to public
 using (bucket_id = 'community-posts');
 
+drop policy if exists "authenticated-delete-own-community-posts" on storage.objects;
 create policy "authenticated-delete-own-community-posts"
 on storage.objects for delete
 to authenticated

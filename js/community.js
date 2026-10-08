@@ -9,7 +9,8 @@ const RESULT_LABELS = {
     success: { text: 'Success', cls: 'bg-success/20 text-success' },
     pending: { text: 'Still waiting', cls: 'bg-warning/20 text-warning' },
     'no-response': { text: 'No response', cls: 'bg-gray-500/20 text-gray-300' },
-    returned: { text: 'Returned unsigned', cls: 'bg-danger/20 text-danger' }
+    returned: { text: 'Returned unsigned', cls: 'bg-danger/20 text-danger' },
+    story: { text: 'Collector story', cls: 'bg-accent/20 text-accentHover' }
 };
  
 const feed = document.getElementById('feedContainer');
@@ -19,6 +20,8 @@ const form = document.getElementById('communityPostForm');
 const statusEl = document.getElementById('communityFormStatus');
 const photoInput = document.getElementById('postPhoto');
 const photoPreview = document.getElementById('postPhotoPreview');
+const resultSelect = document.getElementById('postResult');
+const daysWrap = document.getElementById('postDaysWrap');
  
 let nextPage = 0;
 let loading = false;
@@ -54,6 +57,14 @@ function clearStatus() {
     if (!statusEl) return;
     statusEl.textContent = '';
     statusEl.classList.add('hidden');
+}
+ 
+// A collector story has no mailing result, so the "Days to Response" box is hidden for it.
+function updateDaysVisibility() {
+    if (!resultSelect || !daysWrap) return;
+    const isStory = resultSelect.value === 'story';
+    daysWrap.classList.toggle('hidden', isStory);
+    if (isStory && form?.elements.days_to_response) form.elements.days_to_response.value = '';
 }
  
 function renderPost(post) {
@@ -111,7 +122,7 @@ async function loadPosts({ reset = false } = {}) {
     if (reset || nextPage === 0) feed.innerHTML = '';
  
     if (nextPage === 0 && data.length === 0) {
-        feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">No posts yet. Be the first to share a success!</div>';
+        feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">No posts yet. Be the first to share a story!</div>';
         loadMoreBtn?.classList.add('hidden');
         return;
     }
@@ -146,6 +157,7 @@ function resetPhotoPreview() {
  
 window.openShareModal = function openShareModal() {
     clearStatus();
+    updateDaysVisibility();
     modal?.classList.remove('hidden');
     refreshIcons();
 };
@@ -153,6 +165,8 @@ window.openShareModal = function openShareModal() {
 window.closeShareModal = function closeShareModal() {
     modal?.classList.add('hidden');
 };
+ 
+resultSelect?.addEventListener('change', updateDaysVisibility);
  
 photoInput?.addEventListener('change', () => {
     const file = photoInput.files?.[0];
@@ -193,6 +207,7 @@ form?.addEventListener('submit', async event => {
  
     const playerName = form.elements.player_name.value.trim();
     const experience = form.elements.experience.value.trim();
+    const resultValue = form.elements.result.value;
     const daysRaw = form.elements.days_to_response.value;
  
     if (!playerName || !experience) {
@@ -220,8 +235,9 @@ form?.addEventListener('submit', async event => {
             user_id: user.id,
             author_name: authorNameFor(user),
             player_name: playerName.slice(0, 120),
-            result: form.elements.result.value,
-            days_to_response: daysRaw === '' ? null : Number(daysRaw),
+            result: resultValue,
+            // Stories have no mailing timeline, so no days are saved for them.
+            days_to_response: (resultValue === 'story' || daysRaw === '') ? null : Number(daysRaw),
             experience: experience.slice(0, 2000),
             image_url: imageUrl
         });
@@ -230,6 +246,7 @@ form?.addEventListener('submit', async event => {
  
         setStatus('Shared! Thanks for contributing.', 'success');
         form.reset();
+        updateDaysVisibility();
         resetPhotoPreview();
         await loadPosts({ reset: true });
         setTimeout(() => { window.closeShareModal(); clearStatus(); }, 900);
@@ -238,7 +255,8 @@ form?.addEventListener('submit', async event => {
         if (uploadedPath) {
             await supabase.storage.from(BUCKET).remove([uploadedPath]).catch(() => {});
         }
-        setStatus('Could not share your post. Check your connection and that you are signed in, then try again.', 'error');
+        const detail = error?.message ? ` (${error.message})` : '';
+        setStatus(`Could not share your post. Check your connection and that you are signed in, then try again.${detail}`, 'error');
     } finally {
         if (submitBtn) submitBtn.disabled = false;
     }

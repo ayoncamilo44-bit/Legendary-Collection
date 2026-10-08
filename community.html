@@ -204,7 +204,13 @@
                         <label for="postExperience" class="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
                         <textarea id="postExperience" name="experience" rows="4" maxlength="2000" required placeholder="Share what happened. Please don't include private mailing addresses." class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
                     </div>
-
+<div>
+  <label for="postPhoto" class="block text-sm font-medium text-gray-400 mb-2">Photo (optional)</label>
+  <input id="postPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp"
+    class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-accent file:text-white file:font-semibold">
+  <p class="text-xs text-gray-500 mt-1">JPG, PNG, or WebP, up to 5 MB. Please don't photograph envelopes showing a home address.</p>
+  <img id="postPhotoPreview" alt="Selected photo preview" class="hidden mt-3 rounded-xl max-h-48 border border-darkBorder">
+</div>
                     <p id="communityFormStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
                     
                     <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
@@ -218,7 +224,7 @@
 
     <!-- Footer -->
     <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
-        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+        <div class="max-w-7xl mx-autoa text-center text-sm text-gray-500">
             <nav class="mb-4 flex flex-wrap justify-center gap-4" aria-label="Information">
                 <a href="./guides.html">Guides</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a>
                 <button type="button" data-analytics-settings hidden>Cookie settings</button>

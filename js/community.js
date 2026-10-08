@@ -253,3 +253,5 @@ document.addEventListener('keydown', event => {
 });
  
 loadMoreBtn?.addEventListener('click', () => loadPosts());
+
+loadPosts({ reset: true });

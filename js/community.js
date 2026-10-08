@@ -1,18 +1,17 @@
-
 import { supabase } from './supabase.js';
- 
+
 const PAGE_SIZE = 10;
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const PHOTO_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 const BUCKET = 'community-posts';
- 
+
 const RESULT_LABELS = {
     success: { text: 'Success', cls: 'bg-success/20 text-success' },
     pending: { text: 'Still waiting', cls: 'bg-warning/20 text-warning' },
     'no-response': { text: 'No response', cls: 'bg-gray-500/20 text-gray-300' },
     returned: { text: 'Returned unsigned', cls: 'bg-danger/20 text-danger' }
 };
- 
+
 const feed = document.getElementById('feedContainer');
 const loadMoreBtn = document.getElementById('loadMorePosts');
 const modal = document.getElementById('shareModal');
@@ -20,16 +19,16 @@ const form = document.getElementById('communityPostForm');
 const statusEl = document.getElementById('communityFormStatus');
 const photoInput = document.getElementById('postPhoto');
 const photoPreview = document.getElementById('postPhotoPreview');
- 
+
 let nextPage = 0;
 let loading = false;
- 
+
 function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[ch]));
 }
- 
+
 function safeImageUrl(value) {
     if (!value) return null;
     try {
@@ -39,30 +38,30 @@ function safeImageUrl(value) {
         return null;
     }
 }
- 
+
 function refreshIcons() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
- 
+
 function setStatus(message, kind = 'info') {
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
     statusEl.classList.add(kind === 'error' ? 'text-danger' : kind === 'success' ? 'text-success' : 'text-gray-400');
 }
- 
+
 function clearStatus() {
     if (!statusEl) return;
     statusEl.textContent = '';
     statusEl.classList.add('hidden');
 }
- 
+
 function renderPost(post) {
     const result = RESULT_LABELS[post.result] || RESULT_LABELS['no-response'];
     const imageUrl = safeImageUrl(post.image_url);
     const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
     const days = Number.isInteger(post.days_to_response) ? `${post.days_to_response} day${post.days_to_response === 1 ? '' : 's'}` : '';
- 
+
     const article = document.createElement('article');
     article.className = 'glass-card rounded-2xl p-6';
     article.innerHTML = `
@@ -84,23 +83,23 @@ function renderPost(post) {
     `;
     return article;
 }
- 
+
 async function loadPosts({ reset = false } = {}) {
     if (loading || !feed) return;
     loading = true;
     if (reset) nextPage = 0;
- 
+
     const from = nextPage * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
- 
+
     const { data, error } = await supabase
         .from('community_posts')
         .select('id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
         .order('created_at', { ascending: false })
         .range(from, to);
- 
+
     loading = false;
- 
+
     if (error) {
         console.error('Could not load community posts', error);
         if (reset || nextPage === 0) {
@@ -108,34 +107,34 @@ async function loadPosts({ reset = false } = {}) {
         }
         return;
     }
- 
+
     if (reset || nextPage === 0) feed.innerHTML = '';
- 
+
     if (nextPage === 0 && data.length === 0) {
         feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">No posts yet. Be the first to share a success!</div>';
         loadMoreBtn?.classList.add('hidden');
         return;
     }
- 
+
     data.forEach(post => feed.appendChild(renderPost(post)));
     nextPage += 1;
     loadMoreBtn?.classList.toggle('hidden', data.length < PAGE_SIZE);
     refreshIcons();
 }
- 
+
 function validatePhoto(file) {
     if (!file) return null;
     if (!PHOTO_TYPES[file.type]) return 'Photo must be a JPG, PNG, or WebP image.';
     if (file.size > MAX_PHOTO_BYTES) return 'Photo must be 5 MB or smaller.';
     return null;
 }
- 
+
 function authorNameFor(user) {
     const meta = user.user_metadata || {};
     const name = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : '') || 'Collector';
     return name.slice(0, 120);
 }
- 
+
 function resetPhotoPreview() {
     if (photoPreview) {
         if (photoPreview.dataset.objectUrl) URL.revokeObjectURL(photoPreview.dataset.objectUrl);
@@ -144,17 +143,17 @@ function resetPhotoPreview() {
         photoPreview.classList.add('hidden');
     }
 }
- 
+
 window.openShareModal = function openShareModal() {
     clearStatus();
     modal?.classList.remove('hidden');
     refreshIcons();
 };
- 
+
 window.closeShareModal = function closeShareModal() {
     modal?.classList.add('hidden');
 };
- 
+
 photoInput?.addEventListener('change', () => {
     const file = photoInput.files?.[0];
     resetPhotoPreview();
@@ -173,41 +172,41 @@ photoInput?.addEventListener('change', () => {
         photoPreview.classList.remove('hidden');
     }
 });
- 
+
 form?.addEventListener('submit', async event => {
     event.preventDefault();
     clearStatus();
- 
+
     const submitBtn = form.querySelector('button[type="submit"]');
     const { data: sessionData } = await supabase.auth.getSession();
     const user = sessionData?.session?.user;
- 
+
     if (!user) {
         setStatus('Please sign in with Google before sharing a post.', 'error');
         if (typeof window.loginWithGoogle === 'function') window.loginWithGoogle();
         return;
     }
- 
+
     const file = photoInput?.files?.[0] || null;
     const photoProblem = validatePhoto(file);
     if (photoProblem) { setStatus(photoProblem, 'error'); return; }
- 
+
     const playerName = form.elements.player_name.value.trim();
     const experience = form.elements.experience.value.trim();
     const daysRaw = form.elements.days_to_response.value;
- 
+
     if (!playerName || !experience) {
         setStatus('Player name and your experience are required.', 'error');
         return;
     }
- 
+
     if (submitBtn) submitBtn.disabled = true;
     setStatus(file ? 'Uploading photo and sharing...' : 'Sharing...');
- 
+
     let uploadedPath = null;
     try {
         let imageUrl = null;
- 
+
         if (file) {
             uploadedPath = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${PHOTO_TYPES[file.type]}`;
             const { error: uploadError } = await supabase.storage
@@ -216,7 +215,7 @@ form?.addEventListener('submit', async event => {
             if (uploadError) throw uploadError;
             imageUrl = supabase.storage.from(BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
         }
- 
+
         const { error: insertError } = await supabase.from('community_posts').insert({
             user_id: user.id,
             author_name: authorNameFor(user),
@@ -226,9 +225,9 @@ form?.addEventListener('submit', async event => {
             experience: experience.slice(0, 2000),
             image_url: imageUrl
         });
- 
+
         if (insertError) throw insertError;
- 
+
         setStatus('Shared! Thanks for contributing.', 'success');
         form.reset();
         resetPhotoPreview();
@@ -244,17 +243,15 @@ form?.addEventListener('submit', async event => {
         if (submitBtn) submitBtn.disabled = false;
     }
 });
- 
+
 modal?.addEventListener('click', event => {
     if (event.target === modal) window.closeShareModal();
 });
- 
+
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) window.closeShareModal();
 });
- 
+
 loadMoreBtn?.addEventListener('click', () => loadPosts());
- 
+
 loadPosts({ reset: true });
- 
-Claude finished the response

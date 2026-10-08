@@ -13,9 +13,7 @@ create table if not exists public.signers (
 
 create index if not exists signers_name_idx
     on public.signers (name);
-alter table public.community_posts
-    add column if not exists image_url text
-    check (image_url is null or char_length(image_url) between 1 and 500);
+
 alter table public.signers enable row level security;
 
 drop policy if exists lc_signers_public_read on public.signers;
@@ -45,6 +43,16 @@ create table if not exists public.community_posts (
     created_at timestamptz not null default now()
 );
 
+-- Adds the photo column to tables that were created before photo support existed.
+alter table public.community_posts
+    add column if not exists image_url text;
+
+alter table public.community_posts
+    drop constraint if exists community_posts_image_url_check;
+alter table public.community_posts
+    add constraint community_posts_image_url_check
+    check (image_url is null or char_length(image_url) between 1 and 500);
+
 create index if not exists community_posts_created_at_idx
     on public.community_posts (created_at desc);
 
@@ -64,9 +72,14 @@ create policy lc_community_posts_owner_insert
 
 grant select on public.community_posts to anon, authenticated;
 grant insert on public.community_posts to authenticated;
-insert into storage.buckets (id, name, public)
-values ('community-posts', 'community-posts', true)
-on conflict (id) do nothing;
+
+-- Photo storage: public bucket, 5 MB limit, images only.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('community-posts', 'community-posts', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do update
+    set public = true,
+        file_size_limit = 5242880,
+        allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp'];
 
 drop policy if exists "authenticated-upload-community-posts" on storage.objects;
 create policy "authenticated-upload-community-posts"

@@ -1,278 +1,260 @@
+
 import { supabase } from './supabase.js';
-
-const PAGE_SIZE = 20;
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
-let nextOffset = 0;
-let hasMorePosts = true;
-
-window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('feedContainer').replaceChildren();
-    setupModal();
-    setupImagePreview();
-    setupPostForm();
-    loadPosts();
-});
-
-window.openShareModal = function() {
-    const modal = document.getElementById('shareModal');
-    modal?.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-    document.getElementById('postPlayerName')?.focus();
+ 
+const PAGE_SIZE = 10;
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const PHOTO_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+const BUCKET = 'community-posts';
+ 
+const RESULT_LABELS = {
+    success: { text: 'Success', cls: 'bg-success/20 text-success' },
+    pending: { text: 'Still waiting', cls: 'bg-warning/20 text-warning' },
+    'no-response': { text: 'No response', cls: 'bg-gray-500/20 text-gray-300' },
+    returned: { text: 'Returned unsigned', cls: 'bg-danger/20 text-danger' }
 };
-
-window.closeShareModal = function() {
-    const modal = document.getElementById('shareModal');
-    modal?.classList.add('hidden');
-    document.body.style.overflow = '';
-    clearSelectedImagePreview();
-};
-
-function setupModal() {
-    document.getElementById('shareModal')?.addEventListener('click', event => {
-        if (event.target.id === 'shareModal') window.closeShareModal();
-    });
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') window.closeShareModal();
-    });
-    document.getElementById('loadMorePosts')?.addEventListener('click', () => loadPosts());
-}
-
-function setupImagePreview() {
-    const input = document.getElementById('postImageInput');
-    const preview = document.getElementById('postImagePreview');
-    if (!input || !preview) return;
-
-    input.addEventListener('change', () => {
-        const file = input.files?.[0];
-        if (!file) {
-            clearSelectedImagePreview();
-            return;
-        }
-
-        if (!file.type.startsWith('image/')) {
-            preview.innerHTML = '<p class="text-sm text-red-300">Please choose an image file.</p>';
-            preview.classList.remove('hidden');
-            input.value = '';
-            return;
-        }
-
-        if (file.size > MAX_IMAGE_SIZE) {
-            preview.innerHTML = '<p class="text-sm text-red-300">Image must be smaller than 5MB.</p>';
-            preview.classList.remove('hidden');
-            input.value = '';
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = event => {
-            preview.innerHTML = `
-                <img src="${event.target.result}" alt="Selected upload preview" class="max-h-48 w-full rounded-xl object-cover border border-darkBorder" />
-            `;
-            preview.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-function clearSelectedImagePreview() {
-    const input = document.getElementById('postImageInput');
-    const preview = document.getElementById('postImagePreview');
-    if (input) input.value = '';
-    if (preview) {
-        preview.innerHTML = '';
-        preview.classList.add('hidden');
-    }
-}
-
-async function loadPosts() {
-    const feed = document.getElementById('feedContainer');
-    const loadMore = document.getElementById('loadMorePosts');
-    if (!feed || !hasMorePosts) return;
-    loadMore.disabled = true;
-    loadMore.textContent = 'Loading...';
-
-    try {
-        const { data: posts, error } = await supabase
-            .from('community_posts')
-            .select('id, user_id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
-            .order('created_at', { ascending: false })
-            .range(nextOffset, nextOffset + PAGE_SIZE - 1);
-        if (error) throw error;
-
-        if (nextOffset === 0 && posts.length === 0) {
-            feed.innerHTML = '<div class="glass-card rounded-2xl p-8 text-center text-gray-400">No community posts yet. Share your first collecting update.</div>';
-        } else {
-            feed.insertAdjacentHTML('beforeend', posts.map(renderPost).join(''));
-        }
-        nextOffset += posts.length;
-        hasMorePosts = posts.length === PAGE_SIZE;
-        loadMore.classList.toggle('hidden', !hasMorePosts);
-    } catch (error) {
-        console.error('Unable to load community posts:', error);
-        const message = error.code === 'PGRST205'
-            ? 'The community-post table is not set up yet. Run supabase-setup.sql in the Supabase SQL Editor, then refresh.'
-            : `Could not load community posts: ${error.message || 'Database request failed.'}`;
-        feed.innerHTML = `<div class="glass-card rounded-2xl p-6 text-red-300">${escapeHtml(message)}</div>`;
-        loadMore.classList.add('hidden');
-    } finally {
-        loadMore.disabled = false;
-        loadMore.textContent = 'Load More Posts';
-    }
-}
-
-function renderPost(post) {
-    const resultLabels = {
-        success: 'Success!',
-        pending: 'Still Waiting',
-        'no-response': 'No Response',
-        returned: 'Returned Unsigned'
-    };
-    const resultStyles = post.result === 'success'
-        ? 'bg-success/20 text-success'
-        : post.result === 'pending'
-            ? 'bg-accent/20 text-accent'
-            : 'bg-warning/20 text-warning';
-    const response = post.days_to_response == null ? '' : `<span class="text-gray-400">${escapeHtml(post.days_to_response)} days</span>`;
-    const imageMarkup = post.image_url
-        ? `<img src="${escapeHtml(post.image_url)}" alt="${escapeHtml(post.player_name)} proof photo" class="mt-4 max-h-80 w-full rounded-xl border border-darkBorder object-cover" loading="lazy" />`
-        : '';
-
-    return `
-        <article class="glass-card rounded-2xl p-6">
-            <div class="flex items-start gap-4">
-                <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center flex-shrink-0" aria-hidden="true">
-                    <i data-lucide="user" class="w-6 h-6 text-white"></i>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <div class="mb-2 flex flex-wrap items-center gap-3">
-                        <span class="font-semibold text-white">${escapeHtml(post.author_name)}</span>
-                        <time class="text-sm text-gray-400" datetime="${escapeHtml(post.created_at)}">${escapeHtml(formatDate(post.created_at))}</time>
-                        <span class="rounded-full px-2 py-1 text-xs ${resultStyles}">${escapeHtml(resultLabels[post.result] || 'Update')}</span>
-                        ${response}
-                    </div>
-                    <h2 class="mb-2 font-semibold text-accent">${escapeHtml(post.player_name)}</h2>
-                    <p class="whitespace-pre-wrap break-words text-gray-300">${escapeHtml(post.experience)}</p>
-                    ${imageMarkup}
-                </div>
-            </div>
-        </article>
-    `;
-}
-
-async function uploadCommunityImage(file, userId) {
-    if (!file) return null;
-
-    if (!file.type.startsWith('image/')) {
-        throw new Error('Please choose an image file for your community post.');
-    }
-
-    if (file.size > MAX_IMAGE_SIZE) {
-        throw new Error('Image must be smaller than 5MB.');
-    }
-
-    const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-    const filePath = `${userId}/${safeName}`;
-
-    const { error } = await supabase.storage
-        .from('community-posts')
-        .upload(filePath, file, {
-            cacheControl: '3600',
-            upsert: false,
-            contentType: file.type
-        });
-
-    if (error) throw error;
-
-    const { data } = supabase.storage.from('community-posts').getPublicUrl(filePath);
-    return data.publicUrl;
-}
-
-function setupPostForm() {
-    const form = document.getElementById('communityPostForm');
-    if (!form) return;
-    form.addEventListener('submit', async event => {
-        event.preventDefault();
-        const button = form.querySelector('button[type="submit"]');
-        const status = document.getElementById('communityFormStatus');
-        button.disabled = true;
-        button.textContent = 'Posting...';
-        showFormStatus(status, 'Publishing your post...', false);
-
-        try {
-            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            if (sessionError) throw sessionError;
-            if (!session) {
-                showFormStatus(status, 'Sign in with Google before posting to the community.', true);
-                return;
-            }
-
-            const user = session.user;
-            const authorName = user.user_metadata?.full_name
-                || user.user_metadata?.name
-                || user.email?.split('@')[0]
-                || 'Collector';
-            const daysValue = document.getElementById('postDays').value;
-            const selectedFile = document.getElementById('postImageInput')?.files?.[0];
-            const imageUrl = selectedFile ? await uploadCommunityImage(selectedFile, user.id) : null;
-
-            const post = {
-                user_id: user.id,
-                author_name: authorName,
-                player_name: document.getElementById('postPlayerName').value.trim(),
-                result: document.getElementById('postResult').value,
-                days_to_response: daysValue === '' ? null : Number(daysValue),
-                experience: document.getElementById('postExperience').value.trim(),
-                image_url: imageUrl
-            };
-
-            const { error } = await supabase.from('community_posts').insert(post);
-            if (error) throw error;
-
-            form.reset();
-            clearSelectedImagePreview();
-            showFormStatus(status, 'Your post was shared.', false);
-            nextOffset = 0;
-            hasMorePosts = true;
-            document.getElementById('feedContainer').replaceChildren();
-            await loadPosts();
-            window.setTimeout(window.closeShareModal, 700);
-        } catch (error) {
-            console.error('Unable to publish community post:', error);
-            const message = error.code === '42501' || /row-level security/i.test(error.message || '')
-                ? 'Run supabase-setup.sql in the Supabase SQL Editor, then sign in again.'
-                : error.code === 'PGRST205'
-                    ? 'The community-post table is not set up yet. Run supabase-setup.sql in the Supabase SQL Editor.'
-                    : error.message || 'Database request failed.';
-            showFormStatus(status, `Could not share your post: ${message}`, true);
-        } finally {
-            button.disabled = false;
-            button.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i>Share with Community';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-    });
-}
-
-function showFormStatus(element, message, isError) {
-    element.textContent = message;
-    element.className = `text-sm ${isError ? 'text-red-300' : 'text-gray-300'}`;
-    element.classList.remove('hidden');
-}
-
-function formatDate(value) {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? 'Recently' : new Intl.DateTimeFormat(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-    }).format(date);
-}
-
+ 
+const feed = document.getElementById('feedContainer');
+const loadMoreBtn = document.getElementById('loadMorePosts');
+const modal = document.getElementById('shareModal');
+const form = document.getElementById('communityPostForm');
+const statusEl = document.getElementById('communityFormStatus');
+const photoInput = document.getElementById('postPhoto');
+const photoPreview = document.getElementById('postPhotoPreview');
+ 
+let nextPage = 0;
+let loading = false;
+ 
 function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, character => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    })[character]);
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
 }
+ 
+function safeImageUrl(value) {
+    if (!value) return null;
+    try {
+        const url = new URL(value);
+        return url.protocol === 'https:' ? url.href : null;
+    } catch {
+        return null;
+    }
+}
+ 
+function refreshIcons() {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+ 
+function setStatus(message, kind = 'info') {
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
+    statusEl.classList.add(kind === 'error' ? 'text-danger' : kind === 'success' ? 'text-success' : 'text-gray-400');
+}
+ 
+function clearStatus() {
+    if (!statusEl) return;
+    statusEl.textContent = '';
+    statusEl.classList.add('hidden');
+}
+ 
+function renderPost(post) {
+    const result = RESULT_LABELS[post.result] || RESULT_LABELS['no-response'];
+    const imageUrl = safeImageUrl(post.image_url);
+    const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    const days = Number.isInteger(post.days_to_response) ? `${post.days_to_response} day${post.days_to_response === 1 ? '' : 's'}` : '';
+ 
+    const article = document.createElement('article');
+    article.className = 'glass-card rounded-2xl p-6';
+    article.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+            <div>
+                <h3 class="text-lg font-bold text-white">${escapeHtml(post.player_name)}</h3>
+                <p class="text-sm text-gray-400">Shared by ${escapeHtml(post.author_name)}${date ? ' &middot; ' + escapeHtml(date) : ''}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                ${days ? `<span class="text-xs text-gray-400">${escapeHtml(days)}</span>` : ''}
+                <span class="px-3 py-1 rounded-full text-xs font-semibold ${result.cls}">${escapeHtml(result.text)}</span>
+            </div>
+        </div>
+        <p class="text-gray-300 whitespace-pre-line">${escapeHtml(post.experience)}</p>
+        ${imageUrl ? `
+            <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" class="block mt-4">
+                <img src="${escapeHtml(imageUrl)}" alt="Photo shared with the ${escapeHtml(post.player_name)} post" loading="lazy" class="rounded-xl max-h-96 w-auto max-w-full border border-darkBorder">
+            </a>` : ''}
+    `;
+    return article;
+}
+ 
+async function loadPosts({ reset = false } = {}) {
+    if (loading || !feed) return;
+    loading = true;
+    if (reset) nextPage = 0;
+ 
+    const from = nextPage * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+ 
+    const { data, error } = await supabase
+        .from('community_posts')
+        .select('id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
+        .order('created_at', { ascending: false })
+        .range(from, to);
+ 
+    loading = false;
+ 
+    if (error) {
+        console.error('Could not load community posts', error);
+        if (reset || nextPage === 0) {
+            feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">Community posts could not be loaded right now. Please try again later.</div>';
+        }
+        return;
+    }
+ 
+    if (reset || nextPage === 0) feed.innerHTML = '';
+ 
+    if (nextPage === 0 && data.length === 0) {
+        feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">No posts yet. Be the first to share a success!</div>';
+        loadMoreBtn?.classList.add('hidden');
+        return;
+    }
+ 
+    data.forEach(post => feed.appendChild(renderPost(post)));
+    nextPage += 1;
+    loadMoreBtn?.classList.toggle('hidden', data.length < PAGE_SIZE);
+    refreshIcons();
+}
+ 
+function validatePhoto(file) {
+    if (!file) return null;
+    if (!PHOTO_TYPES[file.type]) return 'Photo must be a JPG, PNG, or WebP image.';
+    if (file.size > MAX_PHOTO_BYTES) return 'Photo must be 5 MB or smaller.';
+    return null;
+}
+ 
+function authorNameFor(user) {
+    const meta = user.user_metadata || {};
+    const name = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : '') || 'Collector';
+    return name.slice(0, 120);
+}
+ 
+function resetPhotoPreview() {
+    if (photoPreview) {
+        if (photoPreview.dataset.objectUrl) URL.revokeObjectURL(photoPreview.dataset.objectUrl);
+        photoPreview.removeAttribute('src');
+        delete photoPreview.dataset.objectUrl;
+        photoPreview.classList.add('hidden');
+    }
+}
+ 
+window.openShareModal = function openShareModal() {
+    clearStatus();
+    modal?.classList.remove('hidden');
+    refreshIcons();
+};
+ 
+window.closeShareModal = function closeShareModal() {
+    modal?.classList.add('hidden');
+};
+ 
+photoInput?.addEventListener('change', () => {
+    const file = photoInput.files?.[0];
+    resetPhotoPreview();
+    if (!file) { clearStatus(); return; }
+    const problem = validatePhoto(file);
+    if (problem) {
+        setStatus(problem, 'error');
+        photoInput.value = '';
+        return;
+    }
+    clearStatus();
+    if (photoPreview) {
+        const objectUrl = URL.createObjectURL(file);
+        photoPreview.src = objectUrl;
+        photoPreview.dataset.objectUrl = objectUrl;
+        photoPreview.classList.remove('hidden');
+    }
+});
+ 
+form?.addEventListener('submit', async event => {
+    event.preventDefault();
+    clearStatus();
+ 
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
+ 
+    if (!user) {
+        setStatus('Please sign in with Google before sharing a post.', 'error');
+        if (typeof window.loginWithGoogle === 'function') window.loginWithGoogle();
+        return;
+    }
+ 
+    const file = photoInput?.files?.[0] || null;
+    const photoProblem = validatePhoto(file);
+    if (photoProblem) { setStatus(photoProblem, 'error'); return; }
+ 
+    const playerName = form.elements.player_name.value.trim();
+    const experience = form.elements.experience.value.trim();
+    const daysRaw = form.elements.days_to_response.value;
+ 
+    if (!playerName || !experience) {
+        setStatus('Player name and your experience are required.', 'error');
+        return;
+    }
+ 
+    if (submitBtn) submitBtn.disabled = true;
+    setStatus(file ? 'Uploading photo and sharing...' : 'Sharing...');
+ 
+    let uploadedPath = null;
+    try {
+        let imageUrl = null;
+ 
+        if (file) {
+            uploadedPath = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${PHOTO_TYPES[file.type]}`;
+            const { error: uploadError } = await supabase.storage
+                .from(BUCKET)
+                .upload(uploadedPath, file, { contentType: file.type, cacheControl: '31536000', upsert: false });
+            if (uploadError) throw uploadError;
+            imageUrl = supabase.storage.from(BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
+        }
+ 
+        const { error: insertError } = await supabase.from('community_posts').insert({
+            user_id: user.id,
+            author_name: authorNameFor(user),
+            player_name: playerName.slice(0, 120),
+            result: form.elements.result.value,
+            days_to_response: daysRaw === '' ? null : Number(daysRaw),
+            experience: experience.slice(0, 2000),
+            image_url: imageUrl
+        });
+ 
+        if (insertError) throw insertError;
+ 
+        setStatus('Shared! Thanks for contributing.', 'success');
+        form.reset();
+        resetPhotoPreview();
+        await loadPosts({ reset: true });
+        setTimeout(() => { window.closeShareModal(); clearStatus(); }, 900);
+    } catch (error) {
+        console.error('Could not share post', error);
+        if (uploadedPath) {
+            await supabase.storage.from(BUCKET).remove([uploadedPath]).catch(() => {});
+        }
+        setStatus('Could not share your post. Check your connection and that you are signed in, then try again.', 'error');
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+    }
+});
+ 
+modal?.addEventListener('click', event => {
+    if (event.target === modal) window.closeShareModal();
+});
+ 
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) window.closeShareModal();
+});
+ 
+loadMoreBtn?.addEventListener('click', () => loadPosts());
+ 
+loadPosts({ reset: true });
+ 
+Claude finished the response

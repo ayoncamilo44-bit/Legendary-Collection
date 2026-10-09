@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Bf-V4lwA8AEGC1P_8zE4N2MrT1-1uEEP6yN8kSKxH9A">
+    <title>Showcase | Legitimate Collector</title>
+    <meta name="description" content="Share the story behind your signed cards and your collection. Take all the room you need.">
+    <link rel="stylesheet" href="./site.css">
+    <link rel="canonical" href="https://ayoncamilo44-bit.github.io/Legendary-Collection/showcase.html">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Legitimate Collector">
+    <meta property="og:title" content="Showcase | Legitimate Collector">
+    <meta property="og:description" content="Collector stories, signed cards, and the hobby in your own words.">
+    <meta property="og:url" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/showcase.html">
+    <meta property="og:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="./affiliates.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&family=Special+Elite&family=Caveat:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444'
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .face-classic { font-family: 'Merriweather', Georgia, serif; }
+        .face-typewriter { font-family: 'Special Elite', 'Courier New', monospace; }
+        .face-handwritten { font-family: 'Caveat', 'Comic Sans MS', cursive; font-size: 1.3em; }
+        .face-modern { font-family: 'Inter', sans-serif; }
+        .face-elegant { font-family: 'Playfair Display', Georgia, serif; }
+        .story-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 10;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
+
+    <header class="glass sticky top-0 z-50 smooth-transition">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">Legitimate Collector</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Home</a>
+                <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Directory</a>
+                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Guides</a>
+                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">TTM Collector Choice</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
+                <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Community</a>
+                <a href="showcase.html" class="text-white smooth-transition text-sm font-medium">Showcase</a>
+                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Add Signer</a>
+                <div id="auth-nav-btn">
+                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        Sign In
+                    </button>
+                </div>
+            </nav>
+            <button class="md:hidden text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full px-6 py-16 md:py-20">
+
+        <div class="max-w-2xl mb-14">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-5">Showcase</h1>
+            <p class="text-lg text-gray-400 leading-8">The story behind the card, the signature, or the whole hobby, in your own words. Write a few lines or write a lot. Nobody is counting.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+            <aside class="lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:self-start lg:sticky lg:top-28">
+                <details id="toolbox" class="glass-card rounded-3xl p-6 md:p-8">
+                    <summary class="flex items-center justify-between text-lg font-bold text-white">
+                        <span class="flex items-center gap-3"><i data-lucide="pen-tool" class="w-5 h-5 text-accent"></i>Writer's toolbox</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500"></i>
+                    </summary>
+
+                    <div class="mt-8 space-y-10">
+
+                        <section>
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">Pick a typeface</h3>
+                            <div id="fontOptions" class="space-y-3">
+                                <button type="button" data-font="modern" aria-pressed="true" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-modern text-lg text-white">Modern</span><span class="block text-xs text-gray-500">Clean and easy to read</span>
+                                </button>
+                                <button type="button" data-font="classic" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-classic text-lg text-white">Classic</span><span class="block text-xs text-gray-500">A book-style serif</span>
+                                </button>
+                                <button type="button" data-font="elegant" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-elegant text-lg text-white">Elegant</span><span class="block text-xs text-gray-500">Magazine feature style</span>
+                                </button>
+                                <button type="button" data-font="typewriter" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-typewriter text-lg text-white">Typewriter</span><span class="block text-xs text-gray-500">Like a letter in the mail</span>
+                                </button>
+                                <button type="button" data-font="handwritten" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-handwritten text-lg text-white">Handwritten</span><span class="block text-xs text-gray-500">Personal, like a note</span>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3 leading-5">Your choice shows in the writing box and on your published story.</p>
+                        </section>
+
+                        <section>
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">Need a way in?</h3>
+                            <div id="promptList" class="space-y-2">
+                                <button type="button" data-prompt="The card I never thought I would get back was" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;The card I never thought I would get back was&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="The day I opened the mailbox and saw" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;The day I opened the mailbox and saw&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="I started collecting autographs because" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;I started collecting autographs because&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="The one that got away taught me" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;The one that got away taught me&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="What this hobby gives me that nothing else does is" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;What this hobby gives me that nothing else does is&hellip;&rdquo;</button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3 leading-5">Tap one to drop it into your story.</p>
+                        </section>
+
+                        <section>
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">Three quick tips</h3>
+                            <ul class="space-y-3 text-sm text-gray-400 leading-6">
+                                <li>Start with the moment, not the background.</li>
+                                <li>Say how it felt, not only what happened.</li>
+                                <li>Photograph the card, never the envelope with an address.</li>
+                            </ul>
+                        </section>
+
+                    </div>
+                </details>
+
+                <div class="mt-8 px-2">
+                    <p class="text-xs font-semibold tracking-widest uppercase text-accentHover mb-3">Monthly feature</p>
+                    <p class="text-sm text-gray-400 leading-7">Every month, one story is pinned at the top of Showcase as the Featured Story. Share yours and it could be next.</p>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-8 lg:col-start-1 lg:row-start-1">
+
+                <section class="glass-card rounded-3xl p-8 md:p-10 mb-16">
+                    <h2 class="text-2xl font-bold text-white mb-8">Write your story</h2>
+
+                    <form id="showcaseForm" class="space-y-8">
+                        <div>
+                            <label for="storyTitle" class="block text-sm font-medium text-gray-400 mb-3">Title</label>
+                            <input id="storyTitle" name="title" type="text" maxlength="150" required placeholder="Give it a name" class="w-full px-5 py-4 text-lg glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                        </div>
+
+                        <div>
+                            <label for="storyTag" class="block text-sm font-medium text-gray-400 mb-3">What kind of story is it?</label>
+                            <select id="storyTag" name="tag" required class="w-full px-5 py-4 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
+                                <option value="vent">Just sharing (rants welcome)</option>
+                                <option value="mail">Through the mail</option>
+                                <option value="in-person">In person</option>
+                                <option value="bought">Bought and authenticated</option>
+                                <option value="collection">My collection</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="storyText" class="block text-sm font-medium text-gray-400 mb-3">Your story</label>
+                            <textarea id="storyText" name="story" rows="14" maxlength="10000" required placeholder="Take your time. Say what you want to say." class="w-full min-h-[22rem] px-5 py-4 text-lg leading-9 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
+                            <p id="storyCount" class="text-xs text-gray-500 mt-3" aria-live="polite"></p>
+                        </div>
+
+                        <div>
+                            <label for="storyPhoto" class="block text-sm font-medium text-gray-400 mb-3">Photo (optional)</label>
+                            <input id="storyPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-accent file:text-white file:font-semibold">
+                            <p class="text-xs text-gray-500 mt-3 leading-5">JPG, PNG, or WebP, up to 5 MB. Please don't photograph envelopes showing a home address.</p>
+                            <img id="storyPhotoPreview" alt="Selected photo preview" class="hidden mt-5 rounded-2xl max-h-64 border border-darkBorder">
+                        </div>
+
+                        <p id="storyStatus" class="hidden text-sm leading-6" role="status" aria-live="polite"></p>
+
+                        <button type="submit" class="w-full px-6 py-4 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                            Share to Showcase
+                        </button>
+                    </form>
+                </section>
+
+                <h2 class="text-2xl font-bold text-white mb-8">Stories</h2>
+                <div class="space-y-10" id="storyFeed" aria-live="polite">
+                    <div class="glass-card rounded-3xl p-10 text-center text-gray-400">Loading stories...</div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <button id="loadMoreStories" type="button" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder hidden">
+                        Load more stories
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            <nav class="mb-4 flex flex-wrap justify-center gap-4" aria-label="Information">
+                <a href="./guides.html">Guides</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a>
+                <button type="button" data-analytics-settings hidden>Cookie settings</button>
+            </nav>
+            &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+        </div>
+    </footer>
+
+    <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/affiliates.js"></script>
+    <script type="module" src="./js/showcase.js"></script>
+    <script type="module" src="./js/analytics.js"></script>
+</body>
+</html>

@@ -1,275 +1,242 @@
-import { supabase } from './supabase.js';
- 
-const PAGE_SIZE = 10;
-const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
-const PHOTO_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-const BUCKET = 'community-posts';
- 
-const RESULT_LABELS = {
-    success: { text: 'Success', cls: 'bg-success/20 text-success' },
-    pending: { text: 'Still waiting', cls: 'bg-warning/20 text-warning' },
-    'no-response': { text: 'No response', cls: 'bg-gray-500/20 text-gray-300' },
-    returned: { text: 'Returned unsigned', cls: 'bg-danger/20 text-danger' },
-    story: { text: 'Collector story', cls: 'bg-accent/20 text-accentHover' }
-};
- 
-const feed = document.getElementById('feedContainer');
-const loadMoreBtn = document.getElementById('loadMorePosts');
-const modal = document.getElementById('shareModal');
-const form = document.getElementById('communityPostForm');
-const statusEl = document.getElementById('communityFormStatus');
-const photoInput = document.getElementById('postPhoto');
-const photoPreview = document.getElementById('postPhotoPreview');
-const resultSelect = document.getElementById('postResult');
-const daysWrap = document.getElementById('postDaysWrap');
- 
-let nextPage = 0;
-let loading = false;
- 
-function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[ch]));
-}
- 
-function safeImageUrl(value) {
-    if (!value) return null;
-    try {
-        const url = new URL(value);
-        return url.protocol === 'https:' ? url.href : null;
-    } catch {
-        return null;
-    }
-}
- 
-function refreshIcons() {
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-}
- 
-function setStatus(message, kind = 'info') {
-    if (!statusEl) return;
-    statusEl.textContent = message;
-    statusEl.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
-    statusEl.classList.add(kind === 'error' ? 'text-danger' : kind === 'success' ? 'text-success' : 'text-gray-400');
-}
- 
-function clearStatus() {
-    if (!statusEl) return;
-    statusEl.textContent = '';
-    statusEl.classList.add('hidden');
-}
- 
-// A collector story has no mailing result, so the "Days to Response" box is hidden for it.
-function updateDaysVisibility() {
-    if (!resultSelect || !daysWrap) return;
-    const isStory = resultSelect.value === 'story';
-    daysWrap.classList.toggle('hidden', isStory);
-    if (isStory && form?.elements.days_to_response) form.elements.days_to_response.value = '';
-}
- 
-function renderPost(post) {
-    const result = RESULT_LABELS[post.result] || RESULT_LABELS['no-response'];
-    const imageUrl = safeImageUrl(post.image_url);
-    const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-    const days = Number.isInteger(post.days_to_response) ? `${post.days_to_response} day${post.days_to_response === 1 ? '' : 's'}` : '';
- 
-    const article = document.createElement('article');
-    article.className = 'glass-card rounded-2xl p-6';
-    article.innerHTML = `
-        <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
-            <div>
-                <h3 class="text-lg font-bold text-white">${escapeHtml(post.player_name)}</h3>
-                <p class="text-sm text-gray-400">Shared by ${escapeHtml(post.author_name)}${date ? ' &middot; ' + escapeHtml(date) : ''}</p>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Bf-V4lwA8AEGC1P_8zE4N2MrT1-1uEEP6yN8kSKxH9A">
+    <title>TTM Community Feed | Legitimate Collector</title>
+    <meta name="description" content="Read and share through-the-mail sports autograph updates and collecting experiences with the Legitimate Collector community.">
+    <link rel="stylesheet" href="./site.css">
+    <link rel="canonical" href="https://ayoncamilo44-bit.github.io/Legendary-Collection/community.html">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Legitimate Collector">
+    <meta property="og:title" content="TTM Community Feed | Legitimate Collector">
+    <meta property="og:description" content="Share through-the-mail sports autograph updates and collecting experiences.">
+    <meta property="og:url" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/community.html">
+    <meta property="og:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TTM Community Feed | Legitimate Collector">
+    <meta name="twitter:description" content="Share through-the-mail sports autograph updates and collecting experiences.">
+    <meta name="twitter:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <link rel="stylesheet" href="./affiliates.css">
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0f1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1e2535;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
+
+    <!-- Premium Header Navigation -->
+    <header class="glass sticky top-0 z-50 smooth-transition">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">Legitimate Collector</span>
             </div>
-            <div class="flex items-center gap-2">
-                ${days ? `<span class="text-xs text-gray-400">${escapeHtml(days)}</span>` : ''}
-                <span class="px-3 py-1 rounded-full text-xs font-semibold ${result.cls}">${escapeHtml(result.text)}</span>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Home</a>
+                <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Directory</a>
+                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Guides</a>
+                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">TTM Collector Choice</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
+                <a href="community.html" class="text-white smooth-transition text-sm font-medium">Community</a>
+                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Add Signer</a>
+                <div id="auth-nav-btn">
+                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        Sign In
+                    </button>
+                </div>
+            </nav>
+            <button class="md:hidden text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-6 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Community Feed</h1>
+                <p class="text-gray-400">Share your TTM results and collecting stories, and see what the community is receiving</p>
+            </div>
+            <button onclick="openShareModal()" class="px-6 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                Share Your Story
+            </button>
+        </div>
+
+        <!-- Community posts are loaded from Supabase. -->
+        <div class="space-y-6" id="feedContainer" aria-live="polite">
+            <div class="glass-card rounded-2xl p-6 text-center text-gray-400">Loading community posts...</div>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button id="loadMorePosts" type="button" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder hidden">
+                Load More Posts
+            </button>
+        </div>
+    </main>
+
+    <!-- Share Story Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+        <div class="glass-card rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 id="shareModalTitle" class="text-xl font-bold text-white flex items-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i>
+                        Share Your Story
+                    </h3>
+                    <button onclick="closeShareModal()" class="text-gray-400 hover:text-white smooth-transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <form id="communityPostForm" class="space-y-4">
+                    <div>
+                        <label for="postPlayerName" class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
+                        <input id="postPlayerName" name="player_name" type="text" maxlength="120" required placeholder="e.g., Mike Trout" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                    </div>
+                    
+                    <div>
+                        <label for="postResult" class="block text-sm font-medium text-gray-400 mb-2">Result</label>
+                        <select id="postResult" name="result" required class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
+                            <option value="success">Success - Got it back!</option>
+                            <option value="pending">Still Waiting</option>
+                            <option value="no-response">No Response</option>
+                            <option value="returned">Returned Unsigned</option>
+                            <option value="story">Collector Story (bought it, found it, or just love it)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="postDaysWrap">
+                        <label for="postDays" class="block text-sm font-medium text-gray-400 mb-2">Days to Response</label>
+                        <input id="postDays" name="days_to_response" type="number" min="0" max="3650" placeholder="e.g., 45" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                    </div>
+                    
+                    <div>
+                        <label for="postExperience" class="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
+                        <textarea id="postExperience" name="experience" rows="4" maxlength="2000" required placeholder="Share what happened. Please don't include private mailing addresses." class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
+                    </div>
+<div>
+  <label for="postPhoto" class="block text-sm font-medium text-gray-400 mb-2">Photo (optional)</label>
+  <input id="postPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp"
+    class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-accent file:text-white file:font-semibold">
+  <p class="text-xs text-gray-500 mt-1">JPG, PNG, or WebP, up to 5 MB. Please don't photograph envelopes showing a home address.</p>
+  <img id="postPhotoPreview" alt="Selected photo preview" class="hidden mt-3 rounded-xl max-h-48 border border-darkBorder">
+</div>
+                    <p id="communityFormStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
+                    
+                    <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        Share with Community
+                    </button>
+                </form>
             </div>
         </div>
-        <p class="text-gray-300 whitespace-pre-line">${escapeHtml(post.experience)}</p>
-        ${imageUrl ? `
-            <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" class="block mt-4">
-                <img src="${escapeHtml(imageUrl)}" alt="Photo shared with the ${escapeHtml(post.player_name)} post" loading="lazy" class="rounded-xl max-h-96 w-auto max-w-full border border-darkBorder">
-            </a>` : ''}
-    `;
-    return article;
-}
- 
-async function loadPosts({ reset = false } = {}) {
-    if (loading || !feed) return;
-    loading = true;
-    if (reset) nextPage = 0;
- 
-    const from = nextPage * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
- 
-    const { data, error } = await supabase
-        .from('community_posts')
-        .select('id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
-        .order('created_at', { ascending: false })
-        .range(from, to);
- 
-    loading = false;
- 
-    if (error) {
-        console.error('Could not load community posts', error);
-        if (reset || nextPage === 0) {
-            feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">Community posts could not be loaded right now. Please try again later.</div>';
-        }
-        return;
-    }
- 
-    if (reset || nextPage === 0) feed.innerHTML = '';
- 
-    if (nextPage === 0 && data.length === 0) {
-        feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">No posts yet. Be the first to share a story!</div>';
-        loadMoreBtn?.classList.add('hidden');
-        return;
-    }
- 
-    data.forEach(post => feed.appendChild(renderPost(post)));
-    nextPage += 1;
-    loadMoreBtn?.classList.toggle('hidden', data.length < PAGE_SIZE);
-    refreshIcons();
-}
- 
-function validatePhoto(file) {
-    if (!file) return null;
-    if (!PHOTO_TYPES[file.type]) return 'Photo must be a JPG, PNG, or WebP image.';
-    if (file.size > MAX_PHOTO_BYTES) return 'Photo must be 5 MB or smaller.';
-    return null;
-}
- 
-function authorNameFor(user) {
-    const meta = user.user_metadata || {};
-    const name = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : '') || 'Collector';
-    return name.slice(0, 120);
-}
- 
-function resetPhotoPreview() {
-    if (photoPreview) {
-        if (photoPreview.dataset.objectUrl) URL.revokeObjectURL(photoPreview.dataset.objectUrl);
-        photoPreview.removeAttribute('src');
-        delete photoPreview.dataset.objectUrl;
-        photoPreview.classList.add('hidden');
-    }
-}
- 
-window.openShareModal = function openShareModal() {
-    clearStatus();
-    updateDaysVisibility();
-    modal?.classList.remove('hidden');
-    refreshIcons();
-};
- 
-window.closeShareModal = function closeShareModal() {
-    modal?.classList.add('hidden');
-};
- 
-resultSelect?.addEventListener('change', updateDaysVisibility);
- 
-photoInput?.addEventListener('change', () => {
-    const file = photoInput.files?.[0];
-    resetPhotoPreview();
-    if (!file) { clearStatus(); return; }
-    const problem = validatePhoto(file);
-    if (problem) {
-        setStatus(problem, 'error');
-        photoInput.value = '';
-        return;
-    }
-    clearStatus();
-    if (photoPreview) {
-        const objectUrl = URL.createObjectURL(file);
-        photoPreview.src = objectUrl;
-        photoPreview.dataset.objectUrl = objectUrl;
-        photoPreview.classList.remove('hidden');
-    }
-});
- 
-form?.addEventListener('submit', async event => {
-    event.preventDefault();
-    clearStatus();
- 
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const { data: sessionData } = await supabase.auth.getSession();
-    const user = sessionData?.session?.user;
- 
-    if (!user) {
-        setStatus('Please sign in with Google before sharing a post.', 'error');
-        if (typeof window.loginWithGoogle === 'function') window.loginWithGoogle();
-        return;
-    }
- 
-    const file = photoInput?.files?.[0] || null;
-    const photoProblem = validatePhoto(file);
-    if (photoProblem) { setStatus(photoProblem, 'error'); return; }
- 
-    const playerName = form.elements.player_name.value.trim();
-    const experience = form.elements.experience.value.trim();
-    const resultValue = form.elements.result.value;
-    const daysRaw = form.elements.days_to_response.value;
- 
-    if (!playerName || !experience) {
-        setStatus('Player name and your experience are required.', 'error');
-        return;
-    }
- 
-    if (submitBtn) submitBtn.disabled = true;
-    setStatus(file ? 'Uploading photo and sharing...' : 'Sharing...');
- 
-    let uploadedPath = null;
-    try {
-        let imageUrl = null;
- 
-        if (file) {
-            uploadedPath = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${PHOTO_TYPES[file.type]}`;
-            const { error: uploadError } = await supabase.storage
-                .from(BUCKET)
-                .upload(uploadedPath, file, { contentType: file.type, cacheControl: '31536000', upsert: false });
-            if (uploadError) throw uploadError;
-            imageUrl = supabase.storage.from(BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
-        }
- 
-        const { error: insertError } = await supabase.from('community_posts').insert({
-            user_id: user.id,
-            author_name: authorNameFor(user),
-            player_name: playerName.slice(0, 120),
-            result: resultValue,
-            // Stories have no mailing timeline, so no days are saved for them.
-            days_to_response: (resultValue === 'story' || daysRaw === '') ? null : Number(daysRaw),
-            experience: experience.slice(0, 2000),
-            image_url: imageUrl
-        });
- 
-        if (insertError) throw insertError;
- 
-        setStatus('Shared! Thanks for contributing.', 'success');
-        form.reset();
-        updateDaysVisibility();
-        resetPhotoPreview();
-        await loadPosts({ reset: true });
-        setTimeout(() => { window.closeShareModal(); clearStatus(); }, 900);
-    } catch (error) {
-        console.error('Could not share post', error);
-        if (uploadedPath) {
-            await supabase.storage.from(BUCKET).remove([uploadedPath]).catch(() => {});
-        }
-        const detail = error?.message ? ` (${error.message})` : '';
-        setStatus(`Could not share your post. Check your connection and that you are signed in, then try again.${detail}`, 'error');
-    } finally {
-        if (submitBtn) submitBtn.disabled = false;
-    }
-});
- 
-modal?.addEventListener('click', event => {
-    if (event.target === modal) window.closeShareModal();
-});
- 
-document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) window.closeShareModal();
-});
- 
-loadMoreBtn?.addEventListener('click', () => loadPosts());
+    </div>
 
-loadPosts({ reset: true });
+    <!-- Footer -->
+    <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            <nav class="mb-4 flex flex-wrap justify-center gap-4" aria-label="Information">
+                <a href="./guides.html">Guides</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a>
+                <button type="button" data-analytics-settings hidden>Cookie settings</button>
+            </nav>
+            &copy; 2026 Legitimate Collector. Powered by Supabase & GitHub Pages.
+        </div>
+    </footer>
+
+    <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/affiliates.js"></script>
+    <script type="module" src="./js/community.js"></script>
+    <script type="module" src="./js/analytics.js"></script>
+</body>
+</html>

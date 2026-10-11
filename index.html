@@ -174,18 +174,22 @@
             left: var(--x);
             top: var(--y);
             width: var(--w, clamp(110px, 15vw, 210px));
-            height: auto;
-            border-radius: 10px;
             opacity: var(--o, .5);
             filter: blur(var(--b, 0px));
-            box-shadow: 0 14px 40px rgba(0,0,0,.55);
-            rotate: var(--r, 0deg);
-            animation:
-                lc-float var(--d, 14s) ease-in-out var(--delay, 0s) infinite alternate,
-                lc-spin var(--s, 26s) linear var(--delay, 0s) infinite;
-            will-change: transform, rotate;
+            animation: lc-float var(--d, 14s) ease-in-out var(--delay, 0s) infinite alternate;
+            will-change: transform;
         }
-        /* SPIN SPEED: smaller --s = faster. Change the numbers below.
+        .lc-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 14px 40px rgba(0,0,0,.55);
+            transform: rotate(var(--r, 0deg));
+            animation: lc-spin var(--s, 26s) linear var(--delay, 0s) infinite;
+            will-change: transform;
+        }
+        /* SPIN SPEED: smaller --s = faster (seconds per full turn).
            Cards alternate clockwise / counter-clockwise. */
         .lc-card:nth-child(even) { --spin: -360deg; }
         .lc-card:nth-child(3n)   { --s: 34s; }
@@ -195,31 +199,32 @@
             to   { transform: translate3d(var(--dx, 30px), -70px, 0); }
         }
         @keyframes lc-spin {
-            from { rotate: var(--r, 0deg); }
-            to   { rotate: calc(var(--r, 0deg) + var(--spin, 360deg)); }
+            from { transform: rotate(var(--r, 0deg)); }
+            to   { transform: rotate(calc(var(--r, 0deg) + var(--spin, 360deg))); }
         }
         @media (max-width: 700px) {
             .lc-card.lc-hide-sm { display: none; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .lc-card { animation: none; }
+            .lc-card, .lc-card img { animation: none; }
         }
-        body.ambient-paused .lc-card { animation-play-state: paused; }
+        body.ambient-paused .lc-card,
+        body.ambient-paused .lc-card img { animation-play-state: paused; }
     </style>
 </head>
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans overflow-x-hidden">
 
     <!-- Floating card background -->
     <div class="lc-cards-bg" aria-hidden="true">
-        <img class="lc-card" src="./assets/cards/card-dodgers.webp" alt="" decoding="async" style="--x:3%;--y:8%;--r:-12deg;--d:15s">
-        <img class="lc-card" src="./assets/cards/card-collection.webp" alt="" decoding="async" style="--x:78%;--y:5%;--r:9deg;--d:17s;--delay:-4s;--dx:-22px">
-        <img class="lc-card lc-hide-sm" src="./assets/cards/card-rams.webp" alt="" decoding="async" style="--x:40%;--y:2%;--r:-5deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:19s;--delay:-8s">
-        <img class="lc-card" src="./assets/cards/card-rams.webp" alt="" decoding="async" style="--x:86%;--y:50%;--r:14deg;--d:16s;--delay:-2s">
-        <img class="lc-card" src="./assets/cards/card-dodgers.webp" alt="" decoding="async" style="--x:68%;--y:68%;--r:-8deg;--d:18s;--delay:-6s;--dx:-16px">
-        <img class="lc-card" src="./assets/cards/card-collection.webp" alt="" decoding="async" style="--x:6%;--y:58%;--r:10deg;--d:14s;--delay:-9s">
-        <img class="lc-card lc-hide-sm" src="./assets/cards/card-dodgers.webp" alt="" decoding="async" style="--x:44%;--y:76%;--r:6deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:20s;--delay:-3s">
-        <img class="lc-card lc-hide-sm" src="./assets/cards/card-collection.webp" alt="" decoding="async" style="--x:24%;--y:30%;--r:-14deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:21s;--delay:-11s">
-        <img class="lc-card lc-hide-sm" src="./assets/cards/card-rams.webp" alt="" decoding="async" style="--x:60%;--y:34%;--r:7deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:22s;--delay:-5s">
+        <div class="lc-card" style="--x:3%;--y:8%;--r:-12deg;--d:15s"><img src="./assets/cards/card-dodgers.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:78%;--y:5%;--r:9deg;--d:17s;--delay:-4s;--dx:-22px"><img src="./assets/cards/card-collection.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:40%;--y:2%;--r:-5deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:19s;--delay:-8s"><img src="./assets/cards/card-rams.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:86%;--y:50%;--r:14deg;--d:16s;--delay:-2s"><img src="./assets/cards/card-rams.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:68%;--y:68%;--r:-8deg;--d:18s;--delay:-6s;--dx:-16px"><img src="./assets/cards/card-dodgers.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:6%;--y:58%;--r:10deg;--d:14s;--delay:-9s"><img src="./assets/cards/card-collection.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:44%;--y:76%;--r:6deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:20s;--delay:-3s"><img src="./assets/cards/card-dodgers.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:24%;--y:30%;--r:-14deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:21s;--delay:-11s"><img src="./assets/cards/card-collection.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:60%;--y:34%;--r:7deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:22s;--delay:-5s"><img src="./assets/cards/card-rams.webp" alt="" decoding="async"></div>
     </div>
 
     <!-- Premium Header Navigation -->

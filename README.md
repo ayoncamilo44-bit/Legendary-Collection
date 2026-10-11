@@ -1,4 +1,4 @@
-# Legitimate Collector
+# Legendary Collection
 
 Static website for TTM collecting, signer lookup, and the collector community.
 

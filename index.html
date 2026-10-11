@@ -180,12 +180,12 @@
             filter: blur(var(--b, 0px));
             box-shadow: 0 14px 40px rgba(0,0,0,.55);
             transform: rotate(var(--r, 0deg));
-            animation: lc-float var(--d, 14s) ease-in-out var(--delay, 0s) infinite alternate;
+            animation: lc-float var(--d, 9s) ease-in-out var(--delay, 0s) infinite alternate;
             will-change: transform;
         }
         @keyframes lc-float {
             from { transform: translate3d(0,0,0) rotate(var(--r, 0deg)); }
-            to   { transform: translate3d(var(--dx, 18px), -46px, 0) rotate(calc(var(--r, 0deg) + 6deg)); }
+            to   { transform: translate3d(var(--dx, 60px), -140px, 0) rotate(calc(var(--r, 20deg) + 6deg)); }
         }
         @media (max-width: 700px) {
             .lc-card.lc-hide-sm { display: none; }

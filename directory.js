@@ -101,12 +101,4 @@ function setupSearchListener() {
         searchInput.addEventListener('input', (e) => loadSigners(e.target.value));
     }
 }
- 
 
-
-
-
-
-
-
-Claude finished the response

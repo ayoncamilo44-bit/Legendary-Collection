@@ -210,6 +210,9 @@
         }
         body.ambient-paused .lc-card,
         body.ambient-paused .lc-card img { animation-play-state: paused; }
+        /* When the bounce script is running it moves the cards itself */
+        .lc-cards-bg.lc-js .lc-card { left: 0; top: 0; animation: none; }
+        .lc-cards-bg.lc-js .lc-card img { animation: none; }
     </style>
 </head>
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans overflow-x-hidden">
@@ -640,6 +643,121 @@
         </div>
     </div>
 
+    <script>
+    /* ===== Bouncing cards =====
+       BOUNCE SPEED: change the two numbers in  var sp = 40 + Math.random() * 45
+       (first = slowest px/sec, second = extra random speed). Bigger = faster.
+       SPIN: change  (8 + Math.random() * 14)  = degrees per second. */
+    (function () {
+        var bg = document.querySelector('.lc-cards-bg');
+        if (!bg) return;
+        var els = Array.prototype.slice.call(bg.querySelectorAll('.lc-card'));
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var W = 0, H = 0, active = [], last = 0;
+
+        var S = els.map(function (el, i) {
+            var cs = getComputedStyle(el);
+            var sp = 40 + Math.random() * 45;
+            var dir = Math.random() * Math.PI * 2;
+            var base = (8 + Math.random() * 14) * (i % 2 ? -1 : 1);
+            return {
+                el: el, img: el.querySelector('img'), far: el.classList.contains('lc-hide-sm'),
+                fx: (parseFloat(cs.getPropertyValue('--x')) || 0) / 100,
+                fy: (parseFloat(cs.getPropertyValue('--y')) || 0) / 100,
+                ang: parseFloat(cs.getPropertyValue('--r')) || 0,
+                vx: Math.cos(dir) * sp, vy: Math.sin(dir) * sp,
+                va: base, base: base,
+                cx: 0, cy: 0, w: 0, h: 0, r: 0, placed: false
+            };
+        });
+
+        function measure() {
+            var oldW = W, oldH = H;
+            W = bg.clientWidth; H = bg.clientHeight;
+            active = [];
+            S.forEach(function (c) {
+                c.w = c.el.offsetWidth; c.h = c.el.offsetHeight;
+                if (!c.w || !c.h) return;               // hidden on small screens
+                c.r = (c.w + c.h) / 4;
+                if (!c.placed) {
+                    c.cx = c.fx * W + c.w / 2; c.cy = c.fy * H + c.h / 2; c.placed = true;
+                } else if (oldW && oldH) {
+                    c.cx *= W / oldW; c.cy *= H / oldH;
+                }
+                c.cx = Math.max(c.r, Math.min(W - c.r, c.cx));
+                c.cy = Math.max(c.r, Math.min(H - c.r, c.cy));
+                active.push(c);
+            });
+            for (var k = 0; k < 6; k++) collide(true);   // push apart any starting overlaps
+        }
+
+        function collide(settleOnly) {
+            for (var i = 0; i < active.length; i++) {
+                for (var j = i + 1; j < active.length; j++) {
+                    var a = active[i], b = active[j];
+                    if (a.far !== b.far) continue;        // front and back cards pass each other
+                    var dx = b.cx - a.cx, dy = b.cy - a.cy;
+                    var dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+                    var min = a.r + b.r;
+                    if (dist >= min) continue;
+                    var nx = dx / dist, ny = dy / dist;
+                    var ma = a.r * a.r, mb = b.r * b.r, tot = ma + mb;
+                    var push = min - dist;
+                    a.cx -= nx * push * mb / tot; a.cy -= ny * push * mb / tot;
+                    b.cx += nx * push * ma / tot; b.cy += ny * push * ma / tot;
+                    if (settleOnly) continue;
+                    var rvx = b.vx - a.vx, rvy = b.vy - a.vy;
+                    var vn = rvx * nx + rvy * ny;
+                    if (vn < 0) {
+                        var imp = -(1 + 0.98) * vn / (1 / ma + 1 / mb);
+                        a.vx -= imp * nx / ma; a.vy -= imp * ny / ma;
+                        b.vx += imp * nx / mb; b.vy += imp * ny / mb;
+                        var vt = rvx * -ny + rvy * nx;          // sideways rub makes them spin
+                        a.va = Math.max(-80, Math.min(80, a.va + vt * 0.12));
+                        b.va = Math.max(-80, Math.min(80, b.va + vt * 0.12));
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            active.forEach(function (c) {
+                c.el.style.transform = 'translate3d(' + (c.cx - c.w / 2).toFixed(1) + 'px,' + (c.cy - c.h / 2).toFixed(1) + 'px,0)';
+                if (c.img) c.img.style.transform = 'rotate(' + c.ang.toFixed(1) + 'deg)';
+            });
+        }
+
+        function step(t) {
+            var dt = Math.min((t - last) / 1000, 0.05); last = t;
+            active.forEach(function (c) {
+                c.cx += c.vx * dt; c.cy += c.vy * dt; c.ang += c.va * dt;
+                c.va += (c.base - c.va) * 0.25 * dt;       // spin eases back to its normal speed
+                if (c.cx < c.r)     { c.cx = c.r;     c.vx =  Math.abs(c.vx); }
+                if (c.cx > W - c.r) { c.cx = W - c.r; c.vx = -Math.abs(c.vx); }
+                if (c.cy < c.r)     { c.cy = c.r;     c.vy =  Math.abs(c.vy); }
+                if (c.cy > H - c.r) { c.cy = H - c.r; c.vy = -Math.abs(c.vy); }
+            });
+            collide(false);
+            draw();
+            requestAnimationFrame(step);
+        }
+
+        function init() {
+            measure();
+            bg.classList.add('lc-js');
+            draw();
+            if (!reduce) { last = performance.now(); requestAnimationFrame(step); }
+        }
+
+        var rt;
+        window.addEventListener('resize', function () {
+            clearTimeout(rt);
+            rt = setTimeout(function () { measure(); draw(); }, 120);
+        });
+        if (document.readyState === 'complete') init();
+        else window.addEventListener('load', init);
+    })();
+    </script>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script type="module" src="./js/analytics.js"></script>

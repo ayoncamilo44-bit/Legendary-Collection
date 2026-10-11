@@ -179,13 +179,24 @@
             opacity: var(--o, .5);
             filter: blur(var(--b, 0px));
             box-shadow: 0 14px 40px rgba(0,0,0,.55);
-            transform: rotate(var(--r, 20deg));
-            animation: lc-float var(--d, 9s) ease-in-out var(--delay, 0s) infinite alternate;
-            will-change: transform;
+            rotate: var(--r, 0deg);
+            animation:
+                lc-float var(--d, 14s) ease-in-out var(--delay, 0s) infinite alternate,
+                lc-spin var(--s, 26s) linear var(--delay, 0s) infinite;
+            will-change: transform, rotate;
         }
+        /* SPIN SPEED: smaller --s = faster. Change the numbers below.
+           Cards alternate clockwise / counter-clockwise. */
+        .lc-card:nth-child(even) { --spin: -360deg; }
+        .lc-card:nth-child(3n)   { --s: 34s; }
+        .lc-card.lc-hide-sm      { --s: 42s; }
         @keyframes lc-float {
-            from { transform: translate3d(0,0,0) rotate(var(--r, 0deg)); }
-            to   { transform: translate3d(var(--dx, 60px), -140px, 0) rotate(calc(var(--r, 20deg) + 6deg)); }
+            from { transform: translate3d(0, 0, 0); }
+            to   { transform: translate3d(var(--dx, 30px), -70px, 0); }
+        }
+        @keyframes lc-spin {
+            from { rotate: var(--r, 0deg); }
+            to   { rotate: calc(var(--r, 0deg) + var(--spin, 360deg)); }
         }
         @media (max-width: 700px) {
             .lc-card.lc-hide-sm { display: none; }

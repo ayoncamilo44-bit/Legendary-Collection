@@ -154,61 +154,61 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #6366f1;
         }
+
+        /* ===== Floating card background ===== */
+        .lc-cards-bg {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .lc-cards-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(8,12,32,.72) 0%, rgba(8,12,32,.35) 55%, rgba(8,12,32,.1) 100%);
+        }
+        .lc-card {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: var(--w, clamp(110px, 15vw, 210px));
+            height: auto;
+            border-radius: 10px;
+            opacity: var(--o, .5);
+            filter: blur(var(--b, 0px));
+            box-shadow: 0 14px 40px rgba(0,0,0,.55);
+            transform: rotate(var(--r, 0deg));
+            animation: lc-float var(--d, 14s) ease-in-out var(--delay, 0s) infinite alternate;
+            will-change: transform;
+        }
+        @keyframes lc-float {
+            from { transform: translate3d(0,0,0) rotate(var(--r, 0deg)); }
+            to   { transform: translate3d(var(--dx, 18px), -46px, 0) rotate(calc(var(--r, 0deg) + 6deg)); }
+        }
+        @media (max-width: 700px) {
+            .lc-card.lc-hide-sm { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .lc-card { animation: none; }
+        }
+        body.ambient-paused .lc-card { animation-play-state: paused; }
     </style>
 </head>
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans overflow-x-hidden">
 
-    <div id="collector-atmosphere" aria-hidden="true">
-        <div class="collector-mist collector-mist-one"></div>
-        <div class="collector-mist collector-mist-two"></div>
-        <div class="collector-card collector-card-baseball">
-            <div class="collector-card-inner">
-                <div class="collector-card-face">
-                    <img src="./assets/cards/baseball-camilo-ayon.jpg" alt="">
-                </div>
-                <div class="collector-card-back">
-                    <span>LEGITIMATE</span>
-                    <strong>COLLECTOR</strong>
-                    <span>BASEBALL · TTM</span>
-                </div>
-            </div>
-        </div>
-        <div class="collector-card collector-card-football">
-            <div class="collector-card-inner">
-                <div class="collector-card-face">
-                    <img src="./assets/cards/football-dan-fouts.jpg" alt="">
-                </div>
-                <div class="collector-card-back">
-                    <span>LEGITIMATE</span>
-                    <strong>COLLECTOR</strong>
-                    <span>FOOTBALL · TTM</span>
-                </div>
-            </div>
-        </div>
-        <div class="collector-card collector-card-hirsch">
-            <div class="collector-card-inner">
-                <div class="collector-card-face">
-                    <img src="./assets/cards/football-elroy-hirsch.jpg" alt="">
-                </div>
-                <div class="collector-card-back">
-                    <span>LEGITIMATE</span>
-                    <strong>COLLECTOR</strong>
-                    <span>FOOTBALL · TTM</span>
-                </div>
-            </div>
-        </div>
-        <div class="collector-card collector-card-nflpa">
-            <div class="collector-card-inner">
-                <div class="collector-card-face">
-                    <img src="./assets/cards/football-nflpa.jpg" alt="">
-                </div>
-                <div class="collector-card-back">
-                    <span>LEGITIMATE</span>
-                    <strong>COLLECTOR</strong>
-                    <span>FOOTBALL · TTM</span>
-                </div>
-            </div>
-        </div>
+    <!-- Floating card background -->
+    <div class="lc-cards-bg" aria-hidden="true">
+        <img class="lc-card" src="./assets/cards/card-dodgers.webp" alt="" decoding="async" style="--x:3%;--y:8%;--r:-12deg;--d:15s">
+        <img class="lc-card" src="./assets/cards/card-collection.webp" alt="" decoding="async" style="--x:78%;--y:5%;--r:9deg;--d:17s;--delay:-4s;--dx:-22px">
+        <img class="lc-card lc-hide-sm" src="./assets/cards/card-rams.webp" alt="" decoding="async" style="--x:40%;--y:2%;--r:-5deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:19s;--delay:-8s">
+        <img class="lc-card" src="./assets/cards/card-rams.webp" alt="" decoding="async" style="--x:86%;--y:50%;--r:14deg;--d:16s;--delay:-2s">
+        <img class="lc-card" src="./assets/cards/card-dodgers.webp" alt="" decoding="async" style="--x:68%;--y:68%;--r:-8deg;--d:18s;--delay:-6s;--dx:-16px">
+        <img class="lc-card" src="./assets/cards/card-collection.webp" alt="" decoding="async" style="--x:6%;--y:58%;--r:10deg;--d:14s;--delay:-9s">
+        <img class="lc-card lc-hide-sm" src="./assets/cards/card-dodgers.webp" alt="" decoding="async" style="--x:44%;--y:76%;--r:6deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:20s;--delay:-3s">
+        <img class="lc-card lc-hide-sm" src="./assets/cards/card-collection.webp" alt="" decoding="async" style="--x:24%;--y:30%;--r:-14deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:21s;--delay:-11s">
+        <img class="lc-card lc-hide-sm" src="./assets/cards/card-rams.webp" alt="" decoding="async" style="--x:60%;--y:34%;--r:7deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:22s;--delay:-5s">
     </div>
 
     <!-- Premium Header Navigation -->

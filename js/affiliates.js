@@ -6,28 +6,52 @@ const partners = [
         url: 'https://www.ebay.com/sch/i.html?_nkw=sports+autograph+cards&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339215575&customid=LegitimateCollector&toolid=10001&mkevt=1'
     },
     {
+        name: 'Fanatics',
+        description: 'Licensed jerseys, memorabilia, and fan gear from your favorite teams.',
+        icon: 'shirt',
+        url: 'https://fanatics.93n6tx.net/k4XbbM'
+    },
+    {
         name: 'Sportlots',
         description: 'Browse sports cards and supplies for your collection.',
         icon: 'shopping-cart',
         url: 'https://www.sportlots.com/b/ui/search.tpl?search_val=sports+cards&Ref=Bets1202'
     },
     {
-        name: 'Sports Card Forum',
-        description: 'A community hub for sports card collectors, discussion, and trading news.',
-        icon: 'shield-check',
-        url: 'https://www.sportscardforum.com/'
-    },
-    {
         name: 'Amazon',
         description: 'Browse card sleeves, holders, mailers, and collecting supplies.',
         icon: 'package-open',
         url: 'https://www.amazon.com/s?k=card+collecting+supplies&tag=mh0b-20'
+    },
+    // ---- READY SLOTS ----------------------------------------------------
+    // These stay hidden until you paste a link between the quotes after url:
+    // Only paste links you got from the program once it has approved you.
+    {
+        name: 'Whatnot',
+        description: 'Watch live card breaks and shop sports cards and collectibles.',
+        icon: 'video',
+        url: ''
+    },
+    {
+        name: 'Topps',
+        description: 'Shop official Topps cards, sets, and collectibles.',
+        icon: 'layers',
+        url: ''
+    },
+    // ---------------------------------------------------------------------
+    {
+        name: 'Sports Card Forum',
+        description: 'A community hub for sports card collectors, discussion, and trading news.',
+        icon: 'shield-check',
+        url: 'https://www.sportscardforum.com/'
     }
 ];
 
 function renderAffiliatePartners() {
     const footer = document.querySelector('footer');
     if (!footer || document.getElementById('affiliate-partners')) return;
+
+    const activePartners = partners.filter(partner => partner.url);
 
     const section = document.createElement('section');
     section.id = 'affiliate-partners';
@@ -43,7 +67,7 @@ function renderAffiliatePartners() {
                 <p class="affiliate-disclosure">Some links are affiliate links. We may earn a commission at no extra cost to you. As an Amazon Associate I earn from qualifying purchases.</p>
             </div>
             <div class="affiliate-grid">
-                ${partners.map(partner => `
+                ${activePartners.map(partner => `
                     <a class="affiliate-card" href="${partner.url}" rel="sponsored nofollow">
                         <span class="affiliate-icon" aria-hidden="true"><i data-lucide="${partner.icon}"></i></span>
                         <span class="affiliate-copy">

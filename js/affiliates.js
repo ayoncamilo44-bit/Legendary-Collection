@@ -7,7 +7,7 @@ const partners = [
     },
     {
         name: 'Fanatics',
-        description: 'Licensed jerseys, memorabilia, and fan gear from your favorite teams.',
+        description: 'Shop sports cards from Fanatics and add to your collection.',
         icon: 'shirt',
         url: 'https://fanatics.93n6tx.net/k4XbbM'
     },

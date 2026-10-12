@@ -239,12 +239,13 @@
                 </div>
                 <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
             </div>
-            <nav class="hidden lg:flex items-center gap-6">
+            <nav class="hidden xl:flex items-center gap-6">
                 <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Directory</a>
                 <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Guides</a>
                 <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">TTM Collector Choice</a>
                 <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Dashboard</a>
                 <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Community</a>
+                <a href="showcase.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Showcase</a>
                 <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Add Signer</a>
                 <div id="auth-nav-btn">
                     <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
@@ -253,18 +254,19 @@
                     </button>
                 </div>
             </nav>
-            <button id="mobile-menu-btn" type="button" class="lg:hidden text-white p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+            <button id="mobile-menu-btn" type="button" class="xl:hidden text-white p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
                 <span id="mm-open"><i data-lucide="menu" class="w-6 h-6"></i></span>
                 <span id="mm-close" hidden><i data-lucide="x" class="w-6 h-6"></i></span>
             </button>
         </div>
         <!-- Mobile menu panel -->
-        <nav id="mobile-menu" class="lg:hidden border-t border-darkBorder px-6 pb-5 pt-3" aria-label="Mobile" hidden>
+        <nav id="mobile-menu" class="xl:hidden border-t border-darkBorder px-6 pb-5 pt-3" aria-label="Mobile" hidden>
             <a href="directory.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Directory</a>
             <a href="guides.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Guides</a>
             <a href="https://www.ttm-collector-choice.com/" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">TTM Collector Choice</a>
             <a href="dashboard.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Dashboard</a>
             <a href="community.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Community</a>
+            <a href="showcase.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Showcase</a>
             <a href="signer.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Add Signer</a>
             <div id="mobile-auth-slot" class="pt-4"></div>
         </nav>
@@ -796,7 +798,7 @@
             btn.addEventListener('click', () => setOpen(panel.hidden));
             panel.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-            window.addEventListener('resize', () => { if (window.innerWidth >= 1024) setOpen(false); });
+            window.addEventListener('resize', () => { if (window.innerWidth >= 1280) setOpen(false); });
         })();
     </script>
     <script type="module" src="./js/auth.js"></script>

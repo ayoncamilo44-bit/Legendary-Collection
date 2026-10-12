@@ -117,16 +117,17 @@
                 <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
                     <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
                 </div>
-                <span class="text-xl font-bold text-white tracking-tight">Legendary Collection</span>
+                <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
             </div>
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Home</a>
-                <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Directory</a>
-                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Guides</a>
-                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">TTM Collector Choice</a>
-                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
-                <a href="community.html" class="text-white smooth-transition text-sm font-medium">Community</a>
-                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Add Signer</a>
+            <nav class="hidden xl:flex items-center gap-6">
+                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Home</a>
+                <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Directory</a>
+                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Guides</a>
+                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">TTM Collector Choice</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Dashboard</a>
+                <a href="community.html" class="text-white smooth-transition text-sm font-medium whitespace-nowrap">Community</a>
+                <a href="showcase.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Showcase</a>
+                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Add Signer</a>
                 <div id="auth-nav-btn">
                     <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
                         <i data-lucide="user" class="w-4 h-4"></i>
@@ -134,22 +135,41 @@
                     </button>
                 </div>
             </nav>
-            <button class="md:hidden text-white">
-                <i data-lucide="menu" class="w-6 h-6"></i>
+            <button id="mobile-menu-btn" type="button" class="xl:hidden text-white p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+                <span id="mm-open"><i data-lucide="menu" class="w-6 h-6"></i></span>
+                <span id="mm-close" hidden><i data-lucide="x" class="w-6 h-6"></i></span>
             </button>
         </div>
+        <!-- Mobile menu panel -->
+        <nav id="mobile-menu" class="xl:hidden border-t border-darkBorder px-6 pb-5 pt-3" aria-label="Mobile" hidden>
+            <a href="index.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Home</a>
+            <a href="directory.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Directory</a>
+            <a href="guides.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Guides</a>
+            <a href="https://www.ttm-collector-choice.com/" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">TTM Collector Choice</a>
+            <a href="dashboard.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Dashboard</a>
+            <a href="community.html" class="block py-3 text-white text-base font-medium border-b border-darkBorder">Community</a>
+            <a href="showcase.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Showcase</a>
+            <a href="signer.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Add Signer</a>
+            <div id="mobile-auth-slot" class="pt-4"></div>
+        </nav>
     </header>
 
     <main class="max-w-7xl mx-auto w-full px-6 py-12">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
             <div>
                 <h1 class="text-3xl font-bold text-white mb-2">Community Feed</h1>
-                <p class="text-gray-400">Share your TTM results and collecting stories, and see what the community is receiving</p>
+                <p class="text-gray-400">Share your TTM results and see what the community is receiving. Want to tell a longer story? Use Showcase.</p>
             </div>
-            <button onclick="openShareModal()" class="px-6 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center gap-2">
-                <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                Share Your Story
-            </button>
+            <div class="flex flex-wrap gap-3">
+                <a href="showcase.html" class="px-6 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center gap-2">
+                    <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                    Write a Story
+                </a>
+                <button type="button" onclick="openShareModal()" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    Share a TTM Result
+                </button>
+            </div>
         </div>
 
         <!-- Community posts are loaded from Supabase. -->
@@ -165,14 +185,14 @@
         </div>
     </main>
 
-    <!-- Share Story Modal -->
+    <!-- Share a TTM Result Modal -->
     <div id="shareModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
         <div class="glass-card rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h3 id="shareModalTitle" class="text-xl font-bold text-white flex items-center gap-3">
                         <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i>
-                        Share Your Story
+                        Share a TTM Result
                     </h3>
                     <button onclick="closeShareModal()" class="text-gray-400 hover:text-white smooth-transition">
                         <i data-lucide="x" class="w-5 h-5"></i>
@@ -234,6 +254,35 @@
         </div>
     </footer>
 
+    <script>
+    // Mobile menu (kept separate so it works even if other scripts fail to load)
+    (function () {
+        const btn = document.getElementById('mobile-menu-btn');
+        const panel = document.getElementById('mobile-menu');
+        if (!btn || !panel) return;
+        const iconOpen = document.getElementById('mm-open');
+        const iconClose = document.getElementById('mm-close');
+        const authSlot = document.getElementById('mobile-auth-slot');
+        function setOpen(open) {
+            panel.hidden = !open;
+            iconOpen.hidden = open;
+            iconClose.hidden = !open;
+            btn.setAttribute('aria-expanded', String(open));
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            if (open) {
+                const desktopAuth = document.getElementById('auth-nav-btn');
+                if (desktopAuth && authSlot) {
+                    authSlot.innerHTML = desktopAuth.innerHTML;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            }
+        }
+        btn.addEventListener('click', () => setOpen(panel.hidden));
+        panel.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+        window.addEventListener('resize', () => { if (window.innerWidth >= 1280) setOpen(false); });
+    })();
+    </script>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script type="module" src="./js/community.js"></script>

@@ -20,34 +20,25 @@
     <meta name="twitter:description" content="Search community-maintained sports signer records and reported TTM results.">
     <meta name="twitter:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
     <link rel="stylesheet" href="./affiliates.css">
-    
+
     <!-- Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        darkBg: '#0a0f1a',
-                        darkCard: '#131824',
-                        darkBorder: '#1e2535',
-                        darkHover: '#1a2133',
-                        accent: '#6366f1',
-                        accentHover: '#818cf8',
-                        success: '#10b981',
-                        warning: '#f59e0b',
-                        danger: '#ef4444',
+                        darkBg: '#0a0f1a', darkCard: '#131824', darkBorder: '#1e2535', darkHover: '#1a2133',
+                        accent: '#6366f1', accentHover: '#818cf8', success: '#10b981', warning: '#f59e0b', danger: '#ef4444',
                     },
                     boxShadow: {
                         'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
@@ -58,54 +49,17 @@
             }
         }
     </script>
-    
+
     <style>
-        .glass {
-            background: rgba(19, 24, 36, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .glass-card {
-            background: rgba(19, 24, 36, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-        }
-        
-        .smooth-transition {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #0a0f1a;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #1e2535;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6366f1;
-        }
+        .glass { background: rgba(19, 24, 36, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(19, 24, 36, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); }
+        .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0f1a; }
+        ::-webkit-scrollbar-thumb { background: #1e2535; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
     </style>
 </head>
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans">
@@ -117,16 +71,17 @@
                 <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
                     <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
                 </div>
-                <span class="text-xl font-bold text-white tracking-tight">Legendary Collection</span>
+                <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
             </div>
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Home</a>
-                <a href="directory.html" class="text-white smooth-transition text-sm font-medium">Directory</a>
-                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Guides</a>
-                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">TTM Collector Choice</a>
-                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Dashboard</a>
-                <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Community</a>
-                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium">Add Signer</a>
+            <nav class="hidden xl:flex items-center gap-6">
+                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Home</a>
+                <a href="directory.html" class="text-white smooth-transition text-sm font-medium whitespace-nowrap">Directory</a>
+                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Guides</a>
+                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">TTM Collector Choice</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Dashboard</a>
+                <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Community</a>
+                <a href="showcase.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Showcase</a>
+                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Add Signer</a>
                 <div id="auth-nav-btn">
                     <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
                         <i data-lucide="user" class="w-4 h-4"></i>
@@ -134,10 +89,23 @@
                     </button>
                 </div>
             </nav>
-            <button class="md:hidden text-white">
-                <i data-lucide="menu" class="w-6 h-6"></i>
+            <button id="mobile-menu-btn" type="button" class="xl:hidden text-white p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+                <span id="mm-open"><i data-lucide="menu" class="w-6 h-6"></i></span>
+                <span id="mm-close" hidden><i data-lucide="x" class="w-6 h-6"></i></span>
             </button>
         </div>
+        <!-- Mobile menu panel -->
+        <nav id="mobile-menu" class="xl:hidden border-t border-darkBorder px-6 pb-5 pt-3" aria-label="Mobile" hidden>
+            <a href="index.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Home</a>
+            <a href="directory.html" class="block py-3 text-white text-base font-medium border-b border-darkBorder">Directory</a>
+            <a href="guides.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Guides</a>
+            <a href="https://www.ttm-collector-choice.com/" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">TTM Collector Choice</a>
+            <a href="dashboard.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Dashboard</a>
+            <a href="community.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Community</a>
+            <a href="showcase.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Showcase</a>
+            <a href="signer.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Add Signer</a>
+            <div id="mobile-auth-slot" class="pt-4"></div>
+        </nav>
     </header>
 
     <!-- Main Directory Content -->
@@ -149,7 +117,7 @@
             </div>
             <div class="relative w-full md:w-96">
                 <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
-                <input type="text" id="searchInput" placeholder="Search player, team, or sport..." 
+                <input type="text" id="searchInput" placeholder="Search player, team, or sport..."
                        class="w-full pl-12 pr-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
             </div>
         </div>
@@ -188,12 +156,41 @@
         </div>
     </footer>
 
+    <script>
+    // Mobile menu (kept separate so it works even if other scripts fail to load)
+    (function () {
+        const btn = document.getElementById('mobile-menu-btn');
+        const panel = document.getElementById('mobile-menu');
+        if (!btn || !panel) return;
+        const iconOpen = document.getElementById('mm-open');
+        const iconClose = document.getElementById('mm-close');
+        const authSlot = document.getElementById('mobile-auth-slot');
+        function setOpen(open) {
+            panel.hidden = !open;
+            iconOpen.hidden = open;
+            iconClose.hidden = !open;
+            btn.setAttribute('aria-expanded', String(open));
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            if (open) {
+                const desktopAuth = document.getElementById('auth-nav-btn');
+                if (desktopAuth && authSlot) {
+                    authSlot.innerHTML = desktopAuth.innerHTML;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            }
+        }
+        btn.addEventListener('click', () => setOpen(panel.hidden));
+        panel.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+        window.addEventListener('resize', () => { if (window.innerWidth >= 1280) setOpen(false); });
+    })();
+    </script>
     <script type="module" src="./js/directory.js"></script>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script type="module" src="./js/analytics.js"></script>
     <script>
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     </script>
 </body>
 </html>

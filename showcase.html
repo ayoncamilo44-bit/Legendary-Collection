@@ -89,47 +89,87 @@
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans">
 
     <header class="glass sticky top-0 z-50 smooth-transition">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow">
-                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <button id="mobile-menu-btn" type="button" class="text-white p-2 -ml-2 rounded-lg hover:bg-darkHover smooth-transition shrink-0" aria-label="Open menu" aria-expanded="false" aria-controls="site-drawer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <a href="index.html" class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow shrink-0"><i data-lucide="sparkles" class="w-5 h-5 text-white"></i></div>
+                    <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
+                </a>
             </div>
-            <nav class="hidden xl:flex items-center gap-6">
-                <a href="index.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Home</a>
-                <a href="directory.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Directory</a>
-                <a href="guides.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Guides</a>
-                <a href="https://www.ttm-collector-choice.com/" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">TTM Collector Choice</a>
-                <a href="dashboard.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Dashboard</a>
-                <a href="community.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Community</a>
-                <a href="showcase.html" class="text-white smooth-transition text-sm font-medium whitespace-nowrap">Showcase</a>
-                <a href="signer.html" class="text-gray-400 hover:text-white smooth-transition text-sm font-medium whitespace-nowrap">Add Signer</a>
-                <div id="auth-nav-btn">
-                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder">
-                        <i data-lucide="user" class="w-4 h-4"></i>
-                        Sign In
-                    </button>
-                </div>
-            </nav>
-            <button id="mobile-menu-btn" type="button" class="xl:hidden text-white p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-                <span id="mm-open"><i data-lucide="menu" class="w-6 h-6"></i></span>
-                <span id="mm-close" hidden><i data-lucide="x" class="w-6 h-6"></i></span>
-            </button>
+            <div id="auth-nav-btn" class="hidden sm:block">
+                <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder"><i data-lucide="user" class="w-4 h-4"></i>Sign In</button>
+            </div>
         </div>
-        <!-- Mobile menu panel -->
-        <nav id="mobile-menu" class="xl:hidden border-t border-darkBorder px-6 pb-5 pt-3" aria-label="Mobile" hidden>
-            <a href="index.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Home</a>
-            <a href="directory.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Directory</a>
-            <a href="guides.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Guides</a>
-            <a href="https://www.ttm-collector-choice.com/" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">TTM Collector Choice</a>
-            <a href="dashboard.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Dashboard</a>
-            <a href="community.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Community</a>
-            <a href="showcase.html" class="block py-3 text-white text-base font-medium border-b border-darkBorder">Showcase</a>
-            <a href="signer.html" class="block py-3 text-gray-300 hover:text-white text-base font-medium border-b border-darkBorder">Add Signer</a>
-            <div id="mobile-auth-slot" class="pt-4"></div>
-        </nav>
     </header>
+
+    <!-- Left slide-out menu. To add a page, add one link line below (and in the other pages). -->
+    <style>
+        #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+        #drawer-overlay.open{opacity:1;visibility:visible}
+        #site-drawer{position:fixed;top:0;left:0;height:100%;width:18rem;max-width:85vw;background:#131824;border-right:1px solid #1e2535;z-index:70;transform:translateX(-100%);visibility:hidden;transition:transform .3s ease,visibility .3s;overflow-y:auto;display:flex;flex-direction:column}
+        #site-drawer.open{transform:translateX(0);visibility:visible}
+        #site-drawer a.dl{display:block;padding:.85rem 1.25rem;color:#d1d5db;font-weight:500;border-bottom:1px solid #1e2535;border-left:3px solid transparent}
+        #site-drawer a.dl:hover{color:#fff;background:#1a2133}
+        #site-drawer a.dl.on{color:#fff;background:#1a2133;border-left-color:#6366f1}
+        @media (prefers-reduced-motion:reduce){#site-drawer,#drawer-overlay{transition:none}}
+    </style>
+    <div id="drawer-overlay" aria-hidden="true"></div>
+    <aside id="site-drawer" aria-label="Site menu" aria-hidden="true">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid #1e2535">
+            <span style="color:#fff;font-weight:700">Menu</span>
+            <button id="drawer-close" type="button" aria-label="Close menu" style="color:#9ca3af;padding:.25rem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>
+        </div>
+        <nav aria-label="Main">
+            <a class="dl" href="index.html">Home</a>
+            <a class="dl" href="directory.html">Directory</a>
+            <a class="dl" href="guides.html">Guides</a>
+            <a class="dl" href="supplies.html">Supplies</a>
+            <a class="dl" href="community.html">Community</a>
+            <a class="dl on" href="showcase.html">Showcase</a>
+            <a class="dl" href="dashboard.html">Dashboard</a>
+            <a class="dl" href="signer.html">Add Signer</a>
+            <a class="dl" href="https://www.ttm-collector-choice.com/">TTM Collector Choice</a>
+        </nav>
+        <div id="mobile-auth-slot" style="padding:1rem 1.25rem"></div>
+        <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" style="margin:auto 1.25rem 1.25rem;padding:.7rem 1rem;border-radius:.5rem;background:#f59e0b;color:#0f172a;font-weight:600;text-align:center;font-size:.9rem">Buy Me a Coffee</a>
+    </aside>
+    <script>
+    // Left menu (kept separate so it works even if other scripts fail to load)
+    (function () {
+        var btn = document.getElementById('mobile-menu-btn');
+        var drawer = document.getElementById('site-drawer');
+        var overlay = document.getElementById('drawer-overlay');
+        var closeBtn = document.getElementById('drawer-close');
+        var slot = document.getElementById('mobile-auth-slot');
+        if (!btn || !drawer || !overlay) return;
+        function setOpen(open) {
+            drawer.classList.toggle('open', open);
+            overlay.classList.toggle('open', open);
+            drawer.setAttribute('aria-hidden', String(!open));
+            btn.setAttribute('aria-expanded', String(open));
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            document.body.style.overflow = open ? 'hidden' : '';
+            if (open) {
+                var auth = document.getElementById('auth-nav-btn');
+                if (auth && slot) {
+                    slot.innerHTML = auth.innerHTML;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+                if (closeBtn) closeBtn.focus();
+            }
+        }
+        btn.addEventListener('click', function () { setOpen(!drawer.classList.contains('open')); });
+        if (closeBtn) closeBtn.addEventListener('click', function () { setOpen(false); btn.focus(); });
+        overlay.addEventListener('click', function () { setOpen(false); });
+        drawer.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && drawer.classList.contains('open')) { setOpen(false); btn.focus(); }
+        });
+    })();
+    </script>
 
     <main class="max-w-6xl mx-auto w-full px-6 py-16 md:py-20">
 
@@ -270,35 +310,6 @@
         </div>
     </footer>
 
-    <script>
-    // Mobile menu (kept separate so it works even if other scripts fail to load)
-    (function () {
-        const btn = document.getElementById('mobile-menu-btn');
-        const panel = document.getElementById('mobile-menu');
-        if (!btn || !panel) return;
-        const iconOpen = document.getElementById('mm-open');
-        const iconClose = document.getElementById('mm-close');
-        const authSlot = document.getElementById('mobile-auth-slot');
-        function setOpen(open) {
-            panel.hidden = !open;
-            iconOpen.hidden = open;
-            iconClose.hidden = !open;
-            btn.setAttribute('aria-expanded', String(open));
-            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-            if (open) {
-                const desktopAuth = document.getElementById('auth-nav-btn');
-                if (desktopAuth && authSlot) {
-                    authSlot.innerHTML = desktopAuth.innerHTML;
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                }
-            }
-        }
-        btn.addEventListener('click', () => setOpen(panel.hidden));
-        panel.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-        window.addEventListener('resize', () => { if (window.innerWidth >= 1280) setOpen(false); });
-    })();
-    </script>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script type="module" src="./js/showcase.js"></script>

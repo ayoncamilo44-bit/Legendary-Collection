@@ -238,7 +238,7 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
                 </button>
                 <a href="index.html" class="flex items-center gap-3 min-w-0">
-                    <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-glow shrink-0"><i data-lucide="sparkles" class="w-5 h-5 text-white"></i></div>
+                    <img src="./assets/logo-icon.png" alt="" width="44" height="44" class="w-11 h-11 rounded-xl shrink-0 shadow-glow">
                     <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
                 </a>
             </div>
@@ -318,6 +318,10 @@
     <section class="relative overflow-hidden py-24 px-6">
         <div class="max-w-7xl mx-auto relative">
             <div class="text-center mb-16 animate-fade-in">
+                <video id="hero-logo" class="mx-auto mb-4 w-72 md:w-96 h-auto" width="720" height="392" autoplay muted loop playsinline preload="auto" poster="./assets/logo-clip-poster.webp" aria-label="Legendary Collection logo" style="-webkit-mask-image:radial-gradient(ellipse at center,#000 52%,transparent 78%);mask-image:radial-gradient(ellipse at center,#000 52%,transparent 78%)">
+                    <source src="./assets/logo-clip.mp4" type="video/mp4">
+                    <img src="./assets/logo-clip-poster.webp" alt="Legendary Collection logo" width="720" height="392">
+                </video>
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8">
                     <span class="w-2 h-2 bg-success rounded-full animate-pulse"></span>
                     <span class="text-xs text-gray-300 font-medium">Independent collector project</span>
@@ -490,9 +494,7 @@
             <div class="grid md:grid-cols-4 gap-12 mb-12">
                 <div>
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center">
-                            <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
-                        </div>
+                        <img src="./assets/logo-icon.png" alt="" width="40" height="40" class="w-10 h-10 rounded-xl">
                         <span class="text-xl font-bold text-white tracking-tight">Legendary Collection</span>
                     </div>
                     <p class="text-sm text-gray-400 leading-relaxed">Your trusted resource for TTM collecting and sports card community insights.</p>
@@ -816,6 +818,13 @@
         });
         if (document.readyState === 'complete') init();
         else window.addEventListener('load', init);
+    })();
+    </script>
+    <script>
+    // Hold the logo still for visitors who ask their device to reduce motion
+    (function () {
+        var v = document.getElementById('hero-logo');
+        if (v && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); }
     })();
     </script>
     <script type="module" src="./js/auth.js"></script>

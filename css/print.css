@@ -1,31 +1,84 @@
-<div class="printable-letter">
-  <!-- Date on the right -->
-  <div class="letter-date">October 14, 2026</div>
-  
-  <!-- Recipient Address Block -->
-  <div class="letter-recipient">
-    <div id="print-recipient-name"></div>
-    <div id="print-recipient-street"></div>
-    <div id="print-recipient-city-state-zip"></div>
-  </div>
+@media print {
+  /* Hide all dashboard UI, buttons, and navigation */
+  body > *:not(#print-area) {
+    display: none !important;
+  }
 
-  <!-- Salutation -->
-  <div class="letter-salutation" id="print-salutation">Dear Bob,</div>
+  body, html {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 
-  <!-- Body Paragraphs -->
-  <div class="letter-body">
-    <p>I am writing to you today as a dedicated fan of your career. I have always admired your contributions to the game, and it would be a true honor to add your signature to my collection.</p>
-    <p>I have enclosed the following item(s) for your consideration:</p>
-    <p id="print-items-enclosed" style="margin-left: 20px; font-weight: bold;"></p>
-    <p>I have also included a self-addressed stamped envelope (SASE) for your convenience. If you are unable to sign at this time, I completely understand and appreciate your time nonetheless.</p>
-    <p>Thank you very much for taking the time to read this letter and for being so gracious with your fans.</p>
-  </div>
+  /* Reveal print area */
+  #print-area {
+    display: block !important;
+  }
 
-  <!-- Sign-off -->
-  <div class="letter-closing">
-    <p>Sincerely,</p>
-    <br><br>
-    <p id="print-sender-name">Camilo</p>
-    <p id="print-sender-address">945 C street<br>Brawley, Ca. 92227</p>
-  </div>
-</div>
+  /* Page 1: Standard Letter Layout */
+  .printable-letter {
+    display: block;
+    width: 8.5in;
+    min-height: 11in;
+    padding: 1in;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #000000;
+    position: relative;
+    page-break-after: always;
+  }
+
+  .letter-date {
+    text-align: right;
+    margin-bottom: 30px;
+  }
+
+  .letter-recipient {
+    margin-bottom: 25px;
+    line-height: 1.4;
+  }
+
+  .letter-salutation {
+    margin-bottom: 20px;
+  }
+
+  .letter-body p {
+    margin-bottom: 15px;
+  }
+
+  .letter-closing {
+    margin-top: 40px;
+    line-height: 1.4;
+  }
+
+  /* Page 2: #10 Outer Envelope Layout */
+  .printable-envelope {
+    display: block;
+    width: 9.5in;
+    height: 4.125in;
+    padding: 0.5in;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: #000000;
+    position: relative;
+    page-break-before: always;
+  }
+
+  .envelope-return-address {
+    position: absolute;
+    top: 0.4in;
+    left: 0.5in;
+    font-size: 10pt;
+    line-height: 1.2;
+  }
+
+  .envelope-recipient-address {
+    position: absolute;
+    top: 2.0in;
+    left: 4.0in;
+    font-size: 12pt;
+    line-height: 1.3;
+  }
+}

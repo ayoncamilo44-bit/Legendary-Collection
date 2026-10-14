@@ -286,20 +286,29 @@
           });
         }
     </script>
-   <script type="module">
-        import { generateTTMLetter } from './js/letter-generator.js';
+  <script type="module">
+  import { generateTTMLetter } from './js/letter-generator.js';
 
-        document.getElementById('letterGenForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const signerName = document.getElementById('signerName').value;
-            const signerAddress = document.getElementById('signerAddress').value;
-            const itemsSent = document.getElementById('itemsSent').value.split(',').map(item => item.trim());
-            const senderName = document.getElementById('senderName').value;
-            const senderAddress = document.getElementById('senderAddress').value;
+  // Find the button by its exact text or class and attach click event
+  const printBtn = document.querySelector('.btn-print');
+  if (printBtn) {
+    printBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Grab input values directly from the text boxes on your screen
+      const inputs = document.querySelectorAll('#print-area ~ * input, .container input, input');
+      const textareas = document.querySelectorAll('textarea');
 
-            generateTTMLetter({ signerName, signerAddress, itemsSent, senderName, senderAddress });
-        });
-    </script> 
+      const signerName = document.querySelector('input[placeholder="e.g. Jack Youngblood"]')?.value || "";
+      const itemsEnclosed = document.querySelector('input[placeholder*="Topps"]')?.value || "";
+      const signerAddress = document.querySelector('textarea')?.value || "";
+      const senderName = document.querySelector('input[placeholder="Your Name"]')?.value || "Camilo";
+      const returnAddress = document.querySelectorAll('textarea')[1]?.value || "945 C street\nBrawley, Ca. 92227";
+
+      generateTTMLetter(signerName, signerAddress, itemsEnclosed, senderName, returnAddress);
+    });
+  }
+</script>
     <!-- Hidden on screen, dedicated layout for printing -->
 <div id="print-area" style="display: none;">
   <!-- PAGE 1: FAN LETTER -->

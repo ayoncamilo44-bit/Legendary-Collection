@@ -1,41 +1,47 @@
-/* Styling for Letter & Envelope Printing */
 @media print {
-  /* Hide everything on the page by default */
-  body * {
-    visibility: hidden;
+  /* 1. Hide the entire application UI (dashboard, form, log table, buttons) */
+  body > *:not(#print-area) {
+    display: none !important;
   }
 
-  /* Only show the printable sections and their children */
-  .printable-letter,
-  .printable-letter *,
-  .printable-envelope,
-  .printable-envelope * {
-    visibility: visible;
+  /* 2. Reset body styles for print */
+  body, html {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
   }
 
-  /* Position the print content cleanly at the top of the page */
+  /* 3. Ensure the print wrapper takes over full page display */
+  #print-area {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Page 1: Standard Letter (8.5" x 11") */
   .printable-letter {
-    position: absolute;
-    left: 0;
-    top: 0;
+    display: block;
     width: 8.5in;
     min-height: 11in;
     padding: 1in;
+    box-sizing: border-box;
     font-family: 'Times New Roman', Times, serif;
     font-size: 12pt;
     line-height: 1.5;
-    page-break-after: always;
+    color: #000000;
+    page-break-after: always; /* Forces envelope to start on Page 2 */
   }
 
-  /* #10 Outer Envelope Layout */
+  /* Page 2: #10 Outer Envelope (9.5" x 4.125") */
   .printable-envelope {
-    position: absolute;
-    left: 0;
-    top: 0;
+    display: block;
     width: 9.5in;
     height: 4.125in;
     padding: 0.5in;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
+    color: #000000;
+    position: relative;
     page-break-before: always;
   }
 
@@ -53,5 +59,12 @@
     left: 4.0in;
     font-size: 12pt;
     line-height: 1.3;
+  }
+}
+
+/* Hide print area on screen so it never disrupts dashboard view */
+@media screen {
+  #print-area {
+    display: none !important;
   }
 }

@@ -286,29 +286,22 @@
           });
         }
     </script>
-  <script type="module">
+ <script type="module">
   import { generateTTMLetter } from './js/letter-generator.js';
 
-  // Find the button by its exact text or class and attach click event
-  const printBtn = document.querySelector('.btn-print');
-  if (printBtn) {
-    printBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      // Grab input values directly from the text boxes on your screen
-      const inputs = document.querySelectorAll('#print-area ~ * input, .container input, input');
-      const textareas = document.querySelectorAll('textarea');
-
-      const signerName = document.querySelector('input[placeholder="e.g. Jack Youngblood"]')?.value || "";
-      const itemsEnclosed = document.querySelector('input[placeholder*="Topps"]')?.value || "";
-      const signerAddress = document.querySelector('textarea')?.value || "";
-      const senderName = document.querySelector('input[placeholder="Your Name"]')?.value || "Camilo";
-      const returnAddress = document.querySelectorAll('textarea')[1]?.value || "945 C street\nBrawley, Ca. 92227";
-
-      generateTTMLetter(signerName, signerAddress, itemsEnclosed, senderName, returnAddress);
-    });
-  }
+  // Attach directly to the print button once page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const printBtn = document.querySelector('button.btn-print, #ttm-print-btn, button[type="button"]');
+    
+    if (printBtn) {
+      printBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevents page reload/data wipe
+        generateTTMLetter();
+      });
+    }
+  });
 </script>
+
     <!-- Hidden on screen, dedicated layout for printing -->
 <div id="print-area" style="display: none;">
   <!-- PAGE 1: FAN LETTER -->

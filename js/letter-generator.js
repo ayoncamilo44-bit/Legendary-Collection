@@ -1,64 +1,26 @@
-/**
- * Letter & Envelope Generator for Legendary Collection
- */
+// Complete Letter and Envelope Generator Script
 
-export function generateTTMLetter({ signerName, signerAddress, itemsSent, senderName, senderAddress }) {
-  const today = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+function generateTTMLetter() {
+  // 1. Grab values from your form fields
+  const signerName = document.querySelector('input[name="signerName"], #signer-name-input').value;
+  const signerAddress = document.querySelector('textarea[name="address"], #signer-address-input').value;
+  const itemsEnclosed = document.querySelector('input[name="items"], #items-input').value;
+
+  // 2. Populate the print HTML elements
+  document.getElementById('print-date').innerText = new Date().toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric'
   });
+  
+  document.getElementById('print-recipient-name').innerText = signerName;
+  document.getElementById('print-recipient-address').innerText = signerAddress;
+  document.getElementById('print-salutation').innerText = `Dear ${signerName},`;
+  document.getElementById('print-items-enclosed').innerText = itemsEnclosed;
+  
+  // Populate the envelope recipient section
+  document.getElementById('print-envelope-recipient').innerText = `${signerName}\n${signerAddress}`;
 
-  const letterHTML = `
-    <div class="printable-letter">
-      <p style="text-align: right;">${today}</p>
-      
-      <p><strong>${signerName}</strong><br/>
-      ${signerAddress.replace(/\n/g, '<br/>')}</p>
-
-      <p>Dear ${signerName},</p>
-
-      <p>I am writing to you today as a dedicated fan of your career. I have always admired your contributions to the game, and it would be a true honor to add your signature to my collection.</p>
-
-      <p>I have enclosed the following item(s) for your consideration:</p>
-      <ul>
-        ${itemsSent.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-
-      <p>I have also included a self-addressed stamped envelope (SASE) for your convenience. If you are unable to sign at this time, I completely understand and appreciate your time nonetheless.</p>
-
-      <p>Thank you very much for taking the time to read this letter and for being so gracious with your fans.</p>
-
-      <br/>
-      <p>Sincerely,</p>
-      <br/>
-      <p><strong>${senderName}</strong><br/>
-      ${senderAddress.replace(/\n/g, '<br/>')}</p>
-    </div>
-
-    <!-- #10 Outer Envelope -->
-    <div class="printable-envelope">
-      <div class="envelope-return-address">
-        <strong>${senderName}</strong><br/>
-        ${senderAddress.replace(/\n/g, '<br/>')}
-      </div>
-      <div class="envelope-recipient-address">
-        <strong>${signerName}</strong><br/>
-        ${signerAddress.replace(/\n/g, '<br/>')}
-      </div>
-    </div>
-  `;
-
-  // Create temporary container and trigger print dialog
-  const printContainer = document.createElement('div');
-  printContainer.id = 'print-section';
-  printContainer.innerHTML = letterHTML;
-  document.body.appendChild(printContainer);
-
+  // 3. Trigger browser print dialog
   window.print();
-
-  // Clean up print section after printing
-  document.body.removeChild(printContainer);
 }
 
 // Attach to window for modular HTML execution

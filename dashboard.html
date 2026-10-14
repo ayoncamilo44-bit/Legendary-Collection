@@ -300,6 +300,39 @@
             generateTTMLetter({ signerName, signerAddress, itemsSent, senderName, senderAddress });
         });
     </script> 
+    <!-- Hidden on screen, dedicated layout for printing -->
+<div id="print-area" style="display: none;">
+  <!-- PAGE 1: FAN LETTER -->
+  <div class="printable-letter">
+    <div class="letter-date" id="print-date"></div>
+    <div class="letter-recipient">
+      <div id="print-recipient-name"></div>
+      <div id="print-recipient-address"></div>
+    </div>
+    <div class="letter-salutation" id="print-salutation"></div>
+    <div class="letter-body">
+      <p>I am writing to you today as a dedicated fan of your career. I have always admired your contributions to the game, and it would be a true honor to add your signature to my collection.</p>
+      <p>I have enclosed the following item(s) for your consideration:</p>
+      <p id="print-items-enclosed" style="margin-left: 20px; font-weight: bold;"></p>
+      <p>I have also included a self-addressed stamped envelope (SASE) for your convenience. If you are unable to sign at this time, I completely understand and appreciate your time nonetheless.</p>
+      <p>Thank you very much for taking the time to read this letter and for being so gracious with your fans.</p>
+    </div>
+    <div class="letter-closing">
+      <p>Sincerely,</p>
+      <br><br>
+      <p id="print-sender-name">Camilo</p>
+      <p id="print-sender-address">945 C street<br>Brawley, Ca. 92227</p>
+    </div>
+  </div>
+
+  <!-- PAGE 2: #10 OUTER ENVELOPE -->
+  <div class="printable-envelope">
+    <div class="envelope-return-address">
+      Camilo<br>945 C street<br>Brawley, Ca. 92227
+    </div>
+    <div class="envelope-recipient-address" id="print-envelope-recipient"></div>
+  </div>
+</div>
 </body>
 </html>
   

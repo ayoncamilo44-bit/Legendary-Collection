@@ -1,27 +1,27 @@
-// Complete Letter and Envelope Generator Script
+export function generateTTMLetter(signerName, signerAddress, itemsEnclosed, senderName, returnAddress) {
+  // 1. Populate the print HTML elements
+  const dateEl = document.getElementById('print-date');
+  if (dateEl) {
+    dateEl.innerText = new Date().toLocaleDateString('en-US', {
+      month: 'long', day: 'numeric', year: 'numeric'
+    });
+  }
 
-function generateTTMLetter() {
-  // 1. Grab values from your form fields
-  const signerName = document.querySelector('input[name="signerName"], #signer-name-input').value;
-  const signerAddress = document.querySelector('textarea[name="address"], #signer-address-input').value;
-  const itemsEnclosed = document.querySelector('input[name="items"], #items-input').value;
+  const setElText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.innerText = text;
+  };
 
-  // 2. Populate the print HTML elements
-  document.getElementById('print-date').innerText = new Date().toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric'
-  });
-  
-  document.getElementById('print-recipient-name').innerText = signerName;
-  document.getElementById('print-recipient-address').innerText = signerAddress;
-  document.getElementById('print-salutation').innerText = `Dear ${signerName},`;
-  document.getElementById('print-items-enclosed').innerText = itemsEnclosed;
-  
-  // Populate the envelope recipient section
-  document.getElementById('print-envelope-recipient').innerText = `${signerName}\n${signerAddress}`;
+  setElText('print-recipient-name', signerName);
+  setElText('print-recipient-address', signerAddress);
+  setElText('print-salutation', `Dear ${signerName},`);
+  setElText('print-items-enclosed', itemsEnclosed);
+  setElText('print-sender-name', senderName);
+  setElText('print-envelope-recipient', `${signerName}\n${signerAddress}`);
 
-  // 3. Trigger browser print dialog
+  // 2. Trigger the browser print dialog
   window.print();
 }
 
-// Attach to window for modular HTML execution
+// Attach globally just in case
 window.generateTTMLetter = generateTTMLetter;

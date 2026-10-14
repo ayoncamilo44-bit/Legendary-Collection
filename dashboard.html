@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
+    <link rel="manifest" href="./manifest.json" />
+<meta name="theme-color" content="#6366f1" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -220,8 +222,7 @@
             &copy; 2026 Legendary Collection. Powered by Supabase & GitHub Pages.
         </div>
     </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script type="module" src="./js/csv.js"></script>
     <script type="module" src="./js/letter-generator.js"></script>
     <script type="module" src="./js/dashboard.js"></script>
@@ -231,5 +232,15 @@
     <script>
         if (typeof lucide !== 'undefined') lucide.createIcons();
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+              .then(reg => console.log('Service Worker registered successfully!', reg.scope))
+              .catch(err => console.error('Service Worker registration failed:', err));
+          });
+        }
+    </script>
 </body>
 </html>
+  

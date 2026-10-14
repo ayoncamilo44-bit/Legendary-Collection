@@ -1,0 +1,16 @@
+{
+  "name": "Legendary Collection - TTM Autographs",
+  "short_name": "LegendaryTTM",
+  "description": "Track and log TTM sports autograph mail returns.",
+  "start_url": "./dashboard.html",
+  "display": "standalone",
+  "background_color": "#0a0f1a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "./assets/legitimate-collector-social.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

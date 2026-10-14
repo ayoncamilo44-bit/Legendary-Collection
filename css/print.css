@@ -1,35 +1,42 @@
 /* Styling for Letter & Envelope Printing */
 @media print {
-  /* Hide all website navigation, sidebars, and buttons when printing */
-  nav, header, footer, .sidebar, .btn, .no-print {
-    display: none !important;
+  /* Hide everything on the page by default */
+  body * {
+    visibility: hidden;
   }
 
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    margin: 0;
-    padding: 0;
+  /* Only show the printable sections and their children */
+  .printable-letter,
+  .printable-letter *,
+  .printable-envelope,
+  .printable-envelope * {
+    visibility: visible;
   }
 
-  /* Printable Letter Layout */
+  /* Position the print content cleanly at the top of the page */
   .printable-letter {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 8.5in;
     min-height: 11in;
     padding: 1in;
     font-family: 'Times New Roman', Times, serif;
     font-size: 12pt;
     line-height: 1.5;
+    page-break-after: always;
   }
 
   /* #10 Outer Envelope Layout */
   .printable-envelope {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 9.5in;
     height: 4.125in;
     padding: 0.5in;
-    position: relative;
-    page-break-before: always;
     font-family: Arial, sans-serif;
+    page-break-before: always;
   }
 
   .envelope-return-address {

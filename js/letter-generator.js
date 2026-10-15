@@ -51,10 +51,69 @@
         $('print-envelope-recipient').textContent = signer + '\n' + val('signerAddress');
     }
 
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (character) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
+        });
+    }
+
+    function printEnvelope() {
+        var printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            window.alert('Your browser blocked the envelope preview. Allow pop-ups for this site, then try again.');
+            return;
+        }
+
+        var returnAddress = escapeHtml(val('senderName') + '\n' + val('senderAddress'));
+        var recipientAddress = escapeHtml(val('signerName') + '\n' + val('signerAddress'));
+        printWindow.document.open();
+        printWindow.document.write(`<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>#10 Envelope Address</title>
+    <style>
+        @page { size: 9.5in 4.125in; margin: 0; }
+        html, body { width: 9.5in; height: 4.125in; margin: 0; padding: 0; background: #fff; }
+        body { color: #000; font-family: Arial, Helvetica, sans-serif; }
+        .envelope { position: relative; box-sizing: border-box; width: 9.5in; height: 4.125in; overflow: hidden; }
+        .return { position: absolute; left: .5in; top: .4in; font-size: 11pt; line-height: 1.35; white-space: pre-line; }
+        .recipient { position: absolute; left: 4in; top: 1.75in; max-width: 5in; font-size: 14pt; line-height: 1.4; white-space: pre-line; text-transform: uppercase; }
+        @media screen { body { margin: 24px; } .envelope { outline: 1px solid #999; box-shadow: 0 2px 16px #999; } }
+    </style>
+</head>
+<body>
+    <main class="envelope" aria-label="Number 10 envelope print preview">
+        <div class="return">${returnAddress}</div>
+        <div class="recipient">${recipientAddress}</div>
+    </main>
+</body>
+</html>`);
+        printWindow.document.close();
+        printWindow.addEventListener('afterprint', function () { printWindow.close(); }, { once: true });
+        var didPrint = false;
+        function startPrint() {
+            if (didPrint || printWindow.closed) return;
+            didPrint = true;
+            printWindow.focus();
+            printWindow.print();
+        }
+        printWindow.addEventListener('load', function () {
+            startPrint();
+        }, { once: true });
+        // document.write can finish before the load listener is attached in some browsers.
+        window.setTimeout(startPrint, 300);
+    }
+
     function printPart(part) {
         if (!form.reportValidity()) return;   // shows "please fill out this field" on anything missing
-        fill();
         remember();
+        if (part === 'envelope') {
+            printEnvelope();
+            return;
+        }
+        fill();
         document.body.classList.add('print-' + part);
         window.print();
     }

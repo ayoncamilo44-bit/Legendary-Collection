@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <link rel="manifest" href="./manifest.json" />
-<meta name="theme-color" content="#6366f1" />
-    <link rel="stylesheet" href="./css/print.css" media="print" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#6366f1">
     <meta name="google-site-verification" content="Bf-V4lwA8AEGC1P_8zE4N2MrT1-1uEEP6yN8kSKxH9A">
     <title>Collector Dashboard | Legendary Collection</title>
     <meta name="description" content="Manage your signer records and import TTM collecting data in your Legendary Collection dashboard.">
@@ -179,48 +178,49 @@
             </div>
             <div id="uploadStatus" class="mt-4 text-sm font-semibold hidden"></div>
         </section>
-        <!-- Letter & Envelope Generator UI -->
+
+        <!-- Letter & Envelope Generator -->
         <section class="glass-card rounded-2xl p-8 mb-8">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
                     <i data-lucide="printer" class="w-5 h-5 text-accent"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-white">TTM Letter & Envelope Generator</h2>
-                    <p class="text-sm text-gray-400">Generate a print-ready fan letter and #10 outer envelope.</p>
+                    <h2 class="text-xl font-bold text-white">TTM Letter &amp; Envelope Generator</h2>
+                    <p class="text-sm text-gray-400">Fill this in, then print the fan letter on regular paper and the address on a #10 envelope. Nothing is saved or sent anywhere.</p>
                 </div>
             </div>
 
             <form id="letterGenForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-2">Signer Name</label>
+                    <label for="signerName" class="block text-xs font-semibold text-gray-300 uppercase mb-2">Signer Name</label>
                     <input type="text" id="signerName" required placeholder="e.g. Jack Youngblood" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-2">Items Enclosed (comma separated)</label>
+                    <label for="itemsSent" class="block text-xs font-semibold text-gray-300 uppercase mb-2">Items Enclosed (comma separated)</label>
                     <input type="text" id="itemsSent" required placeholder="e.g. 1981 Topps #261, 8x10 Photo" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent">
                 </div>
-
                 <div class="md:col-span-2">
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-2">Signer Mailing Address</label>
-                    <textarea id="signerAddress" rows="2" required placeholder="P.O. Box or Street Address&#10;City, State ZIP" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent"></textarea>
+                    <label for="signerAddress" class="block text-xs font-semibold text-gray-300 uppercase mb-2">Signer Mailing Address</label>
+                    <textarea id="signerAddress" rows="3" required placeholder="P.O. Box or Street Address&#10;City, State ZIP" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent"></textarea>
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-2">Your Name (Sender)</label>
+                    <label for="senderName" class="block text-xs font-semibold text-gray-300 uppercase mb-2">Your Name (Sender)</label>
                     <input type="text" id="senderName" required placeholder="Your Name" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-2">Your Return Address</label>
-                    <textarea id="senderAddress" rows="2" required placeholder="Your Street Address&#10;City, State ZIP" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent"></textarea>
+                    <label for="senderAddress" class="block text-xs font-semibold text-gray-300 uppercase mb-2">Your Return Address</label>
+                    <textarea id="senderAddress" rows="3" required placeholder="Your Street Address&#10;City, State ZIP" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent"></textarea>
                 </div>
-
-                <div class="md:col-span-2 flex justify-end">
-                    <button type="submit" class="gradient-bg text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 smooth-transition flex items-center gap-2">
-                        <i data-lucide="printer" class="w-4 h-4"></i> Print Letter & Envelope
-                    </button>
+                <div class="md:col-span-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="rememberSender" class="w-4 h-4 accent-indigo-500">
+                        Remember my name and return address on this device (stored only in this browser)
+                    </label>
+                </div>
+                <div class="md:col-span-2 flex flex-col sm:flex-row gap-3 sm:justify-end">
+                    <button type="button" id="printLetterBtn" class="gradient-bg text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 smooth-transition flex items-center justify-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i> Print Letter</button>
+                    <button type="button" id="printEnvelopeBtn" class="glass-card text-white font-semibold px-6 py-3 rounded-xl hover:bg-darkHover smooth-transition border border-darkBorder flex items-center justify-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Print #10 Envelope</button>
                 </div>
             </form>
         </section>
@@ -267,74 +267,70 @@
             &copy; 2026 Legendary Collection. Powered by Supabase & GitHub Pages.
         </div>
     </footer>
-<script src="./js/papaparse.min.js"></script>
+
+    <script src="./js/papaparse.min.js"></script>
     <script type="module" src="./js/csv.js"></script>
-    <script type="module" src="./js/letter-generator.js"></script>
     <script type="module" src="./js/dashboard.js"></script>
     <script type="module" src="./js/auth.js"></script>
     <script type="module" src="./js/affiliates.js"></script>
     <script type="module" src="./js/analytics.js"></script>
+    <script src="./js/letter-generator.js"></script>
     <script>
         if (typeof lucide !== 'undefined') lucide.createIcons();
-    </script>
-    <script>
+        // Remove any old offline copy of the site so visitors always get the newest pages.
         if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-              .then(reg => console.log('Service Worker registered successfully!', reg.scope))
-              .catch(err => console.error('Service Worker registration failed:', err));
-          });
+            navigator.serviceWorker.getRegistrations().then(function (list) { list.forEach(function (r) { r.unregister(); }); }).catch(function () {});
         }
     </script>
- <script type="module">
-  import { generateTTMLetter } from './js/letter-generator.js';
 
-  // Attach directly to the print button once page loads
-  document.addEventListener('DOMContentLoaded', () => {
-    const printBtn = document.querySelector('button.btn-print, #ttm-print-btn, button[type="button"]');
-    
-    if (printBtn) {
-      printBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevents page reload/data wipe
-        generateTTMLetter();
-      });
-    }
-  });
-</script>
-
-    <!-- Hidden on screen, dedicated layout for printing -->
-<div id="print-area" style="display: none;">
-  <!-- PAGE 1: FAN LETTER -->
-  <div class="printable-letter">
-    <div class="letter-date" id="print-date"></div>
-    <div class="letter-recipient">
-      <div id="print-recipient-name"></div>
-      <div id="print-recipient-address"></div>
+    <!-- Print layout: hidden on screen, shown only when printing -->
+    <style>
+        #print-area { display: none; }
+        @page letter { size: 8.5in 11in; margin: 1in; }
+        @page envelope { size: 9.5in 4.125in; margin: 0; }
+        @media print {
+            html, body { background: #fff !important; color: #000 !important; margin: 0 !important; padding: 0 !important; }
+            body > *:not(#print-area) { display: none !important; }
+            #print-area { display: block !important; }
+            .printable-letter { page: letter; font: 12pt/1.5 Georgia, "Times New Roman", serif; color: #000; }
+            .printable-letter p { margin: 0 0 12pt; }
+            .letter-date { margin-bottom: 24pt; }
+            .letter-recipient { margin-bottom: 24pt; white-space: pre-line; }
+            .letter-body { margin-bottom: 18pt; }
+            #print-sender-address { white-space: pre-line; }
+            .printable-envelope { page: envelope; position: relative; width: 9.5in; height: 4.125in; font-family: Arial, Helvetica, sans-serif; color: #000; }
+            .envelope-return-address { position: absolute; left: 0.5in; top: 0.4in; white-space: pre-line; font-size: 11pt; line-height: 1.35; }
+            .envelope-recipient-address { position: absolute; left: 4in; top: 1.9in; white-space: pre-line; font-size: 14pt; line-height: 1.4; text-transform: uppercase; }
+            body.print-letter .printable-envelope { display: none !important; }
+            body.print-envelope .printable-letter { display: none !important; }
+        }
+    </style>
+    <div id="print-area">
+        <div class="printable-letter">
+            <div class="letter-date" id="print-date"></div>
+            <div class="letter-recipient">
+                <div id="print-recipient-name"></div>
+                <div id="print-recipient-address" style="white-space: pre-line;"></div>
+            </div>
+            <div class="letter-salutation" id="print-salutation" style="margin-bottom: 12pt;"></div>
+            <div class="letter-body">
+                <p>I am writing to you today as a dedicated fan of your career. I have always admired your contributions to the game, and it would be a true honor to add your signature to my collection.</p>
+                <p>I have enclosed the following item(s) for your consideration:</p>
+                <div id="print-items-enclosed" style="margin: 0 0 12pt 20px; font-weight: bold;"></div>
+                <p>I have also included a self-addressed stamped envelope (SASE) for your convenience. If you are unable to sign at this time, I completely understand and appreciate your time nonetheless.</p>
+                <p>Thank you very much for taking the time to read this letter and for being so gracious with your fans.</p>
+            </div>
+            <div class="letter-closing">
+                <p>Sincerely,</p>
+                <br><br>
+                <p id="print-sender-name"></p>
+                <p id="print-sender-address"></p>
+            </div>
+        </div>
+        <div class="printable-envelope">
+            <div class="envelope-return-address" id="print-envelope-return"></div>
+            <div class="envelope-recipient-address" id="print-envelope-recipient"></div>
+        </div>
     </div>
-    <div class="letter-salutation" id="print-salutation"></div>
-    <div class="letter-body">
-      <p>I am writing to you today as a dedicated fan of your career. I have always admired your contributions to the game, and it would be a true honor to add your signature to my collection.</p>
-      <p>I have enclosed the following item(s) for your consideration:</p>
-      <p id="print-items-enclosed" style="margin-left: 20px; font-weight: bold;"></p>
-      <p>I have also included a self-addressed stamped envelope (SASE) for your convenience. If you are unable to sign at this time, I completely understand and appreciate your time nonetheless.</p>
-      <p>Thank you very much for taking the time to read this letter and for being so gracious with your fans.</p>
-    </div>
-    <div class="letter-closing">
-      <p>Sincerely,</p>
-      <br><br>
-      <p id="print-sender-name">Camilo</p>
-      <p id="print-sender-address">945 C street<br>Brawley, Ca. 92227</p>
-    </div>
-  </div>
-
-  <!-- PAGE 2: #10 OUTER ENVELOPE -->
-  <div class="printable-envelope">
-    <div class="envelope-return-address">
-      Camilo<br>945 C street<br>Brawley, Ca. 92227
-    </div>
-    <div class="envelope-recipient-address" id="print-envelope-recipient"></div>
-  </div>
-</div>
 </body>
 </html>
-  

@@ -13,15 +13,26 @@ The site uses Supabase Auth for Google OAuth. Configure these exact URLs:
 
 The sign-in button returns users to the page where they started. A Google `redirect_uri_mismatch` means the callback in step 3 is missing or does not match exactly. Verify that the OAuth client ID and secret in Supabase belong to the same Google Cloud project/client where the callback is registered; if the consent screen shows an unexpected app name, check that you have not entered credentials for the wrong app. The publishable key is intended for browser use; never put a Supabase service-role key in this static site.
 
+## Owner access and moderation setup
+
+The site source controls the layout and appearance. Keep GitHub write access limited to you. `.github/CODEOWNERS` names the owner as the reviewer; in GitHub repository settings, enable a ruleset for `main` that requires pull requests and code owner review before merging. The public repository lets people read and fork the code; it does not grant them write access to this site's deployment.
+
+In Supabase, open **SQL Editor** and run `supabase-setup.sql`. This installs the row-level access rules, admin role table, signer suggestion queue, and tables used by the community and Showcase pages. Community posts and Showcase stories publish immediately. Authors can edit or delete their own entries; they cannot change site layout, feature a Showcase story, or manage the site. Signer suggestions go into a separate owner review queue and are copied to the public directory only when approved. CSV imports and signer review require the owner role. The database also limits each account to 10 submissions across all three forms per 24-hour period.
+
+To assign the owner role:
+
+1. Sign in to the published site with the Google account that should own the site.
+2. In Supabase **Authentication → Users**, copy that account's user UUID.
+3. In the Supabase SQL Editor, run `insert into public.site_admins (user_id) values ('YOUR-AUTH-USER-UUID');`, replacing the example with the UUID. This assignment is performed in the trusted SQL editor; site users cannot grant themselves the role.
+4. Refresh the site while signed in. The **Site Admin** link opens `admin.html`, where pending signer suggestions can be approved or rejected and site owner tools are available.
+
+To revoke owner access, delete that account's row from `public.site_admins` in the Supabase SQL Editor. Do not place a Supabase service-role or secret key in this static site.
+
 ## Importing spreadsheet signers
 
-The Excel-processing Python script runs on your computer and exports `master_data.csv`; it does not update the website or Supabase by itself. Run it where the Excel files are available, then sign in to the site, open **Dashboard**, and upload `master_data.csv` in the CSV import area. The importer handles quoted CSV fields such as addresses containing commas and maps the supported signer columns into the database.
+The Excel-processing Python script runs on your computer and exports `master_data.csv`; it does not update the website or Supabase. Run it where the Excel files are available, then sign in with the owner account, open **Dashboard**, and upload `master_data.csv` in the owner-only CSV import area. The importer handles quoted CSV fields such as addresses containing commas and maps the supported signer columns into the database.
 
-## Add Signer and Community setup
-
-Both pages write through Supabase and require Google sign-in. Before using them, open the Supabase **SQL Editor**, paste and run the contents of `supabase-setup.sql`, then refresh the site. This creates the community-post table, allows public reading of signers and community posts, and limits new signer records and community posts to authenticated users. Without this one-time database setup, Supabase rejects submissions and the community feed cannot load.
-
-Community posts can include one optional photo (JPG, PNG, or WebP, up to 5 MB), stored in the `community-posts` Supabase Storage bucket created by `supabase-setup.sql`. The form does not collect mailing addresses.
+Collectors can suggest individual signers while signed in. Those suggestions remain private in the review queue until approved. Community posts and stories can include one optional photo (JPG, PNG, or WebP, up to 5 MB), stored in the `community-posts` Supabase Storage bucket, and publish as soon as submitted. The community form asks contributors not to include private mailing addresses.
 
 ## Affiliate partners
 

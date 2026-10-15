@@ -33,6 +33,7 @@ const toolbox = document.getElementById('toolbox');
 let nextPage = 0;
 let loading = false;
 let currentFont = 'modern';
+let currentUserId = null;
 
 function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -139,6 +140,7 @@ function renderStory(story) {
             <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" class="block mt-8">
                 <img src="${escapeHtml(imageUrl)}" alt="Photo shared with the story ${escapeHtml(story.title)}" loading="lazy" class="rounded-2xl max-h-[28rem] w-auto max-w-full border border-darkBorder">
             </a>` : ''}
+        ${currentUserId && story.user_id === currentUserId ? `<div class="flex gap-3 mt-5"><button type="button" data-story-edit="${escapeHtml(story.id)}" class="text-sm text-accentHover underline">Edit story</button><button type="button" data-story-delete="${escapeHtml(story.id)}" class="text-sm text-gray-400 underline">Delete story</button></div>` : ''}
     `;
     return article;
 }
@@ -154,7 +156,8 @@ async function loadStories(options) {
 
     const { data, error } = await supabase
         .from('showcase_stories')
-        .select('id, author_name, title, tag, story, image_url, font, featured, created_at')
+        .select('id, user_id, author_name, title, tag, story, image_url, font, featured, created_at')
+        .eq('status', 'approved')
         .order('featured', { ascending: false })
         .order('created_at', { ascending: false })
         .range(from, to);
@@ -187,6 +190,13 @@ async function loadStories(options) {
 
 if (feed) {
     feed.addEventListener('click', event => {
+        const edit = event.target.closest('[data-story-edit]');
+        const remove = event.target.closest('[data-story-delete]');
+        const id = edit?.dataset.storyEdit || remove?.dataset.storyDelete;
+        if (id) {
+            manageStory(id, !!edit);
+            return;
+        }
         const btn = event.target.closest('button[data-readmore]');
         if (!btn) return;
         const body = btn.parentElement.querySelector('.story-body');
@@ -194,6 +204,24 @@ if (feed) {
         const collapsed = body.classList.toggle('story-clamp');
         btn.textContent = collapsed ? 'Read more' : 'Show less';
     });
+}
+
+async function manageStory(id, editing) {
+    if (editing) {
+        const story = await supabase.from('showcase_stories').select('title, story').eq('id', id).single();
+        if (story.error) { setStatus('Could not load your story to edit.', 'error'); return; }
+        const title = window.prompt('Edit your story title', story.data.title);
+        if (title === null || !title.trim()) return;
+        const text = window.prompt('Edit your story', story.data.story);
+        if (text === null || !text.trim()) return;
+        const { error } = await supabase.from('showcase_stories').update({ title: title.trim().slice(0, 150), story: text.trim().slice(0, MAX_STORY_CHARS) }).eq('id', id);
+        if (error) { setStatus('Could not update your story.', 'error'); return; }
+        await loadStories({ reset: true });
+    } else if (window.confirm('Delete your story? This cannot be undone.')) {
+        const { error } = await supabase.from('showcase_stories').delete().eq('id', id);
+        if (error) { setStatus('Could not delete your story.', 'error'); return; }
+        await loadStories({ reset: true });
+    }
 }
 
 if (fontOptions) {
@@ -288,17 +316,18 @@ if (form) {
                 tag: tag,
                 story: story.slice(0, MAX_STORY_CHARS),
                 image_url: imageUrl,
-                font: currentFont
+                font: currentFont,
+                status: 'approved',
+                featured: false
             });
 
             if (insertError) throw insertError;
 
-            setStatus('Shared! Thank you for telling your story.', 'success');
+            setStatus('Your story is live in the Showcase.', 'success');
             form.reset();
             applyFont('modern');
             updateCount();
             resetPhotoPreview();
-            await loadStories({ reset: true });
         } catch (error) {
             console.error('Could not share story', error);
             if (uploadedPath) {
@@ -316,6 +345,10 @@ if (loadMoreBtn) loadMoreBtn.addEventListener('click', () => loadStories());
 
 if (toolbox && window.matchMedia('(min-width: 1024px)').matches) toolbox.open = true;
 
+supabase.auth.getSession().then(({ data }) => {
+    currentUserId = data?.session?.user?.id || null;
+    loadStories({ reset: true });
+});
+
 applyFont('modern');
 updateCount();
-loadStories({ reset: true });

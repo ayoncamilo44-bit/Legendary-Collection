@@ -1,11 +1,25 @@
 import { supabase } from './supabase.js';
+import { isSiteAdmin } from './access.js';
 
 let allSigners = [];
 
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     loadDashboard();
-    setupDragAndDrop();
+    setupOwnerImport();
 });
+
+async function setupOwnerImport() {
+    const section = document.getElementById('ownerCsvImport');
+    if (!section || !await isSiteAdmin()) return;
+    section.classList.remove('hidden');
+    setupDragAndDrop();
+}
 
 async function loadDashboard() {
     const tbody = document.getElementById('dashboardTableBody') || document.querySelector('tbody');
@@ -42,11 +56,11 @@ function renderDashboardTable(data) {
 
         return `
         <tr class="border-b border-darkBorder hover:bg-darkBg/40 transition">
-            <td class="px-4 py-3 font-semibold text-white">${signer.name || '-'}</td>
-            <td class="px-4 py-3 text-gray-300">${signer.sport || '-'} / ${signer.team || '-'}</td>
-            <td class="px-4 py-3 text-amber-400 font-semibold">${signer.success_rate || 'N/A'}</td>
-            <td class="px-4 py-3 text-green-400 font-semibold">${signer.avg_response || 'Pending'}</td>
-            <td class="px-4 py-3 text-gray-400 text-xs font-mono">${signer.tested_address || '-'}</td>
+            <td class="px-4 py-3 font-semibold text-white">${escapeHtml(signer.name || '-')}</td>
+            <td class="px-4 py-3 text-gray-300">${escapeHtml(signer.sport || '-')} / ${escapeHtml(signer.team || '-')}</td>
+            <td class="px-4 py-3 text-amber-400 font-semibold">${escapeHtml(signer.success_rate || 'N/A')}</td>
+            <td class="px-4 py-3 text-green-400 font-semibold">${escapeHtml(signer.avg_response || 'Pending')}</td>
+            <td class="px-4 py-3 text-gray-400 text-xs font-mono">${escapeHtml(signer.tested_address || '-')}</td>
             <td class="px-4 py-3 text-right">
                 <div class="flex items-center justify-end gap-1.5">
                     <a href="${ebayUrl}" rel="sponsored nofollow" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold rounded text-xs hover:bg-amber-400 hover:text-black transition">eBay</a>
@@ -99,6 +113,7 @@ async function parseAndUploadCSV(file) {
     }
 
     try {
+        if (!await isSiteAdmin()) throw new Error('CSV import is available to the site owner only.');
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
         if (!session) {

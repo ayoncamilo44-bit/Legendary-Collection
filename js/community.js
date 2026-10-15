@@ -25,6 +25,7 @@ const daysWrap = document.getElementById('postDaysWrap');
 
 let nextPage = 0;
 let loading = false;
+let currentUserId = null;
 
 function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -96,6 +97,7 @@ function renderPost(post) {
             <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" class="block mt-4">
                 <img src="${escapeHtml(imageUrl)}" alt="Photo shared with the ${escapeHtml(post.player_name)} post" loading="lazy" class="rounded-xl max-h-96 w-auto max-w-full border border-darkBorder">
             </a>` : ''}
+        ${currentUserId && post.user_id === currentUserId ? `<div class="flex gap-3 mt-4"><button type="button" data-post-edit="${escapeHtml(post.id)}" class="text-sm text-accentHover underline">Edit post</button><button type="button" data-post-delete="${escapeHtml(post.id)}" class="text-sm text-gray-400 underline">Delete post</button></div>` : ''}
     `;
     return article;
 }
@@ -111,7 +113,8 @@ async function loadPosts(options) {
 
     const { data, error } = await supabase
         .from('community_posts')
-        .select('id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
+        .select('id, user_id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
+        .eq('status', 'approved')
         .order('created_at', { ascending: false })
         .range(from, to);
 
@@ -249,16 +252,16 @@ if (form) {
                 result: resultValue,
                 days_to_response: (resultValue === 'story' || daysRaw === '') ? null : Number(daysRaw),
                 experience: experience.slice(0, 2000),
-                image_url: imageUrl
+                image_url: imageUrl,
+                status: 'approved'
             });
 
             if (insertError) throw insertError;
 
-            setStatus('Shared! Thanks for contributing.', 'success');
+            setStatus('Your post is live in the community feed.', 'success');
             form.reset();
             updateDaysVisibility();
             resetPhotoPreview();
-            await loadPosts({ reset: true });
             setTimeout(() => { window.closeShareModal(); clearStatus(); }, 900);
         } catch (error) {
             console.error('Could not share post', error);
@@ -285,4 +288,27 @@ document.addEventListener('keydown', event => {
 
 if (loadMoreBtn) loadMoreBtn.addEventListener('click', () => loadPosts());
 
-loadPosts({ reset: true });
+if (feed) feed.addEventListener('click', async event => {
+    const edit = event.target.closest('[data-post-edit]');
+    const remove = event.target.closest('[data-post-delete]');
+    const id = (edit || remove)?.dataset.postEdit || (edit || remove)?.dataset.postDelete;
+    if (!id) return;
+    if (edit) {
+        const post = await supabase.from('community_posts').select('experience').eq('id', id).single();
+        if (post.error) { setStatus('Could not load your post to edit.', 'error'); return; }
+        const experience = window.prompt('Edit your post', post.data.experience);
+        if (experience === null || !experience.trim()) return;
+        const { error } = await supabase.from('community_posts').update({ experience: experience.trim().slice(0, 2000) }).eq('id', id);
+        if (error) { setStatus('Could not update your post.', 'error'); return; }
+        await loadPosts({ reset: true });
+    } else if (window.confirm('Delete your post? This cannot be undone.')) {
+        const { error } = await supabase.from('community_posts').delete().eq('id', id);
+        if (error) { setStatus('Could not delete your post.', 'error'); return; }
+        await loadPosts({ reset: true });
+    }
+});
+
+supabase.auth.getSession().then(({ data }) => {
+    currentUserId = data?.session?.user?.id || null;
+    loadPosts({ reset: true });
+});

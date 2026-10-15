@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js';
+import { isSiteAdmin } from './access.js';
 
 function showAuthMessage(message) {
     const container = document.getElementById('auth-nav-btn');
@@ -51,22 +52,31 @@ window.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
 
-        authBtnContainer.innerHTML = session
-            ? `
+        if (session) {
+            const admin = await isSiteAdmin();
+            authBtnContainer.innerHTML = `
                 <div class="flex items-center gap-3">
                     <a href="dashboard.html" class="px-4 py-2 glass-card text-white rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover">
                         My Dashboard
                     </a>
+                    ${admin ? '<a href="admin.html" class="px-4 py-2 glass-card text-accent rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover">Site Admin</a>' : ''}
                     <button onclick="logout()" class="px-3 py-2 text-gray-400 hover:text-white smooth-transition">
                         Sign Out
                     </button>
                 </div>
-            `
-            : `
-                <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-white rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover border border-darkBorder">
-                    Sign in with Google
-                </button>
             `;
+        } else {
+            authBtnContainer.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-white rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover border border-darkBorder">
+                        Sign in with Google
+                    </button>
+                    <a href="admin.html" class="px-4 py-2 glass-card text-accent rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover border border-darkBorder">
+                        Owner Sign In
+                    </a>
+                </div>
+            `;
+        }
     } catch (error) {
         console.error('Unable to check sign-in status:', error);
         showAuthMessage('Sign-in status is unavailable. Check the Supabase project URL and publishable key.');

@@ -1,11 +1,19 @@
 import { supabase } from './supabase.js';
+import { isSiteAdmin } from './access.js';
 
 const supportedFields = ['name', 'sport', 'team', 'success_rate', 'avg_response', 'tested_address'];
 
 window.addEventListener('DOMContentLoaded', () => {
     setupManualEntry();
-    setupCsvImport();
+    setupOwnerCsvImport();
 });
+
+async function setupOwnerCsvImport() {
+    const section = document.getElementById('signerCsvImport');
+    if (!section || !await isSiteAdmin()) return;
+    section.classList.remove('hidden');
+    setupCsvImport();
+}
 
 function showStatus(message, isError = false, statusId = 'uploadStatus') {
     const status = document.getElementById(statusId);
@@ -19,10 +27,10 @@ async function requireSignedIn(statusId = 'uploadStatus') {
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) throw error;
     if (!session) {
-        showStatus('Sign in with Google before adding or importing signer records.', true, statusId);
+        showStatus('Sign in with Google before suggesting a signer.', true, statusId);
         return false;
     }
-    return true;
+    return session;
 }
 
 function setupManualEntry() {
@@ -36,7 +44,8 @@ function setupManualEntry() {
         submitButton.textContent = 'Adding signer...';
 
         try {
-            if (!await requireSignedIn('signerFormStatus')) return;
+            const session = await requireSignedIn('signerFormStatus');
+            if (!session) return;
 
             const record = {
                 name: document.getElementById('playerName').value.trim(),
@@ -46,11 +55,15 @@ function setupManualEntry() {
                 avg_response: document.getElementById('avgResponse').value.trim(),
                 tested_address: document.getElementById('testedAddress').value.trim()
             };
-            const { error } = await supabase.from('signers').insert(record);
+            const { error } = await supabase.from('signer_submissions').insert({
+                ...record,
+                user_id: session.user.id,
+                status: 'pending'
+            });
             if (error) throw error;
 
             form.reset();
-            showStatus(`${record.name} was added to the signer directory.`, false, 'signerFormStatus');
+            showStatus(`${record.name} was sent to the site owner for review.`, false, 'signerFormStatus');
         } catch (error) {
             console.error('Unable to add signer:', error);
             showStatus(getWriteErrorMessage(error), true, 'signerFormStatus');

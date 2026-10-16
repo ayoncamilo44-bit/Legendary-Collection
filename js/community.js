@@ -22,10 +22,19 @@ const photoInput = document.getElementById('postPhoto');
 const photoPreview = document.getElementById('postPhotoPreview');
 const resultSelect = document.getElementById('postResult');
 const daysWrap = document.getElementById('postDaysWrap');
+const editModal = document.getElementById('postEditModal');
+const editForm = document.getElementById('postEditForm');
+const editText = document.getElementById('postEditText');
+const editCount = document.getElementById('postEditCount');
+const editStatus = document.getElementById('postEditStatus');
+const editSave = document.getElementById('postEditSave');
+const editCancel = document.getElementById('postEditCancel');
 
 let nextPage = 0;
 let loading = false;
 let currentUserId = null;
+let editingPostId = null;
+let postEditReturnFocus = null;
 
 function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -284,6 +293,7 @@ if (modal) {
 
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) window.closeShareModal();
+    if (event.key === 'Escape' && editModal && !editModal.classList.contains('hidden')) closePostEditor();
 });
 
 if (loadMoreBtn) loadMoreBtn.addEventListener('click', () => loadPosts());
@@ -296,17 +306,84 @@ if (feed) feed.addEventListener('click', async event => {
     if (edit) {
         const post = await supabase.from('community_posts').select('experience').eq('id', id).single();
         if (post.error) { setStatus('Could not load your post to edit.', 'error'); return; }
-        const experience = window.prompt('Edit your post', post.data.experience);
-        if (experience === null || !experience.trim()) return;
-        const { error } = await supabase.from('community_posts').update({ experience: experience.trim().slice(0, 2000) }).eq('id', id);
-        if (error) { setStatus('Could not update your post.', 'error'); return; }
-        await loadPosts({ reset: true });
+        editingPostId = id;
+        postEditReturnFocus = edit;
+        editText.value = post.data.experience || '';
+        editCount.textContent = `${editText.value.length.toLocaleString()} / 2,000 characters`;
+        editStatus.textContent = '';
+        editStatus.classList.add('hidden');
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+        editText.focus();
     } else if (window.confirm('Delete your post? This cannot be undone.')) {
         const { error } = await supabase.from('community_posts').delete().eq('id', id);
         if (error) { setStatus('Could not delete your post.', 'error'); return; }
         await loadPosts({ reset: true });
     }
 });
+
+function closePostEditor(restoreFocus = true) {
+    if (!editModal) return;
+    editModal.classList.add('hidden');
+    editModal.classList.remove('flex');
+    editingPostId = null;
+    if (restoreFocus && postEditReturnFocus?.isConnected) postEditReturnFocus.focus();
+}
+
+if (editText && editCount) {
+    editText.addEventListener('input', () => {
+        editCount.textContent = `${editText.value.length.toLocaleString()} / 2,000 characters`;
+    });
+}
+
+if (editForm) {
+    editForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const experience = editText.value.trim();
+        if (!experience || !editingPostId) return;
+
+        editSave.disabled = true;
+        editCancel.disabled = true;
+        editStatus.textContent = 'Saving your changes…';
+        editStatus.classList.remove('hidden', 'text-danger');
+        editStatus.classList.add('text-gray-400');
+        const { error } = await supabase.from('community_posts')
+            .update({ experience: experience.slice(0, 2000) })
+            .eq('id', editingPostId);
+        editSave.disabled = false;
+        editCancel.disabled = false;
+        if (error) {
+            editStatus.textContent = 'Could not save your changes. Please try again.';
+            editStatus.classList.remove('text-gray-400');
+            editStatus.classList.add('text-danger');
+            return;
+        }
+
+        closePostEditor(false);
+        await loadPosts({ reset: true });
+        feed?.focus();
+    });
+    editCancel.addEventListener('click', () => closePostEditor());
+}
+
+if (editModal) {
+    editModal.addEventListener('click', event => {
+        if (event.target === editModal) closePostEditor();
+    });
+    editModal.addEventListener('keydown', event => {
+        if (event.key !== 'Tab') return;
+        const controls = editModal.querySelectorAll('textarea:not(:disabled), button:not(:disabled)');
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
+}
 
 supabase.auth.getSession().then(({ data }) => {
     currentUserId = data?.session?.user?.id || null;

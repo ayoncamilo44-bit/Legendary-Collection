@@ -29,11 +29,21 @@ const countEl = document.getElementById('storyCount');
 const fontOptions = document.getElementById('fontOptions');
 const promptList = document.getElementById('promptList');
 const toolbox = document.getElementById('toolbox');
+const editModal = document.getElementById('storyEditModal');
+const editForm = document.getElementById('storyEditForm');
+const editTitle = document.getElementById('storyEditTitle');
+const editText = document.getElementById('storyEditText');
+const editCount = document.getElementById('storyEditCount');
+const editStatus = document.getElementById('storyEditStatus');
+const editSave = document.getElementById('storyEditSave');
+const editCancel = document.getElementById('storyEditCancel');
 
 let nextPage = 0;
 let loading = false;
 let currentFont = 'modern';
 let currentUserId = null;
+let editingStoryId = null;
+let storyEditReturnFocus = null;
 
 function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -194,7 +204,7 @@ if (feed) {
         const remove = event.target.closest('[data-story-delete]');
         const id = edit?.dataset.storyEdit || remove?.dataset.storyDelete;
         if (id) {
-            manageStory(id, !!edit);
+            manageStory(id, !!edit, edit);
             return;
         }
         const btn = event.target.closest('button[data-readmore]');
@@ -206,22 +216,91 @@ if (feed) {
     });
 }
 
-async function manageStory(id, editing) {
+function setEditStatus(message, isError) {
+    editStatus.textContent = message;
+    editStatus.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
+    editStatus.classList.add(isError ? 'text-danger' : 'text-gray-400');
+}
+
+function closeStoryEditor(restoreFocus = true) {
+    if (!editModal) return;
+    editModal.classList.add('hidden');
+    editModal.classList.remove('flex');
+    editingStoryId = null;
+    if (restoreFocus && storyEditReturnFocus?.isConnected) storyEditReturnFocus.focus();
+}
+
+async function manageStory(id, editing, trigger) {
     if (editing) {
         const story = await supabase.from('showcase_stories').select('title, story').eq('id', id).single();
         if (story.error) { setStatus('Could not load your story to edit.', 'error'); return; }
-        const title = window.prompt('Edit your story title', story.data.title);
-        if (title === null || !title.trim()) return;
-        const text = window.prompt('Edit your story', story.data.story);
-        if (text === null || !text.trim()) return;
-        const { error } = await supabase.from('showcase_stories').update({ title: title.trim().slice(0, 150), story: text.trim().slice(0, MAX_STORY_CHARS) }).eq('id', id);
-        if (error) { setStatus('Could not update your story.', 'error'); return; }
-        await loadStories({ reset: true });
+        editingStoryId = id;
+        storyEditReturnFocus = trigger || null;
+        editTitle.value = story.data.title || '';
+        editText.value = story.data.story || '';
+        editCount.textContent = `${editText.value.length.toLocaleString()} / ${MAX_STORY_CHARS.toLocaleString()} characters`;
+        editStatus.textContent = '';
+        editStatus.classList.add('hidden');
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+        editTitle.focus();
     } else if (window.confirm('Delete your story? This cannot be undone.')) {
         const { error } = await supabase.from('showcase_stories').delete().eq('id', id);
         if (error) { setStatus('Could not delete your story.', 'error'); return; }
         await loadStories({ reset: true });
     }
+}
+
+if (editText && editCount) {
+    editText.addEventListener('input', () => {
+        editCount.textContent = `${editText.value.length.toLocaleString()} / ${MAX_STORY_CHARS.toLocaleString()} characters`;
+    });
+}
+
+if (editForm) {
+    editForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const title = editTitle.value.trim();
+        const story = editText.value.trim();
+        if (!title || !story || !editingStoryId) return;
+
+        editSave.disabled = true;
+        editCancel.disabled = true;
+        setEditStatus('Saving your changes…');
+        const { error } = await supabase.from('showcase_stories')
+            .update({ title: title.slice(0, 150), story: story.slice(0, MAX_STORY_CHARS) })
+            .eq('id', editingStoryId);
+        editSave.disabled = false;
+        editCancel.disabled = false;
+        if (error) { setEditStatus('Could not save your changes. Please try again.', true); return; }
+
+        closeStoryEditor(false);
+        await loadStories({ reset: true });
+        feed?.focus();
+    });
+    editCancel.addEventListener('click', () => closeStoryEditor());
+}
+
+if (editModal) {
+    editModal.addEventListener('click', event => {
+        if (event.target === editModal) closeStoryEditor();
+    });
+    editModal.addEventListener('keydown', event => {
+        if (event.key !== 'Tab') return;
+        const controls = editModal.querySelectorAll('input:not(:disabled), textarea:not(:disabled), button:not(:disabled)');
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !editModal.classList.contains('hidden')) closeStoryEditor();
+    });
 }
 
 if (fontOptions) {

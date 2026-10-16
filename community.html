@@ -1,391 +1,319 @@
-import { supabase } from './supabase.js';
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Bf-V4lwA8AEGC1P_8zE4N2MrT1-1uEEP6yN8kSKxH9A">
+    <title>TTM Community Feed | Legendary Collection</title>
+    <meta name="description" content="Read and share through-the-mail sports autograph updates and collecting experiences with the Legendary Collection community.">
+    <link rel="stylesheet" href="./site.css">
+    <link rel="canonical" href="https://ayoncamilo44-bit.github.io/Legendary-Collection/community.html">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Legendary Collection">
+    <meta property="og:title" content="TTM Community Feed | Legendary Collection">
+    <meta property="og:description" content="Share through-the-mail sports autograph updates and collecting experiences.">
+    <meta property="og:url" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/community.html">
+    <meta property="og:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TTM Community Feed | Legendary Collection">
+    <meta name="twitter:description" content="Share through-the-mail sports autograph updates and collecting experiences.">
+    <meta name="twitter:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <link rel="stylesheet" href="./affiliates.css">
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0f1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1e2535;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
 
-const PAGE_SIZE = 10;
-const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
-const PHOTO_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-const BUCKET = 'community-posts';
-
-const RESULT_LABELS = {
-    success: { text: 'Success', cls: 'bg-success/20 text-success' },
-    pending: { text: 'Still waiting', cls: 'bg-warning/20 text-warning' },
-    'no-response': { text: 'No response', cls: 'bg-gray-500/20 text-gray-300' },
-    returned: { text: 'Returned unsigned', cls: 'bg-danger/20 text-danger' },
-    story: { text: 'Collector story', cls: 'bg-accent/20 text-accentHover' }
-};
-
-const feed = document.getElementById('feedContainer');
-const loadMoreBtn = document.getElementById('loadMorePosts');
-const modal = document.getElementById('shareModal');
-const form = document.getElementById('communityPostForm');
-const statusEl = document.getElementById('communityFormStatus');
-const photoInput = document.getElementById('postPhoto');
-const photoPreview = document.getElementById('postPhotoPreview');
-const resultSelect = document.getElementById('postResult');
-const daysWrap = document.getElementById('postDaysWrap');
-const editModal = document.getElementById('postEditModal');
-const editForm = document.getElementById('postEditForm');
-const editText = document.getElementById('postEditText');
-const editCount = document.getElementById('postEditCount');
-const editStatus = document.getElementById('postEditStatus');
-const editSave = document.getElementById('postEditSave');
-const editCancel = document.getElementById('postEditCancel');
-
-let nextPage = 0;
-let loading = false;
-let currentUserId = null;
-let editingPostId = null;
-let postEditReturnFocus = null;
-
-function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[ch]));
-}
-
-function safeImageUrl(value) {
-    if (!value) return null;
-    try {
-        const url = new URL(value);
-        return url.protocol === 'https:' ? url.href : null;
-    } catch (e) {
-        return null;
-    }
-}
-
-function refreshIcons() {
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function setStatus(message, kind) {
-    if (!statusEl) return;
-    statusEl.textContent = message;
-    statusEl.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
-    statusEl.classList.add(kind === 'error' ? 'text-danger' : kind === 'success' ? 'text-success' : 'text-gray-400');
-}
-
-function clearStatus() {
-    if (!statusEl) return;
-    statusEl.textContent = '';
-    statusEl.classList.add('hidden');
-}
-
-function updateDaysVisibility() {
-    if (!resultSelect || !daysWrap) return;
-    const isStory = resultSelect.value === 'story';
-    daysWrap.classList.toggle('hidden', isStory);
-    if (isStory && form && form.elements.days_to_response) {
-        form.elements.days_to_response.value = '';
-    }
-}
-
-function renderPost(post) {
-    const result = RESULT_LABELS[post.result] || RESULT_LABELS['no-response'];
-    const imageUrl = safeImageUrl(post.image_url);
-    const date = post.created_at
-        ? new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
-        : '';
-    const days = Number.isInteger(post.days_to_response)
-        ? post.days_to_response + (post.days_to_response === 1 ? ' day' : ' days')
-        : '';
-
-    const article = document.createElement('article');
-    article.className = 'glass-card rounded-2xl p-6';
-    article.innerHTML = `
-        <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
-            <div>
-                <h3 class="text-lg font-bold text-white">${escapeHtml(post.player_name)}</h3>
-                <p class="text-sm text-gray-400">Shared by ${escapeHtml(post.author_name)}${date ? ' &middot; ' + escapeHtml(date) : ''}</p>
+    <header class="glass sticky top-0 z-50 smooth-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <button id="mobile-menu-btn" type="button" class="text-white p-2 -ml-2 rounded-lg hover:bg-darkHover smooth-transition shrink-0" aria-label="Open menu" aria-expanded="false" aria-controls="site-drawer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <a href="index.html" class="flex items-center gap-3 min-w-0">
+                    <img src="data:image/webp;base64,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" alt="" width="44" height="44" class="w-11 h-11 rounded-xl shrink-0 shadow-glow">
+                    <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
+                </a>
             </div>
-            <div class="flex items-center gap-2">
-                ${days ? `<span class="text-xs text-gray-400">${escapeHtml(days)}</span>` : ''}
-                <span class="px-3 py-1 rounded-full text-xs font-semibold ${result.cls}">${escapeHtml(result.text)}</span>
+            <div id="auth-nav-btn" class="hidden sm:block">
+                <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder"><i data-lucide="user" class="w-4 h-4"></i>Sign In</button>
             </div>
         </div>
-        <p class="text-gray-300 whitespace-pre-line">${escapeHtml(post.experience)}</p>
-        ${imageUrl ? `
-            <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" class="block mt-4">
-                <img src="${escapeHtml(imageUrl)}" alt="Photo shared with the ${escapeHtml(post.player_name)} post" loading="lazy" class="rounded-xl max-h-96 w-auto max-w-full border border-darkBorder">
-            </a>` : ''}
-        ${currentUserId && post.user_id === currentUserId ? `<div class="flex gap-3 mt-4"><button type="button" data-post-edit="${escapeHtml(post.id)}" class="text-sm text-accentHover underline">Edit post</button><button type="button" data-post-delete="${escapeHtml(post.id)}" class="text-sm text-gray-400 underline">Delete post</button></div>` : ''}
-    `;
-    return article;
-}
+    </header>
 
-async function loadPosts(options) {
-    const reset = !!(options && options.reset);
-    if (loading || !feed) return;
-    loading = true;
-    if (reset) nextPage = 0;
-
-    const from = nextPage * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-
-    const { data, error } = await supabase
-        .from('community_posts')
-        .select('id, user_id, author_name, player_name, result, days_to_response, experience, image_url, created_at')
-        .eq('status', 'approved')
-        .order('created_at', { ascending: false })
-        .range(from, to);
-
-    loading = false;
-
-    if (error) {
-        console.error('Could not load community posts', error);
-        if (reset || nextPage === 0) {
-            feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">Community posts could not be loaded right now. Please try again later.</div>';
-        }
-        refreshIcons();
-        return;
-    }
-
-    if (reset || nextPage === 0) feed.innerHTML = '';
-
-    if (nextPage === 0 && data.length === 0) {
-        feed.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-400">No posts yet. Be the first to share a story!</div>';
-        if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
-        refreshIcons();
-        return;
-    }
-
-    data.forEach(post => feed.appendChild(renderPost(post)));
-    nextPage += 1;
-    if (loadMoreBtn) loadMoreBtn.classList.toggle('hidden', data.length < PAGE_SIZE);
-    refreshIcons();
-}
-
-function validatePhoto(file) {
-    if (!file) return null;
-    if (!PHOTO_TYPES[file.type]) return 'Photo must be a JPG, PNG, or WebP image.';
-    if (file.size > MAX_PHOTO_BYTES) return 'Photo must be 5 MB or smaller.';
-    return null;
-}
-
-function authorNameFor(user) {
-    const meta = user.user_metadata || {};
-    const name = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : '') || 'Collector';
-    return name.slice(0, 120);
-}
-
-function resetPhotoPreview() {
-    if (photoPreview) {
-        if (photoPreview.dataset.objectUrl) URL.revokeObjectURL(photoPreview.dataset.objectUrl);
-        photoPreview.removeAttribute('src');
-        delete photoPreview.dataset.objectUrl;
-        photoPreview.classList.add('hidden');
-    }
-}
-
-window.openShareModal = function openShareModal() {
-    clearStatus();
-    updateDaysVisibility();
-    if (modal) modal.classList.remove('hidden');
-    refreshIcons();
-};
-
-window.closeShareModal = function closeShareModal() {
-    if (modal) modal.classList.add('hidden');
-};
-
-if (resultSelect) resultSelect.addEventListener('change', updateDaysVisibility);
-
-if (photoInput) {
-    photoInput.addEventListener('change', () => {
-        const file = photoInput.files && photoInput.files[0];
-        resetPhotoPreview();
-        if (!file) { clearStatus(); return; }
-        const problem = validatePhoto(file);
-        if (problem) {
-            setStatus(problem, 'error');
-            photoInput.value = '';
-            return;
-        }
-        clearStatus();
-        if (photoPreview) {
-            const objectUrl = URL.createObjectURL(file);
-            photoPreview.src = objectUrl;
-            photoPreview.dataset.objectUrl = objectUrl;
-            photoPreview.classList.remove('hidden');
-        }
-    });
-}
-
-if (form) {
-    form.addEventListener('submit', async event => {
-        event.preventDefault();
-        clearStatus();
-
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData && sessionData.session ? sessionData.session.user : null;
-
-        if (!user) {
-            setStatus('Please sign in with Google before sharing a post.', 'error');
-            if (typeof window.loginWithGoogle === 'function') window.loginWithGoogle();
-            return;
-        }
-
-        const file = photoInput && photoInput.files ? photoInput.files[0] || null : null;
-        const photoProblem = validatePhoto(file);
-        if (photoProblem) { setStatus(photoProblem, 'error'); return; }
-
-        const playerName = form.elements.player_name.value.trim();
-        const experience = form.elements.experience.value.trim();
-        const resultValue = form.elements.result.value;
-        const daysRaw = form.elements.days_to_response.value;
-
-        if (!playerName || !experience) {
-            setStatus('Player name and your experience are required.', 'error');
-            return;
-        }
-
-        if (submitBtn) submitBtn.disabled = true;
-        setStatus(file ? 'Uploading photo and sharing...' : 'Sharing...', 'info');
-
-        let uploadedPath = null;
-        try {
-            let imageUrl = null;
-
-            if (file) {
-                uploadedPath = user.id + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + PHOTO_TYPES[file.type];
-                const { error: uploadError } = await supabase.storage
-                    .from(BUCKET)
-                    .upload(uploadedPath, file, { contentType: file.type, cacheControl: '31536000', upsert: false });
-                if (uploadError) throw uploadError;
-                imageUrl = supabase.storage.from(BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
+    <!-- Left slide-out menu. To add a page, add one link line below (and in the other pages). -->
+    <style>
+        #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+        #drawer-overlay.open{opacity:1;visibility:visible}
+        #site-drawer{position:fixed;top:0;left:0;height:100%;width:18rem;max-width:85vw;background:#131824;border-right:1px solid #1e2535;z-index:70;transform:translateX(-100%);visibility:hidden;transition:transform .3s ease,visibility .3s;overflow-y:auto;display:flex;flex-direction:column}
+        #site-drawer.open{transform:translateX(0);visibility:visible}
+        #site-drawer a.dl{display:block;padding:.85rem 1.25rem;color:#d1d5db;font-weight:500;border-bottom:1px solid #1e2535;border-left:3px solid transparent}
+        #site-drawer a.dl:hover{color:#fff;background:#1a2133}
+        #site-drawer a.dl.on{color:#fff;background:#1a2133;border-left-color:#6366f1}
+        @media (prefers-reduced-motion:reduce){#site-drawer,#drawer-overlay{transition:none}}
+    </style>
+    <div id="drawer-overlay" aria-hidden="true"></div>
+    <aside id="site-drawer" aria-label="Site menu" aria-hidden="true">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid #1e2535">
+            <span style="color:#fff;font-weight:700">Menu</span>
+            <button id="drawer-close" type="button" aria-label="Close menu" style="color:#9ca3af;padding:.25rem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>
+        </div>
+        <nav aria-label="Main">
+            <a class="dl" href="index.html">Home</a>
+            <a class="dl" href="directory.html">Directory</a>
+            <a class="dl" href="guides.html">Guides</a>
+            <a class="dl" href="supplies.html">Supplies</a>
+            <a class="dl on" href="community.html">Community</a>
+            <a class="dl" href="showcase.html">Showcase</a>
+            <a class="dl" href="dashboard.html">Dashboard</a>
+            <a class="dl" href="signer.html">Add Signer</a>
+            <a class="dl" href="https://www.ttm-collector-choice.com/">TTM Collector Choice</a>
+        </nav>
+        <div id="mobile-auth-slot" style="padding:1rem 1.25rem"></div>
+        <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" style="margin:auto 1.25rem 1.25rem;padding:.7rem 1rem;border-radius:.5rem;background:#f59e0b;color:#0f172a;font-weight:600;text-align:center;font-size:.9rem">Buy Me a Coffee</a>
+    </aside>
+    <script>
+    // Left menu (kept separate so it works even if other scripts fail to load)
+    (function () {
+        var btn = document.getElementById('mobile-menu-btn');
+        var drawer = document.getElementById('site-drawer');
+        var overlay = document.getElementById('drawer-overlay');
+        var closeBtn = document.getElementById('drawer-close');
+        var slot = document.getElementById('mobile-auth-slot');
+        if (!btn || !drawer || !overlay) return;
+        function setOpen(open) {
+            drawer.classList.toggle('open', open);
+            overlay.classList.toggle('open', open);
+            drawer.setAttribute('aria-hidden', String(!open));
+            btn.setAttribute('aria-expanded', String(open));
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            document.body.style.overflow = open ? 'hidden' : '';
+            if (open) {
+                var auth = document.getElementById('auth-nav-btn');
+                if (auth && slot) {
+                    slot.innerHTML = auth.innerHTML;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+                if (closeBtn) closeBtn.focus();
             }
-
-            const { error: insertError } = await supabase.from('community_posts').insert({
-                user_id: user.id,
-                author_name: authorNameFor(user),
-                player_name: playerName.slice(0, 120),
-                result: resultValue,
-                days_to_response: (resultValue === 'story' || daysRaw === '') ? null : Number(daysRaw),
-                experience: experience.slice(0, 2000),
-                image_url: imageUrl,
-                status: 'approved'
-            });
-
-            if (insertError) throw insertError;
-
-            setStatus('Your post is live in the community feed.', 'success');
-            form.reset();
-            updateDaysVisibility();
-            resetPhotoPreview();
-            setTimeout(() => { window.closeShareModal(); clearStatus(); }, 900);
-        } catch (error) {
-            console.error('Could not share post', error);
-            if (uploadedPath) {
-                try { await supabase.storage.from(BUCKET).remove([uploadedPath]); } catch (e) {}
-            }
-            const detail = error && error.message ? ' (' + error.message + ')' : '';
-            setStatus('Could not share your post. Check your connection and that you are signed in, then try again.' + detail, 'error');
-        } finally {
-            if (submitBtn) submitBtn.disabled = false;
         }
-    });
-}
+        btn.addEventListener('click', function () { setOpen(!drawer.classList.contains('open')); });
+        if (closeBtn) closeBtn.addEventListener('click', function () { setOpen(false); btn.focus(); });
+        overlay.addEventListener('click', function () { setOpen(false); });
+        drawer.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && drawer.classList.contains('open')) { setOpen(false); btn.focus(); }
+        });
+    })();
+    </script>
 
-if (modal) {
-    modal.addEventListener('click', event => {
-        if (event.target === modal) window.closeShareModal();
-    });
-}
+    <main class="max-w-7xl mx-auto w-full px-6 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Community Feed</h1>
+                <p class="text-gray-400">Share your TTM results and see what the community is receiving. Want to tell a longer story? Use Showcase.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="showcase.html" class="px-6 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center gap-2">
+                    <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                    Write a Story
+                </a>
+                <button type="button" onclick="openShareModal()" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    Share a TTM Result
+                </button>
+            </div>
+        </div>
 
-document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) window.closeShareModal();
-    if (event.key === 'Escape' && editModal && !editModal.classList.contains('hidden')) closePostEditor();
-});
+        <!-- Community posts are loaded from Supabase. -->
+        <div class="space-y-6" id="feedContainer" aria-live="polite" tabindex="-1">
+            <div class="glass-card rounded-2xl p-6 text-center text-gray-400">Loading community posts...</div>
+        </div>
 
-if (loadMoreBtn) loadMoreBtn.addEventListener('click', () => loadPosts());
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button id="loadMorePosts" type="button" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder hidden">
+                Load More Posts
+            </button>
+        </div>
+    </main>
 
-if (feed) feed.addEventListener('click', async event => {
-    const edit = event.target.closest('[data-post-edit]');
-    const remove = event.target.closest('[data-post-delete]');
-    const id = (edit || remove)?.dataset.postEdit || (edit || remove)?.dataset.postDelete;
-    if (!id) return;
-    if (edit) {
-        const post = await supabase.from('community_posts').select('experience').eq('id', id).single();
-        if (post.error) { setStatus('Could not load your post to edit.', 'error'); return; }
-        editingPostId = id;
-        postEditReturnFocus = edit;
-        editText.value = post.data.experience || '';
-        editCount.textContent = `${editText.value.length.toLocaleString()} / 2,000 characters`;
-        editStatus.textContent = '';
-        editStatus.classList.add('hidden');
-        editModal.classList.remove('hidden');
-        editModal.classList.add('flex');
-        editText.focus();
-    } else if (window.confirm('Delete your post? This cannot be undone.')) {
-        const { error } = await supabase.from('community_posts').delete().eq('id', id);
-        if (error) { setStatus('Could not delete your post.', 'error'); return; }
-        await loadPosts({ reset: true });
-    }
-});
+    <!-- Share a TTM Result Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+        <div class="glass-card rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 id="shareModalTitle" class="text-xl font-bold text-white flex items-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i>
+                        Share a TTM Result
+                    </h3>
+                    <button onclick="closeShareModal()" class="text-gray-400 hover:text-white smooth-transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <form id="communityPostForm" class="space-y-4">
+                    <div>
+                        <label for="postPlayerName" class="block text-sm font-medium text-gray-400 mb-2">Player Name</label>
+                        <input id="postPlayerName" name="player_name" type="text" maxlength="120" required placeholder="e.g., Mike Trout" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                    </div>
+                    
+                    <div>
+                        <label for="postResult" class="block text-sm font-medium text-gray-400 mb-2">Result</label>
+                        <select id="postResult" name="result" required class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
+                            <option value="success">Success - Got it back!</option>
+                            <option value="pending">Still Waiting</option>
+                            <option value="no-response">No Response</option>
+                            <option value="returned">Returned Unsigned</option>
+                            <option value="story">Collector Story (bought it, found it, or just love it)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="postDaysWrap">
+                        <label for="postDays" class="block text-sm font-medium text-gray-400 mb-2">Days to Response</label>
+                        <input id="postDays" name="days_to_response" type="number" min="0" max="3650" placeholder="e.g., 45" class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                    </div>
+                    
+                    <div>
+                        <label for="postExperience" class="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
+                        <textarea id="postExperience" name="experience" rows="4" maxlength="2000" required placeholder="Share what happened. Please don't include private mailing addresses." class="w-full px-4 py-3 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
+                    </div>
+<div>
+  <label for="postPhoto" class="block text-sm font-medium text-gray-400 mb-2">Photo (optional)</label>
+  <input id="postPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp"
+    class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-accent file:text-white file:font-semibold">
+  <p class="text-xs text-gray-500 mt-1">JPG, PNG, or WebP, up to 5 MB. Please don't photograph envelopes showing a home address.</p>
+  <img id="postPhotoPreview" alt="Selected photo preview" class="hidden mt-3 rounded-xl max-h-48 border border-darkBorder">
+</div>
+                    <p id="communityFormStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
+                    
+                    <button type="submit" class="w-full px-4 py-3 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        Share with Community
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-function closePostEditor(restoreFocus = true) {
-    if (!editModal) return;
-    editModal.classList.add('hidden');
-    editModal.classList.remove('flex');
-    editingPostId = null;
-    if (restoreFocus && postEditReturnFocus?.isConnected) postEditReturnFocus.focus();
-}
+    <div id="postEditModal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="postEditTitleHeading">
+        <section class="glass-card w-full max-w-2xl rounded-2xl p-6 md:p-8">
+            <h2 id="postEditTitleHeading" class="text-2xl font-bold text-white mb-6">Edit your community post</h2>
+            <form id="postEditForm" class="space-y-5">
+                <div>
+                    <label for="postEditText" class="block text-sm font-medium text-gray-300 mb-2">Your experience</label>
+                    <textarea id="postEditText" rows="8" maxlength="2000" required class="w-full px-4 py-3 glass-card rounded-xl text-white leading-7 focus:outline-none focus:border-accent"></textarea>
+                    <p id="postEditCount" class="mt-2 text-xs text-gray-400" aria-live="polite"></p>
+                </div>
+                <p id="postEditStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <button id="postEditCancel" type="button" class="px-5 py-3 glass-card text-white rounded-xl border border-darkBorder">Cancel</button>
+                    <button id="postEditSave" type="submit" class="px-5 py-3 gradient-bg text-white font-semibold rounded-xl">Save changes</button>
+                </div>
+            </form>
+        </section>
+    </div>
 
-if (editText && editCount) {
-    editText.addEventListener('input', () => {
-        editCount.textContent = `${editText.value.length.toLocaleString()} / 2,000 characters`;
-    });
-}
+    <!-- Footer -->
+    <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            <nav class="mb-4 flex flex-wrap justify-center gap-4" aria-label="Information">
+                <a href="./guides.html">Guides</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a>
+                <button type="button" data-analytics-settings hidden>Cookie settings</button>
+            </nav>
+            &copy; 2026 Legendary Collection. Powered by Supabase & GitHub Pages.
+        </div>
+    </footer>
 
-if (editForm) {
-    editForm.addEventListener('submit', async event => {
-        event.preventDefault();
-        const experience = editText.value.trim();
-        if (!experience || !editingPostId) return;
-
-        editSave.disabled = true;
-        editCancel.disabled = true;
-        editStatus.textContent = 'Saving your changes…';
-        editStatus.classList.remove('hidden', 'text-danger');
-        editStatus.classList.add('text-gray-400');
-        const { error } = await supabase.from('community_posts')
-            .update({ experience: experience.slice(0, 2000) })
-            .eq('id', editingPostId);
-        editSave.disabled = false;
-        editCancel.disabled = false;
-        if (error) {
-            editStatus.textContent = 'Could not save your changes. Please try again.';
-            editStatus.classList.remove('text-gray-400');
-            editStatus.classList.add('text-danger');
-            return;
-        }
-
-        closePostEditor(false);
-        await loadPosts({ reset: true });
-        feed?.focus();
-    });
-    editCancel.addEventListener('click', () => closePostEditor());
-}
-
-if (editModal) {
-    editModal.addEventListener('click', event => {
-        if (event.target === editModal) closePostEditor();
-    });
-    editModal.addEventListener('keydown', event => {
-        if (event.key !== 'Tab') return;
-        const controls = editModal.querySelectorAll('textarea:not(:disabled), button:not(:disabled)');
-        const first = controls[0];
-        const last = controls[controls.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-        }
-    });
-}
-
-supabase.auth.getSession().then(({ data }) => {
-    currentUserId = data?.session?.user?.id || null;
-    loadPosts({ reset: true });
-});
+    <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/affiliates.js"></script>
+    <script type="module" src="./js/community.js"></script>
+    <script type="module" src="./js/analytics.js"></script>
+</body>
+</html>

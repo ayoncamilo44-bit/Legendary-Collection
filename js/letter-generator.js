@@ -13,8 +13,7 @@
         var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
         if (saved) {
             $('senderName').value = saved.name || '';
-            $('senderAddress').value = saved.address || '';
-            $('rememberSender').checked = true;
+            $('senderAddress').value = saved.address \vert{}\vert{} '';$('rememberSender').checked = true;
         }
     } catch (e) { /* storage unavailable: ignore */ }
 
@@ -32,10 +31,8 @@
         var signer = val('signerName');
         var items = val('itemsSent').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
 
-        $('print-date').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-        $('print-recipient-name').textContent = signer;
-        $('print-recipient-address').textContent = val('signerAddress');
-        $('print-salutation').textContent = 'Dear ' + signer + ',';
+        $('print-date').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });$('print-recipient-name').textContent = signer;
+        $('print-recipient-address').textContent = val('signerAddress');$('print-salutation').textContent = 'Dear ' + signer + ',';
 
         var list = $('print-items-enclosed');
         list.textContent = '';
@@ -45,10 +42,8 @@
             list.appendChild(line);
         });
 
-        $('print-sender-name').textContent = val('senderName');
-        $('print-sender-address').textContent = val('senderAddress');
-        $('print-envelope-return').textContent = val('senderName') + '\n' + val('senderAddress');
-        $('print-envelope-recipient').textContent = signer + '\n' + val('signerAddress');
+        $('print-sender-name').textContent = val('senderName');$('print-sender-address').textContent = val('senderAddress');
+        $('print-envelope-return').textContent = val('senderName') + '\n' + val('senderAddress');$('print-envelope-recipient').textContent = signer + '\n' + val('signerAddress');
     }
 
     function escapeHtml(value) {
@@ -74,13 +69,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>#10 Envelope Address</title>
     <style>
-        @page { size: 9.5in 4.125in; margin: 0; }
-        html, body { width: 9.5in; height: 4.125in; margin: 0; padding: 0; background: #fff; }
-        body { color: #000; font-family: Arial, Helvetica, sans-serif; }
-        .envelope { position: relative; box-sizing: border-box; width: 9.5in; height: 4.125in; overflow: hidden; }
-        .return { position: absolute; left: .5in; top: .4in; font-size: 11pt; line-height: 1.35; white-space: pre-line; }
-        .recipient { position: absolute; left: 4in; top: 1.75in; max-width: 5in; font-size: 14pt; line-height: 1.4; white-space: pre-line; text-transform: uppercase; }
-        @media screen { body { margin: 24px; } .envelope { outline: 1px solid #999; box-shadow: 0 2px 16px #999; } }
+        @page { 
+            size: 9.5in 4.125in landscape; 
+            margin: 0; 
+        }
+        html, body { 
+            width: 9.5in; 
+            height: 4.125in; 
+            margin: 0; 
+            padding: 0; 
+            background: #fff; 
+        }
+        body { 
+            color: #000; 
+            font-family: Arial, Helvetica, sans-serif; 
+        }
+        .envelope { 
+            position: relative; 
+            box-sizing: border-box; 
+            width: 9.5in; 
+            height: 4.125in; 
+            overflow: hidden; 
+        }
+        .return { 
+            position: absolute; 
+            left: 0.5in; 
+            top: 0.4in; 
+            font-size: 11pt; 
+            line-height: 1.35; 
+            white-space: pre-line; 
+        }
+        .recipient { 
+            position: absolute; 
+            left: 4.25in; 
+            top: 2.0in; 
+            max-width: 4.75in; 
+            font-size: 13pt; 
+            line-height: 1.4; 
+            white-space: pre-line; 
+            text-transform: uppercase; 
+        }
+        @media screen { 
+            body { margin: 24px; } 
+            .envelope { outline: 1px solid #999; box-shadow: 0 2px 16px #999; } 
+        }
     </style>
 </head>
 <body>
@@ -122,7 +154,6 @@
         document.body.classList.remove('print-letter', 'print-envelope');
     });
 
-    $('printLetterBtn').addEventListener('click', function () { printPart('letter'); });
-    $('printEnvelopeBtn').addEventListener('click', function () { printPart('envelope'); });
+    $('printLetterBtn').addEventListener('click', function () { printPart('letter'); });$('printEnvelopeBtn').addEventListener('click', function () { printPart('envelope'); });
     form.addEventListener('submit', function (e) { e.preventDefault(); });
 })();

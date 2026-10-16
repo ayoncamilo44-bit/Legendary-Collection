@@ -1,433 +1,340 @@
-import { supabase } from './supabase.js';
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Bf-V4lwA8AEGC1P_8zE4N2MrT1-1uEEP6yN8kSKxH9A">
+    <title>Showcase | Legendary Collection</title>
+    <meta name="description" content="Share the story behind your signed cards and your collection. Take all the room you need.">
+    <link rel="stylesheet" href="./site.css">
+    <link rel="canonical" href="https://ayoncamilo44-bit.github.io/Legendary-Collection/showcase.html">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Legendary Collection">
+    <meta property="og:title" content="Showcase | Legendary Collection">
+    <meta property="og:description" content="Collector stories, signed cards, and the hobby in your own words.">
+    <meta property="og:url" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/showcase.html">
+    <meta property="og:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="./affiliates.css">
 
-const PAGE_SIZE = 10;
-const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
-const MAX_STORY_CHARS = 10000;
-const CLAMP_AT = 900;
-const PHOTO_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-const BUCKET = 'community-posts';
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&family=Special+Elite&family=Caveat:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
-const TAGS = {
-    mail: 'Through the mail',
-    'in-person': 'In person',
-    bought: 'Bought and authenticated',
-    collection: 'My collection',
-    vent: 'Just sharing'
-};
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-const FONT_KEYS = ['classic', 'typewriter', 'handwritten', 'modern', 'elegant'];
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444'
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
 
-const feed = document.getElementById('storyFeed');
-const loadMoreBtn = document.getElementById('loadMoreStories');
-const form = document.getElementById('showcaseForm');
-const titleInput = document.getElementById('storyTitle');
-const textInput = document.getElementById('storyText');
-const photoInput = document.getElementById('storyPhoto');
-const photoPreview = document.getElementById('storyPhotoPreview');
-const statusEl = document.getElementById('storyStatus');
-const countEl = document.getElementById('storyCount');
-const fontOptions = document.getElementById('fontOptions');
-const promptList = document.getElementById('promptList');
-const toolbox = document.getElementById('toolbox');
-const editModal = document.getElementById('storyEditModal');
-const editForm = document.getElementById('storyEditForm');
-const editTitle = document.getElementById('storyEditTitle');
-const editText = document.getElementById('storyEditText');
-const editCount = document.getElementById('storyEditCount');
-const editStatus = document.getElementById('storyEditStatus');
-const editSave = document.getElementById('storyEditSave');
-const editCancel = document.getElementById('storyEditCancel');
+    <style>
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .face-classic { font-family: 'Merriweather', Georgia, serif; }
+        .face-typewriter { font-family: 'Special Elite', 'Courier New', monospace; }
+        .face-handwritten { font-family: 'Caveat', 'Comic Sans MS', cursive; font-size: 1.3em; }
+        .face-modern { font-family: 'Inter', sans-serif; }
+        .face-elegant { font-family: 'Playfair Display', Georgia, serif; }
+        .story-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 10;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
 
-let nextPage = 0;
-let loading = false;
-let currentFont = 'modern';
-let currentUserId = null;
-let editingStoryId = null;
-let storyEditReturnFocus = null;
-
-function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[ch]));
-}
-
-function safeImageUrl(value) {
-    if (!value) return null;
-    try {
-        const url = new URL(value);
-        return url.protocol === 'https:' ? url.href : null;
-    } catch (e) {
-        return null;
-    }
-}
-
-function refreshIcons() {
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function setStatus(message, kind) {
-    if (!statusEl) return;
-    statusEl.textContent = message;
-    statusEl.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
-    statusEl.classList.add(kind === 'error' ? 'text-danger' : kind === 'success' ? 'text-success' : 'text-gray-400');
-}
-
-function clearStatus() {
-    if (!statusEl) return;
-    statusEl.textContent = '';
-    statusEl.classList.add('hidden');
-}
-
-function authorNameFor(user) {
-    const meta = user.user_metadata || {};
-    const name = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : '') || 'Collector';
-    return name.slice(0, 120);
-}
-
-function validatePhoto(file) {
-    if (!file) return null;
-    if (!PHOTO_TYPES[file.type]) return 'Photo must be a JPG, PNG, or WebP image.';
-    if (file.size > MAX_PHOTO_BYTES) return 'Photo must be 5 MB or smaller.';
-    return null;
-}
-
-function resetPhotoPreview() {
-    if (!photoPreview) return;
-    if (photoPreview.dataset.objectUrl) URL.revokeObjectURL(photoPreview.dataset.objectUrl);
-    photoPreview.removeAttribute('src');
-    delete photoPreview.dataset.objectUrl;
-    photoPreview.classList.add('hidden');
-}
-
-function applyFont(key) {
-    if (FONT_KEYS.indexOf(key) === -1) return;
-    currentFont = key;
-    FONT_KEYS.forEach(k => {
-        if (textInput) textInput.classList.toggle('face-' + k, k === key);
-        if (titleInput) titleInput.classList.toggle('face-' + k, k === key);
-    });
-    if (fontOptions) {
-        fontOptions.querySelectorAll('button[data-font]').forEach(btn => {
-            const active = btn.dataset.font === key;
-            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-            btn.classList.toggle('border-accent', active);
-            btn.classList.toggle('bg-accent/10', active);
-            btn.classList.toggle('border-darkBorder', !active);
-        });
-    }
-}
-
-function updateCount() {
-    if (!countEl || !textInput) return;
-    const text = textInput.value.trim();
-    const words = text === '' ? 0 : text.split(/\s+/).length;
-    const minutes = Math.max(1, Math.round(words / 200));
-    const readTime = words === 0 ? '' : ' \u00b7 about ' + minutes + ' min read';
-    countEl.textContent = words + ' words' + readTime + ' \u00b7 ' + textInput.value.length + ' / ' + MAX_STORY_CHARS;
-}
-
-function renderStory(story) {
-    const fontKey = FONT_KEYS.indexOf(story.font) === -1 ? 'modern' : story.font;
-    const tagLabel = TAGS[story.tag] || TAGS.vent;
-    const imageUrl = safeImageUrl(story.image_url);
-    const date = story.created_at
-        ? new Date(story.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
-        : '';
-    const long = String(story.story || '').length > CLAMP_AT;
-
-    const article = document.createElement('article');
-    article.className = 'glass-card rounded-3xl p-8 md:p-10' + (story.featured ? ' ring-1 ring-accent/50' : '');
-    article.innerHTML = `
-        ${story.featured ? '<p class="text-xs font-semibold tracking-widest uppercase text-accentHover mb-4">Featured story</p>' : ''}
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-accent/20 text-accentHover">${escapeHtml(tagLabel)}</span>
-            <span class="text-sm text-gray-500">${escapeHtml(story.author_name)}${date ? ' &middot; ' + escapeHtml(date) : ''}</span>
+    <header class="glass sticky top-0 z-50 smooth-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <button id="mobile-menu-btn" type="button" class="text-white p-2 -ml-2 rounded-lg hover:bg-darkHover smooth-transition shrink-0" aria-label="Open menu" aria-expanded="false" aria-controls="site-drawer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <a href="index.html" class="flex items-center gap-3 min-w-0">
+                    <img src="data:image/webp;base64,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" alt="" width="44" height="44" class="w-11 h-11 rounded-xl shrink-0 shadow-glow">
+                    <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
+                </a>
+            </div>
+            <div id="auth-nav-btn" class="hidden sm:block">
+                <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-gray-300 rounded-lg text-sm font-medium smooth-transition hover:bg-darkHover flex items-center gap-2 border border-darkBorder"><i data-lucide="user" class="w-4 h-4"></i>Sign In</button>
+            </div>
         </div>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-6 face-${fontKey}">${escapeHtml(story.title)}</h2>
-        <div class="story-body text-lg leading-9 text-gray-300 whitespace-pre-line face-${fontKey}${long ? ' story-clamp' : ''}">${escapeHtml(story.story)}</div>
-        ${long ? '<button type="button" data-readmore class="mt-4 text-sm font-semibold text-accentHover hover:text-white smooth-transition">Read more</button>' : ''}
-        ${imageUrl ? `
-            <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" class="block mt-8">
-                <img src="${escapeHtml(imageUrl)}" alt="Photo shared with the story ${escapeHtml(story.title)}" loading="lazy" class="rounded-2xl max-h-[28rem] w-auto max-w-full border border-darkBorder">
-            </a>` : ''}
-        ${currentUserId && story.user_id === currentUserId ? `<div class="flex gap-3 mt-5"><button type="button" data-story-edit="${escapeHtml(story.id)}" class="text-sm text-accentHover underline">Edit story</button><button type="button" data-story-delete="${escapeHtml(story.id)}" class="text-sm text-gray-400 underline">Delete story</button></div>` : ''}
-    `;
-    return article;
-}
+    </header>
 
-async function loadStories(options) {
-    const reset = !!(options && options.reset);
-    if (loading || !feed) return;
-    loading = true;
-    if (reset) nextPage = 0;
-
-    const from = nextPage * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-
-    const { data, error } = await supabase
-        .from('showcase_stories')
-        .select('id, user_id, author_name, title, tag, story, image_url, font, featured, created_at')
-        .eq('status', 'approved')
-        .order('featured', { ascending: false })
-        .order('created_at', { ascending: false })
-        .range(from, to);
-
-    loading = false;
-
-    if (error) {
-        console.error('Could not load showcase stories', error);
-        if (reset || nextPage === 0) {
-            feed.innerHTML = '<div class="glass-card rounded-3xl p-10 text-center text-gray-400">Stories could not be loaded right now. Please try again later.</div>';
-        }
-        refreshIcons();
-        return;
-    }
-
-    if (reset || nextPage === 0) feed.innerHTML = '';
-
-    if (nextPage === 0 && data.length === 0) {
-        feed.innerHTML = '<div class="glass-card rounded-3xl p-10 text-center text-gray-400">No stories yet. Yours could be the first.</div>';
-        if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
-        refreshIcons();
-        return;
-    }
-
-    data.forEach(story => feed.appendChild(renderStory(story)));
-    nextPage += 1;
-    if (loadMoreBtn) loadMoreBtn.classList.toggle('hidden', data.length < PAGE_SIZE);
-    refreshIcons();
-}
-
-if (feed) {
-    feed.addEventListener('click', event => {
-        const edit = event.target.closest('[data-story-edit]');
-        const remove = event.target.closest('[data-story-delete]');
-        const id = edit?.dataset.storyEdit || remove?.dataset.storyDelete;
-        if (id) {
-            manageStory(id, !!edit, edit);
-            return;
-        }
-        const btn = event.target.closest('button[data-readmore]');
-        if (!btn) return;
-        const body = btn.parentElement.querySelector('.story-body');
-        if (!body) return;
-        const collapsed = body.classList.toggle('story-clamp');
-        btn.textContent = collapsed ? 'Read more' : 'Show less';
-    });
-}
-
-function setEditStatus(message, isError) {
-    editStatus.textContent = message;
-    editStatus.classList.remove('hidden', 'text-danger', 'text-success', 'text-gray-400');
-    editStatus.classList.add(isError ? 'text-danger' : 'text-gray-400');
-}
-
-function closeStoryEditor(restoreFocus = true) {
-    if (!editModal) return;
-    editModal.classList.add('hidden');
-    editModal.classList.remove('flex');
-    editingStoryId = null;
-    if (restoreFocus && storyEditReturnFocus?.isConnected) storyEditReturnFocus.focus();
-}
-
-async function manageStory(id, editing, trigger) {
-    if (editing) {
-        const story = await supabase.from('showcase_stories').select('title, story').eq('id', id).single();
-        if (story.error) { setStatus('Could not load your story to edit.', 'error'); return; }
-        editingStoryId = id;
-        storyEditReturnFocus = trigger || null;
-        editTitle.value = story.data.title || '';
-        editText.value = story.data.story || '';
-        editCount.textContent = `${editText.value.length.toLocaleString()} / ${MAX_STORY_CHARS.toLocaleString()} characters`;
-        editStatus.textContent = '';
-        editStatus.classList.add('hidden');
-        editModal.classList.remove('hidden');
-        editModal.classList.add('flex');
-        editTitle.focus();
-    } else if (window.confirm('Delete your story? This cannot be undone.')) {
-        const { error } = await supabase.from('showcase_stories').delete().eq('id', id);
-        if (error) { setStatus('Could not delete your story.', 'error'); return; }
-        await loadStories({ reset: true });
-    }
-}
-
-if (editText && editCount) {
-    editText.addEventListener('input', () => {
-        editCount.textContent = `${editText.value.length.toLocaleString()} / ${MAX_STORY_CHARS.toLocaleString()} characters`;
-    });
-}
-
-if (editForm) {
-    editForm.addEventListener('submit', async event => {
-        event.preventDefault();
-        const title = editTitle.value.trim();
-        const story = editText.value.trim();
-        if (!title || !story || !editingStoryId) return;
-
-        editSave.disabled = true;
-        editCancel.disabled = true;
-        setEditStatus('Saving your changes…');
-        const { error } = await supabase.from('showcase_stories')
-            .update({ title: title.slice(0, 150), story: story.slice(0, MAX_STORY_CHARS) })
-            .eq('id', editingStoryId);
-        editSave.disabled = false;
-        editCancel.disabled = false;
-        if (error) { setEditStatus('Could not save your changes. Please try again.', true); return; }
-
-        closeStoryEditor(false);
-        await loadStories({ reset: true });
-        feed?.focus();
-    });
-    editCancel.addEventListener('click', () => closeStoryEditor());
-}
-
-if (editModal) {
-    editModal.addEventListener('click', event => {
-        if (event.target === editModal) closeStoryEditor();
-    });
-    editModal.addEventListener('keydown', event => {
-        if (event.key !== 'Tab') return;
-        const controls = editModal.querySelectorAll('input:not(:disabled), textarea:not(:disabled), button:not(:disabled)');
-        const first = controls[0];
-        const last = controls[controls.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-        }
-    });
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && !editModal.classList.contains('hidden')) closeStoryEditor();
-    });
-}
-
-if (fontOptions) {
-    fontOptions.addEventListener('click', event => {
-        const btn = event.target.closest('button[data-font]');
-        if (btn) applyFont(btn.dataset.font);
-    });
-}
-
-if (promptList && textInput) {
-    promptList.addEventListener('click', event => {
-        const btn = event.target.closest('button[data-prompt]');
-        if (!btn) return;
-        const starter = btn.dataset.prompt + ' ';
-        textInput.value = textInput.value.trim() === '' ? starter : textInput.value + '\n\n' + starter;
-        textInput.focus();
-        updateCount();
-    });
-}
-
-if (textInput) textInput.addEventListener('input', updateCount);
-
-if (photoInput) {
-    photoInput.addEventListener('change', () => {
-        const file = photoInput.files && photoInput.files[0];
-        resetPhotoPreview();
-        if (!file) { clearStatus(); return; }
-        const problem = validatePhoto(file);
-        if (problem) {
-            setStatus(problem, 'error');
-            photoInput.value = '';
-            return;
-        }
-        clearStatus();
-        if (photoPreview) {
-            const objectUrl = URL.createObjectURL(file);
-            photoPreview.src = objectUrl;
-            photoPreview.dataset.objectUrl = objectUrl;
-            photoPreview.classList.remove('hidden');
-        }
-    });
-}
-
-if (form) {
-    form.addEventListener('submit', async event => {
-        event.preventDefault();
-        clearStatus();
-
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData && sessionData.session ? sessionData.session.user : null;
-
-        if (!user) {
-            setStatus('Please sign in with Google before sharing a story.', 'error');
-            if (typeof window.loginWithGoogle === 'function') window.loginWithGoogle();
-            return;
-        }
-
-        const file = photoInput && photoInput.files ? photoInput.files[0] || null : null;
-        const photoProblem = validatePhoto(file);
-        if (photoProblem) { setStatus(photoProblem, 'error'); return; }
-
-        const title = titleInput.value.trim();
-        const story = textInput.value.trim();
-        const tag = form.elements.tag.value;
-
-        if (!title || !story) {
-            setStatus('Please add a title and your story.', 'error');
-            return;
-        }
-
-        if (submitBtn) submitBtn.disabled = true;
-        setStatus(file ? 'Uploading photo and sharing...' : 'Sharing...', 'info');
-
-        let uploadedPath = null;
-        try {
-            let imageUrl = null;
-
-            if (file) {
-                uploadedPath = user.id + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + PHOTO_TYPES[file.type];
-                const { error: uploadError } = await supabase.storage
-                    .from(BUCKET)
-                    .upload(uploadedPath, file, { contentType: file.type, cacheControl: '31536000', upsert: false });
-                if (uploadError) throw uploadError;
-                imageUrl = supabase.storage.from(BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
+    <!-- Left slide-out menu. To add a page, add one link line below (and in the other pages). -->
+    <style>
+        #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+        #drawer-overlay.open{opacity:1;visibility:visible}
+        #site-drawer{position:fixed;top:0;left:0;height:100%;width:18rem;max-width:85vw;background:#131824;border-right:1px solid #1e2535;z-index:70;transform:translateX(-100%);visibility:hidden;transition:transform .3s ease,visibility .3s;overflow-y:auto;display:flex;flex-direction:column}
+        #site-drawer.open{transform:translateX(0);visibility:visible}
+        #site-drawer a.dl{display:block;padding:.85rem 1.25rem;color:#d1d5db;font-weight:500;border-bottom:1px solid #1e2535;border-left:3px solid transparent}
+        #site-drawer a.dl:hover{color:#fff;background:#1a2133}
+        #site-drawer a.dl.on{color:#fff;background:#1a2133;border-left-color:#6366f1}
+        @media (prefers-reduced-motion:reduce){#site-drawer,#drawer-overlay{transition:none}}
+    </style>
+    <div id="drawer-overlay" aria-hidden="true"></div>
+    <aside id="site-drawer" aria-label="Site menu" aria-hidden="true">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid #1e2535">
+            <span style="color:#fff;font-weight:700">Menu</span>
+            <button id="drawer-close" type="button" aria-label="Close menu" style="color:#9ca3af;padding:.25rem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>
+        </div>
+        <nav aria-label="Main">
+            <a class="dl" href="index.html">Home</a>
+            <a class="dl" href="directory.html">Directory</a>
+            <a class="dl" href="guides.html">Guides</a>
+            <a class="dl" href="supplies.html">Supplies</a>
+            <a class="dl" href="community.html">Community</a>
+            <a class="dl on" href="showcase.html">Showcase</a>
+            <a class="dl" href="dashboard.html">Dashboard</a>
+            <a class="dl" href="signer.html">Add Signer</a>
+            <a class="dl" href="https://www.ttm-collector-choice.com/">TTM Collector Choice</a>
+        </nav>
+        <div id="mobile-auth-slot" style="padding:1rem 1.25rem"></div>
+        <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" style="margin:auto 1.25rem 1.25rem;padding:.7rem 1rem;border-radius:.5rem;background:#f59e0b;color:#0f172a;font-weight:600;text-align:center;font-size:.9rem">Buy Me a Coffee</a>
+    </aside>
+    <script>
+    // Left menu (kept separate so it works even if other scripts fail to load)
+    (function () {
+        var btn = document.getElementById('mobile-menu-btn');
+        var drawer = document.getElementById('site-drawer');
+        var overlay = document.getElementById('drawer-overlay');
+        var closeBtn = document.getElementById('drawer-close');
+        var slot = document.getElementById('mobile-auth-slot');
+        if (!btn || !drawer || !overlay) return;
+        function setOpen(open) {
+            drawer.classList.toggle('open', open);
+            overlay.classList.toggle('open', open);
+            drawer.setAttribute('aria-hidden', String(!open));
+            btn.setAttribute('aria-expanded', String(open));
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            document.body.style.overflow = open ? 'hidden' : '';
+            if (open) {
+                var auth = document.getElementById('auth-nav-btn');
+                if (auth && slot) {
+                    slot.innerHTML = auth.innerHTML;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+                if (closeBtn) closeBtn.focus();
             }
-
-            const { error: insertError } = await supabase.from('showcase_stories').insert({
-                user_id: user.id,
-                author_name: authorNameFor(user),
-                title: title.slice(0, 150),
-                tag: tag,
-                story: story.slice(0, MAX_STORY_CHARS),
-                image_url: imageUrl,
-                font: currentFont,
-                status: 'approved',
-                featured: false
-            });
-
-            if (insertError) throw insertError;
-
-            setStatus('Your story is live in the Showcase.', 'success');
-            form.reset();
-            applyFont('modern');
-            updateCount();
-            resetPhotoPreview();
-        } catch (error) {
-            console.error('Could not share story', error);
-            if (uploadedPath) {
-                try { await supabase.storage.from(BUCKET).remove([uploadedPath]); } catch (e) {}
-            }
-            const detail = error && error.message ? ' (' + error.message + ')' : '';
-            setStatus('Could not share your story. Check your connection and that you are signed in, then try again.' + detail, 'error');
-        } finally {
-            if (submitBtn) submitBtn.disabled = false;
         }
-    });
-}
+        btn.addEventListener('click', function () { setOpen(!drawer.classList.contains('open')); });
+        if (closeBtn) closeBtn.addEventListener('click', function () { setOpen(false); btn.focus(); });
+        overlay.addEventListener('click', function () { setOpen(false); });
+        drawer.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && drawer.classList.contains('open')) { setOpen(false); btn.focus(); }
+        });
+    })();
+    </script>
 
-if (loadMoreBtn) loadMoreBtn.addEventListener('click', () => loadStories());
+    <main class="max-w-6xl mx-auto w-full px-6 py-16 md:py-20">
 
-if (toolbox && window.matchMedia('(min-width: 1024px)').matches) toolbox.open = true;
+        <div class="max-w-2xl mb-14">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-5">Showcase</h1>
+            <p class="text-lg text-gray-400 leading-8">The story behind the card, the signature, or the whole hobby, in your own words. Write a few lines or write a lot. Nobody is counting.</p>
+        </div>
 
-supabase.auth.getSession().then(({ data }) => {
-    currentUserId = data?.session?.user?.id || null;
-    loadStories({ reset: true });
-});
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
-applyFont('modern');
-updateCount();
+            <aside class="lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:self-start lg:sticky lg:top-28">
+                <details id="toolbox" class="glass-card rounded-3xl p-6 md:p-8">
+                    <summary class="flex items-center justify-between text-lg font-bold text-white">
+                        <span class="flex items-center gap-3"><i data-lucide="pen-tool" class="w-5 h-5 text-accent"></i>Writer's toolbox</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500"></i>
+                    </summary>
+
+                    <div class="mt-8 space-y-10">
+
+                        <section>
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">Pick a typeface</h3>
+                            <div id="fontOptions" class="space-y-3">
+                                <button type="button" data-font="modern" aria-pressed="true" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-modern text-lg text-white">Modern</span><span class="block text-xs text-gray-500">Clean and easy to read</span>
+                                </button>
+                                <button type="button" data-font="classic" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-classic text-lg text-white">Classic</span><span class="block text-xs text-gray-500">A book-style serif</span>
+                                </button>
+                                <button type="button" data-font="elegant" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-elegant text-lg text-white">Elegant</span><span class="block text-xs text-gray-500">Magazine feature style</span>
+                                </button>
+                                <button type="button" data-font="typewriter" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-typewriter text-lg text-white">Typewriter</span><span class="block text-xs text-gray-500">Like a letter in the mail</span>
+                                </button>
+                                <button type="button" data-font="handwritten" aria-pressed="false" class="w-full text-left px-4 py-3 rounded-xl border border-darkBorder smooth-transition hover:bg-darkHover">
+                                    <span class="face-handwritten text-lg text-white">Handwritten</span><span class="block text-xs text-gray-500">Personal, like a note</span>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3 leading-5">Your choice shows in the writing box and on your published story.</p>
+                        </section>
+
+                        <section>
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">Need a way in?</h3>
+                            <div id="promptList" class="space-y-2">
+                                <button type="button" data-prompt="The card I never thought I would get back was" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;The card I never thought I would get back was&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="The day I opened the mailbox and saw" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;The day I opened the mailbox and saw&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="I started collecting autographs because" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;I started collecting autographs because&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="The one that got away taught me" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;The one that got away taught me&hellip;&rdquo;</button>
+                                <button type="button" data-prompt="What this hobby gives me that nothing else does is" class="block w-full text-left text-sm text-gray-300 hover:text-white leading-6 smooth-transition">&ldquo;What this hobby gives me that nothing else does is&hellip;&rdquo;</button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3 leading-5">Tap one to drop it into your story.</p>
+                        </section>
+
+                        <section>
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">Three quick tips</h3>
+                            <ul class="space-y-3 text-sm text-gray-400 leading-6">
+                                <li>Start with the moment, not the background.</li>
+                                <li>Say how it felt, not only what happened.</li>
+                                <li>Photograph the card, never the envelope with an address.</li>
+                            </ul>
+                        </section>
+
+                    </div>
+                </details>
+
+                <div class="mt-8 px-2">
+                    <p class="text-xs font-semibold tracking-widest uppercase text-accentHover mb-3">Monthly feature</p>
+                    <p class="text-sm text-gray-400 leading-7">Every month, one story is pinned at the top of Showcase as the Featured Story. Share yours and it could be next.</p>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-8 lg:col-start-1 lg:row-start-1">
+
+                <section class="glass-card rounded-3xl p-8 md:p-10 mb-16">
+                    <h2 class="text-2xl font-bold text-white mb-8">Write your story</h2>
+
+                    <form id="showcaseForm" class="space-y-8">
+                        <div>
+                            <label for="storyTitle" class="block text-sm font-medium text-gray-400 mb-3">Title</label>
+                            <input id="storyTitle" name="title" type="text" maxlength="150" required placeholder="Give it a name" class="w-full px-5 py-4 text-lg glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition">
+                        </div>
+
+                        <div>
+                            <label for="storyTag" class="block text-sm font-medium text-gray-400 mb-3">What kind of story is it?</label>
+                            <select id="storyTag" name="tag" required class="w-full px-5 py-4 glass-card rounded-xl text-white focus:outline-none focus:border-accent smooth-transition">
+                                <option value="vent">Just sharing (rants welcome)</option>
+                                <option value="mail">Through the mail</option>
+                                <option value="in-person">In person</option>
+                                <option value="bought">Bought and authenticated</option>
+                                <option value="collection">My collection</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="storyText" class="block text-sm font-medium text-gray-400 mb-3">Your story</label>
+                            <textarea id="storyText" name="story" rows="14" maxlength="10000" required placeholder="Take your time. Say what you want to say." class="w-full min-h-[22rem] px-5 py-4 text-lg leading-9 glass-card rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent smooth-transition"></textarea>
+                            <p id="storyCount" class="text-xs text-gray-500 mt-3" aria-live="polite"></p>
+                        </div>
+
+                        <div>
+                            <label for="storyPhoto" class="block text-sm font-medium text-gray-400 mb-3">Photo (optional)</label>
+                            <input id="storyPhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-accent file:text-white file:font-semibold">
+                            <p class="text-xs text-gray-500 mt-3 leading-5">JPG, PNG, or WebP, up to 5 MB. Please don't photograph envelopes showing a home address.</p>
+                            <img id="storyPhotoPreview" alt="Selected photo preview" class="hidden mt-5 rounded-2xl max-h-64 border border-darkBorder">
+                        </div>
+
+                        <p id="storyStatus" class="hidden text-sm leading-6" role="status" aria-live="polite"></p>
+
+                        <button type="submit" class="w-full px-6 py-4 gradient-bg text-white font-semibold rounded-xl smooth-transition hover:shadow-glow flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                            Share to Showcase
+                        </button>
+                    </form>
+                </section>
+
+                <h2 class="text-2xl font-bold text-white mb-8">Stories</h2>
+                <div class="space-y-10" id="storyFeed" aria-live="polite" tabindex="-1">
+                    <div class="glass-card rounded-3xl p-10 text-center text-gray-400">Loading stories...</div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <button id="loadMoreStories" type="button" class="px-6 py-3 glass-card text-white font-semibold rounded-xl smooth-transition hover:bg-darkHover border border-darkBorder hidden">
+                        Load more stories
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="storyEditModal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="storyEditTitleHeading">
+        <section class="glass-card w-full max-w-3xl rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+            <h2 id="storyEditTitleHeading" class="text-2xl font-bold text-white mb-6">Edit your story</h2>
+            <form id="storyEditForm" class="space-y-5">
+                <div>
+                    <label for="storyEditTitle" class="block text-sm font-medium text-gray-300 mb-2">Title</label>
+                    <input id="storyEditTitle" type="text" maxlength="150" required class="w-full px-4 py-3 glass-card rounded-xl text-white focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label for="storyEditText" class="block text-sm font-medium text-gray-300 mb-2">Your story</label>
+                    <textarea id="storyEditText" rows="12" maxlength="10000" required class="w-full px-4 py-3 glass-card rounded-xl text-white leading-7 focus:outline-none focus:border-accent"></textarea>
+                    <p id="storyEditCount" class="mt-2 text-xs text-gray-400" aria-live="polite"></p>
+                </div>
+                <p id="storyEditStatus" class="hidden text-sm" role="status" aria-live="polite"></p>
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <button id="storyEditCancel" type="button" class="px-5 py-3 glass-card text-white rounded-xl border border-darkBorder">Cancel</button>
+                    <button id="storyEditSave" type="submit" class="px-5 py-3 gradient-bg text-white font-semibold rounded-xl">Save changes</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <footer class="glass border-t border-darkBorder py-8 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            <nav class="mb-4 flex flex-wrap justify-center gap-4" aria-label="Information">
+                <a href="./guides.html">Guides</a><a href="./about.html">About</a><a href="./contact.html">Contact</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a>
+                <button type="button" data-analytics-settings hidden>Cookie settings</button>
+            </nav>
+            &copy; 2026 Legendary Collection. Powered by Supabase & GitHub Pages.
+        </div>
+    </footer>
+
+    <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/affiliates.js"></script>
+    <script type="module" src="./js/showcase.js"></script>
+    <script type="module" src="./js/analytics.js"></script>
+</body>
+</html>

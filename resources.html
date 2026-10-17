@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legendary Collection - Recommended Hobby Resources</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        },
+                        navy: {
+                            800: '#0b132b',
+                            900: '#070b19',
+                            950: '#03050d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-navy-950 text-slate-100 min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-navy-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-tr from-gold-600 to-gold-400 p-2 rounded-xl shadow-lg shadow-gold-500/20">
+                        <i class="fa-solid fa-award text-navy-950 text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-black tracking-wider text-white uppercase">Legendary<span class="text-gold-400">Collection</span></span>
+                        <span class="hidden sm:inline-block text-xs bg-slate-800 text-gold-400 px-2 py-0.5 rounded-full ml-2 font-medium border border-gold-500/30">Hobby Hub</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="copyPageLink()" class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition border border-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-share-nodes text-gold-400"></i>
+                        <span class="hidden sm:inline">Share Hub</span>
+                    </button>
+                    <a href="index.html" class="px-3 py-1.5 text-xs font-semibold bg-gold-500 hover:bg-gold-400 text-navy-950 rounded-lg transition font-bold shadow-md shadow-gold-500/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Main App</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero & Disclaimer Banner -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-navy-900 via-slate-900 to-navy-900 border border-slate-800 p-6 sm:p-10 mb-8 shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-semibold mb-3">
+                    <i class="fa-solid fa-shield-halved"></i> Verified Collectors Directory
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                    Hobby Supplies & Trusted Retailers
+                </h1>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
+                    Your curated directory for card protection, boxes, sealed wax, and authenticating databases. Hand-selected resources to keep your TTM collection organized and safe.
+                </p>
+                <div class="text-xs text-slate-400 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-info text-gold-400 text-sm mt-0.5 shrink-0"></i>
+                    <span><strong>Collector Transparency:</strong> Some retailer links may contain referral codes that help fund Legendary Collection's database servers at zero extra cost to you.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="sticky top-20 z-30 bg-navy-950/95 backdrop-blur-lg p-4 rounded-2xl border border-slate-800 shadow-xl mb-8">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                
+                <!-- Search Input -->
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        onkeyup="filterResources()" 
+                        placeholder="Search retailers, supplies, databases..." 
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400 transition"
+                    >
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 custom-scrollbar">
+                    <button onclick="setCategory('all')" id="btn-all" class="category-btn px-4 py-2 text-xs font-bold rounded-xl border border-gold-500 bg-gold-500 text-navy-950 shadow-md shadow-gold-500/20 whitespace-nowrap transition">
+                        All Resources (<span id="count-all">0</span>)
+                    </button>
+                    <button onclick="setCategory('retailers')" id="btn-retailers" class="category-btn px-4 py-2 text-xs font-semibold rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 hover:text-white whitespace-nowrap transition">
+                        Retailers (<span id="count-retailers">0</span>)
+                    </button>
+                    <button onclick="setCategory('supplies')" id="btn-supplies" class="category-btn px-4 py-2 text-xs font-semibold rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 hover:text-white whitespace-nowrap transition">
+                        Supplies (<span id="count-supplies">0</span>)
+                    </button>
+                    <button onclick="setCategory('databases')" id="btn-databases" class="category-btn px-4 py-2 text-xs font-semibold rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 hover:text-white whitespace-nowrap transition">
+                        Databases (<span id="count-databases">0</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Directory Grids -->
+
+        <!-- Section: Trusted Retailers -->
+        <section id="section-retailers" class="resource-section mb-10">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                        <i class="fa-solid fa-store text-sm"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">Trusted Retailers & Box Breakers</h2>
+                </div>
+                <span class="text-xs text-slate-400">Sealed Hobby Boxes & Singles</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="grid-retailers">
+                <!-- Dynamic Content inserted via JS -->
+            </div>
+        </section>
+
+        <!-- Section: Hobby Supplies -->
+        <section id="section-supplies" class="resource-section mb-10">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-box-archive text-sm"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">Protection & Hobby Supplies</h2>
+                </div>
+                <span class="text-xs text-slate-400">TTM Mailing & Storage Essentials</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="grid-supplies">
+                <!-- Dynamic Content inserted via JS -->
+            </div>
+        </section>
+
+        <!-- Section: Databases & Price Guides -->
+        <section id="section-databases" class="resource-section mb-10">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                        <i class="fa-solid fa-database text-sm"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">Card Databases & Checklists</h2>
+                </div>
+                <span class="text-xs text-slate-400">Set Lists & Market Values</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="grid-databases">
+                <!-- Dynamic Content inserted via JS -->
+            </div>
+        </section>
+
+        <!-- No Results Fallback -->
+        <div id="noResults" class="hidden text-center py-16 bg-navy-900/50 rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-ghost text-4xl text-slate-600 mb-3"></i>
+            <h3 class="text-lg font-bold text-white">No Resources Found</h3>
+            <p class="text-sm text-slate-400 mt-1 mb-4">Try adjusting your search terms or filter selection.</p>
+            <button onclick="resetFilters()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-gold-400 font-semibold rounded-xl text-xs transition border border-slate-700">
+                Clear Filters
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy-900 border-t border-slate-800 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-xs text-slate-400">
+                &copy; 2026 <strong class="text-slate-200">Legendary Collection</strong>. Built for TTM sports collectors. All external trademarks belong to their respective owners.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast Box -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-gold-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-gold-400"></i>
+        <span id="toastMsg" class="text-xs font-semibold">Link copied to clipboard!</span>
+    </div>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Resource Database
+        const resourcesData = [
+            // RETAILERS
+            {
+                id: 'steel-city',
+                title: 'Steel City Collectibles',
+                category: 'retailers',
+                description: 'Premier online sports card shop for hobby boxes, break slots, and trading card singles.',
+                url: 'https://www.steelcitycollectibles.com/',
+                tag: 'Boxes & Cases',
+                badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+                icon: 'fa-box-open'
+            },
+            {
+                id: 'dave-adams',
+                title: "Dave & Adam's Card World",
+                category: 'retailers',
+                description: 'One of the largest hobby distributors offering unopened boxes, autographed memorabilia, and supplies.',
+                url: 'https://www.dacardworld.com/',
+                tag: 'Boxes & Breakers',
+                badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+                icon: 'fa-store'
+            },
+            {
+                id: 'blowout-cards',
+                title: 'Blowout Cards',
+                category: 'retailers',
+                description: 'Major sports card distributor known for competitive pre-orders and active collector forums.',
+                url: 'https://www.blowoutcards.com/',
+                tag: 'Hobby Boxes',
+                badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+                icon: 'fa-fire'
+            },
+            {
+                id: 'comc',
+                title: 'COMC (Check Out My Cards)',
+                category: 'retailers',
+                description: 'Consignment marketplace for buying and selling individual singles at fixed prices with flat shipping.',
+                url: 'https://www.comc.com/',
+                tag: 'Singles Marketplace',
+                badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+                icon: 'fa-tags'
+            },
+
+            // SUPPLIES
+            {
+                id: 'bcw-supplies',
+                title: 'BCW Supplies',
+                category: 'supplies',
+                description: 'Industry-standard card holders, penny sleeves, top loaders, and specialized TTM mailers.',
+                url: 'https://www.bcwsupplies.com/',
+                tag: 'Protection',
+                badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                icon: 'fa-shield'
+            },
+            {
+                id: 'ultra-pro',
+                title: 'Ultra PRO Entertainment',
+                category: 'supplies',
+                description: 'Official manufacturer of ONE-TOUCH magnetic holders, sleeves, binders, and display pages.',
+                url: 'https://ultrapro.com/',
+                tag: 'Top Loaders & Cases',
+                badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                icon: 'fa-gem'
+            },
+            {
+                id: 'card-board-gold',
+                title: 'Cardboard Gold',
+                category: 'supplies',
+                description: 'Specialized grading submission sleeves, Saver 1 holders, and bulk storage solutions.',
+                url: 'https://www.cardboardgold.com/',
+                tag: 'Grading Supplies',
+                badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                icon: 'fa-layer-group'
+            },
+            {
+                id: 'ttm-stamps',
+                title: 'USPS Postal Store',
+                category: 'supplies',
+                description: 'Order Forever stamps and return postage directly for your TTM self-addressed stamped envelopes (SASE).',
+                url: 'https://store.usps.com/store/results/stamps/_/N-1928dd4',
+                tag: 'TTM Postage',
+                badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                icon: 'fa-envelope-open-text'
+            },
+
+            // DATABASES
+            {
+                id: 'tcdb',
+                title: 'TCDB (Trading Card Database)',
+                category: 'databases',
+                description: 'Crowdsourced checklist database, trade manager, and TTM address log for sports card collectors.',
+                url: 'https://www.tcdb.com/',
+                tag: 'Checklists & TTM',
+                badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+                icon: 'fa-list-check'
+            },
+            {
+                id: '130point',
+                title: '130 Point Sales Search',
+                category: 'databases',
+                description: 'Real-time market value search engine fetching eBay accepted best-offer prices and auction sales.',
+                url: 'https://130point.com/sales/',
+                tag: 'Price Guide',
+                badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+                icon: 'fa-chart-line'
+            },
+            {
+                id: 'psa-cert',
+                title: 'PSA Cert Verification',
+                category: 'databases',
+                description: 'Verify PSA slab certification numbers and check population reports for graded cards and autographs.',
+                url: 'https://www.psacard.com/cert/',
+                tag: 'Autograph Lookup',
+                badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+                icon: 'fa-certificate'
+            },
+            {
+                id: 'beckett-db',
+                title: 'Beckett Online Price Guide',
+                category: 'databases',
+                description: 'Comprehensive set database and official Beckett grading/autograph authentication registry.',
+                url: 'https://www.beckett.com/',
+                tag: 'Registry & Values',
+                badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+                icon: 'fa-book-bookmark'
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        // Render Cards into Grids
+        function renderDirectory() {
+            const gridRetailers = document.getElementById('grid-retailers');
+            const gridSupplies = document.getElementById('grid-supplies');
+            const gridDatabases = document.getElementById('grid-databases');
+
+            gridRetailers.innerHTML = '';
+            gridSupplies.innerHTML = '';
+            gridDatabases.innerHTML = '';
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let visibleRetailers = 0;
+            let visibleSupplies = 0;
+            let visibleDatabases = 0;
+
+            resourcesData.forEach(item => {
+                const matchesSearch = item.title.toLowerCase().includes(searchTerm) || 
+                                      item.description.toLowerCase().includes(searchTerm) ||
+                                      item.tag.toLowerCase().includes(searchTerm);
+                
+                const matchesCat = (currentCategory === 'all' || currentCategory === item.category);
+
+                if (matchesSearch && matchesCat) {
+                    const cardHTML = createCardHTML(item);
+
+                    if (item.category === 'retailers') {
+                        gridRetailers.insertAdjacentHTML('beforeend', cardHTML);
+                        visibleRetailers++;
+                    } else if (item.category === 'supplies') {
+                        gridSupplies.insertAdjacentHTML('beforeend', cardHTML);
+                        visibleSupplies++;
+                    } else if (item.category === 'databases') {
+                        gridDatabases.insertAdjacentHTML('beforeend', cardHTML);
+                        visibleDatabases++;
+                    }
+                }
+            });
+
+            // Handle Section Visibility
+            document.getElementById('section-retailers').style.display = (visibleRetailers > 0) ? 'block' : 'none';
+            document.getElementById('section-supplies').style.display = (visibleSupplies > 0) ? 'block' : 'none';
+            document.getElementById('section-databases').style.display = (visibleDatabases > 0) ? 'block' : 'none';
+
+            // Show No Results if total visible is 0
+            const totalVisible = visibleRetailers + visibleSupplies + visibleDatabases;
+            document.getElementById('noResults').style.display = (totalVisible === 0) ? 'block' : 'none';
+
+            updateCounts();
+        }
+
+        // Generate HTML Card String
+        function createCardHTML(item) {
+            return `
+                <div class="bg-navy-900 rounded-2xl p-5 border border-slate-800 hover:border-gold-500/50 transition duration-300 flex flex-col justify-between group shadow-lg hover:shadow-gold-500/5 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gold-500/5 rounded-full blur-xl pointer-events-none group-hover:bg-gold-500/10 transition"></div>
+                    <div>
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border ${item.badgeColor}">
+                                ${item.tag}
+                            </span>
+                            <i class="fa-solid ${item.icon} text-slate-500 group-hover:text-gold-400 transition"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2 group-hover:text-gold-400 transition">
+                            ${item.title}
+                        </h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            ${item.description}
+                        </p>
+                    </div>
+                    <div>
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 bg-slate-800 hover:bg-gold-500 hover:text-navy-950 text-slate-200 font-bold text-xs rounded-xl transition duration-200 flex items-center justify-center gap-2 border border-slate-700/80 hover:border-gold-500 group/btn shadow-md">
+                            <span>Visit Official Site</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Filter Handlers
+        function filterResources() {
+            renderDirectory();
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            
+            // Update button styles
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = 'category-btn px-4 py-2 text-xs font-semibold rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 hover:text-white whitespace-nowrap transition';
+            });
+
+            const activeBtn = document.getElementById(`btn-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = 'category-btn px-4 py-2 text-xs font-bold rounded-xl border border-gold-500 bg-gold-500 text-navy-950 shadow-md shadow-gold-500/20 whitespace-nowrap transition';
+            }
+
+            renderDirectory();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            setCategory('all');
+        }
+
+        function updateCounts() {
+            const allCount = resourcesData.length;
+            const retailersCount = resourcesData.filter(i => i.category === 'retailers').length;
+            const suppliesCount = resourcesData.filter(i => i.category === 'supplies').length;
+            const databasesCount = resourcesData.filter(i => i.category === 'databases').length;
+
+            document.getElementById('count-all').innerText = allCount;
+            document.getElementById('count-retailers').innerText = retailersCount;
+            document.getElementById('count-supplies').innerText = suppliesCount;
+            document.getElementById('count-databases').innerText = databasesCount;
+        }
+
+        // Copy Page Link Toast
+        function copyPageLink() {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            showToast("Resource directory link copied!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderDirectory();
+        };
+    </script>
+</body>
+</html>

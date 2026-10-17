@@ -1,72 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <!-- 1. HEADER / NAV -->
-  <header class="site-header">
-    ...
-  </header>
-
-  <!-- 2. PASTE HERO SECTION RIGHT HERE -->
-  <section class="hero-section">
-    <div class="hero-atmosphere">
-      <div class="glow-orb orb-1"></div>
-      <div class="glow-orb orb-2"></div>
-      <div class="floating-cards">
-        <div class="float-card card-1"></div>
-        <div class="float-card card-2"></div>
-        <div class="float-card card-3"></div>
-      </div>
-    </div>
-
-    <div class="hero-content">
-      <span class="badge">Independent collector project</span>
-      <h1 class="hero-title">Your Premium TTM Community</h1>
-      <p class="hero-subtitle">Connect with fellow collectors, explore community-maintained signer records, track TTM mailings, and share your collecting results.</p>
-      
-      <div class="hero-actions">
-        <a href="directory.html" class="btn btn-primary">
-          <i data-lucide="search"></i> Browse Directory
-        </a>
-        <a href="feed.html" class="btn btn-secondary">
-          <i data-lucide="activity"></i> Community Feed
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. GOOGLE MANAGER / FEATURE GRID STARTS BELOW -->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BWFZZ08NQQ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-BWFZZ08NQQ');
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="Bf-V4lwA8AEGC1P_8zE4N2MrT1-1uEEP6yN8kSKxH9A">
-    <title>Legendary Collection | TTM Sports Autograph Community Hub</title>
-    <meta name="description" content="Community hub for sports card collectors and Through-The-Mail (TTM) autograph enthusiasts. Track signers, access resources, and build your collection.">
-    <link rel="stylesheet" href="./site.css">
-    <link rel="stylesheet" href="./home-atmosphere.css?v=4">
-    <link rel="stylesheet" href="./affiliates.css">
+    <meta name="google-site-verification" content="ZVyXeJ16igGa-7l3mTZgXnll0yIQ2ShmPyZSKseyUC8">
+    
+    <!-- SEO & Search Metadata -->
+    <title>Legendary Collection | TTM Sports Autograph Community & Free Printer</title>
+    <meta name="description" content="Explore a community-maintained TTM signer directory, track your sports autograph mailings, and share collecting results with Legendary Collection.">
+    <meta name="keywords" content="TTM autograph generator, print number 10 envelope, sports card TTM template, fan mail letter generator">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://ayoncamilo44-bit.github.io/Legendary-Collection/">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    
+    <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Legendary Collection">
-    <meta property="og:title" content="Legendary Collection | TTM Autograph Hub">
-    <meta property="og:description" content="Community hub for sports card collectors and Through-The-Mail autograph enthusiasts.">
+    <meta property="og:title" content="Legendary Collection | TTM Sports Autograph Community">
+    <meta property="og:description" content="Explore a community-maintained TTM signer directory, track your mailings, and share collecting results.">
     <meta property="og:url" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/">
     <meta property="og:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Legendary Collection, an independent TTM sports autograph community">
+    
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Legendary Collection | TTM Sports Autograph Community">
+    <meta name="twitter:description" content="Explore a community-maintained TTM signer directory, track your mailings, and share collecting results.">
+    <meta name="twitter:image" content="https://ayoncamilo44-bit.github.io/Legendary-Collection/assets/legitimate-collector-social.png">
+    
+    <!-- Schema.org Data -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Legendary Collection",
+            "url": "https://ayoncamilo44-bit.github.io/Legendary-Collection/",
+            "description": "An independent resource for through-the-mail sports autograph collecting."
+        }
+    </script>
 
-    <!-- Premium Fonts & Icons -->
+    <!-- Stylesheets & Fonts -->
+    <link rel="stylesheet" href="./home-atmosphere.css?v=4">
+    <link rel="stylesheet" href="./affiliates.css">
+    <link rel="stylesheet" href="./site.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons & Tailwind -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -75,34 +60,171 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        darkBg: '#0a0f1a', darkCard: '#131824', darkBorder: '#1e2535', darkHover: '#1a2133',
-                        accent: '#6366f1', accentHover: '#818cf8', success: '#10b981', warning: '#f59e0b', danger: '#ef4444',
+                        darkBg: '#0a0f1a',
+                        darkCard: '#131824',
+                        darkBorder: '#1e2535',
+                        darkHover: '#1a2133',
+                        accent: '#6366f1',
+                        accentHover: '#818cf8',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
                     },
                     boxShadow: {
                         'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
                         'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                     },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    }
                 }
             }
         }
     </script>
+    
     <style>
-        .glass { background: rgba(19, 24, 36, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-card { background: rgba(19, 24, 36, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-        .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(19, 24, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(19, 24, 36, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        /* Premium Gradient */
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        
+        /* Smooth Transitions */
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0f1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e2535;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        /* ===== Floating card background ===== */
+        .lc-cards-bg {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .lc-cards-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(8,12,32,.72) 0%, rgba(8,12,32,.35) 55%, rgba(8,12,32,.1) 100%);
+        }
+        .lc-card {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: var(--w, clamp(110px, 15vw, 210px));
+            opacity: var(--o, .5);
+            filter: blur(var(--b, 0px));
+            animation: lc-float var(--d, 14s) ease-in-out var(--delay, 0s) infinite alternate;
+            will-change: transform;
+        }
+        .lc-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 14px 40px rgba(0,0,0,.55);
+            transform: rotate(var(--r, 0deg));
+            animation: lc-spin var(--s, 26s) linear var(--delay, 0s) infinite;
+            will-change: transform;
+        }
+        .lc-card:nth-child(even) { --spin: -360deg; }
+        .lc-card:nth-child(3n)   { --s: 34s; }
+        .lc-card.lc-hide-sm      { --s: 42s; }
+        @keyframes lc-float {
+            from { transform: translate3d(0, 0, 0); }
+            to   { transform: translate3d(var(--dx, 30px), -70px, 0); }
+        }
+        @keyframes lc-spin {
+            from { transform: rotate(var(--r, 0deg)); }
+            to   { transform: rotate(calc(var(--r, 0deg) + var(--spin, 360deg))); }
+        }
+        @media (max-width: 700px) {
+            .lc-card.lc-hide-sm { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .lc-card, .lc-card img { animation: none; }
+        }
     </style>
 </head>
-<body class="bg-darkBg text-gray-200 min-h-screen font-sans">
+<body class="bg-darkBg text-gray-200 min-h-screen font-sans overflow-x-hidden">
 
-    <!-- Header -->
+    <!-- Floating card background -->
+    <div class="lc-cards-bg" aria-hidden="true">
+        <div class="lc-card" style="--x:3%;--y:8%;--r:-12deg;--d:15s"><img src="./assets/cards/card-dodgers.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:78%;--y:5%;--r:9deg;--d:17s;--delay:-4s;--dx:-22px"><img src="./assets/cards/card-collection.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:40%;--y:2%;--r:-5deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:19s;--delay:-8s"><img src="./assets/cards/card-rams.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:86%;--y:50%;--r:14deg;--d:16s;--delay:-2s"><img src="./assets/cards/card-rams.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:68%;--y:68%;--r:-8deg;--d:18s;--delay:-6s;--dx:-16px"><img src="./assets/cards/card-dodgers.webp" alt="" decoding="async"></div>
+        <div class="lc-card" style="--x:6%;--y:58%;--r:10deg;--d:14s;--delay:-9s"><img src="./assets/cards/card-collection.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:44%;--y:76%;--r:6deg;--w:clamp(90px,11vw,150px);--o:.28;--b:2px;--d:20s;--delay:-3s"><img src="./assets/cards/card-dodgers.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:24%;--y:30%;--r:-14deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:21s;--delay:-11s"><img src="./assets/cards/card-collection.webp" alt="" decoding="async"></div>
+        <div class="lc-card lc-hide-sm" style="--x:60%;--y:34%;--r:7deg;--w:clamp(80px,9vw,130px);--o:.22;--b:3px;--d:22s;--delay:-5s"><img src="./assets/cards/card-rams.webp" alt="" decoding="async"></div>
+    </div>
+
+    <!-- Header / Nav -->
     <header class="glass sticky top-0 z-50 smooth-transition">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 min-w-0">
-                <button id="mobile-menu-btn" type="button" class="text-white p-2 -ml-2 rounded-lg hover:bg-darkHover smooth-transition shrink-0" aria-label="Open menu">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                <button id="mobile-menu-btn" type="button" class="text-white p-2 -ml-2 rounded-lg hover:bg-darkHover smooth-transition shrink-0" aria-label="Open menu" aria-expanded="false" aria-controls="site-drawer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
                 </button>
                 <a href="index.html" class="flex items-center gap-3 min-w-0">
-                    <img src="./favicon.svg" alt="Legendary Collection Logo" width="44" height="44" class="w-11 h-11 rounded-xl shrink-0 shadow-glow">
+                    <img src="data:image/webp;base64,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?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" alt="" width="44" height="44" class="w-11 h-11 rounded-xl shrink-0 shadow-glow">
                     <span class="text-xl font-bold text-white tracking-tight whitespace-nowrap">Legendary Collection</span>
                 </a>
             </div>
@@ -112,125 +234,140 @@
         </div>
     </header>
 
-    <!-- Main Hero -->
-    <main class="max-w-7xl mx-auto w-full px-6 py-16 text-center">
-        <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
-            Track, Collect & Share Your <span class="text-indigo-400">TTM Autographs</span>
-        </h1>
-        <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-            The ultimate community-driven database and resource hub for Through-The-Mail sports card collectors.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-4 mb-20">
-            <a href="./directory.html" class="px-8 py-4 rounded-xl bg-accent text-white font-bold text-lg hover:bg-accentHover transition-colors shadow-glow">
-                Explore Signer Directory
-            </a>
-            <a href="./resources.html" class="px-8 py-4 rounded-xl glass-card text-gray-300 font-bold text-lg hover:bg-darkHover border border-darkBorder transition-colors">
-                Hobby Resources
-            </a>
+    <!-- Left slide-out menu -->
+    <style>
+        #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+        #drawer-overlay.open{opacity:1;visibility:visible}
+        #site-drawer{position:fixed;top:0;left:0;height:100%;width:18rem;max-width:85vw;background:#131824;border-right:1px solid #1e2535;z-index:70;transform:translateX(-100%);visibility:hidden;transition:transform .3s ease,visibility .3s;overflow-y:auto;display:flex;flex-direction:column}
+        #site-drawer.open{transform:translateX(0);visibility:visible}
+        #site-drawer a.dl{display:block;padding:.85rem 1.25rem;color:#d1d5db;font-weight:500;border-bottom:1px solid #1e2535;border-left:3px solid transparent}
+        #site-drawer a.dl:hover{color:#fff;background:#1a2133}
+        #site-drawer a.dl.on{color:#fff;background:#1a2133;border-left-color:#6366f1}
+        @media (prefers-reduced-motion:reduce){#site-drawer,#drawer-overlay{transition:none}}
+    </style>
+    <div id="drawer-overlay" aria-hidden="true"></div>
+    <aside id="site-drawer" aria-label="Site menu" aria-hidden="true">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid #1e2535">
+            <span style="color:#fff;font-weight:700">Menu</span>
+            <button id="drawer-close" type="button" aria-label="Close menu" style="color:#9ca3af;padding:.25rem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>
         </div>
+        <nav aria-label="Main">
+            <a class="dl on" href="index.html">Home</a>
+            <a class="dl" href="directory.html">Directory</a>
+            <a class="dl" href="guides.html">Guides</a>
+            <a class="dl" href="supplies.html">Supplies</a>
+            <a class="dl" href="community.html">Community</a>
+            <a class="dl" href="showcase.html">Showcase</a>
+            <a class="dl" href="dashboard.html">Dashboard</a>
+            <a class="dl" href="signer.html">Add Signer</a>
+            <a class="dl" href="https://www.ttm-collector-choice.com/">TTM Collector Choice</a>
+        </nav>
+        <div id="mobile-auth-slot" style="padding:1rem 1.25rem"></div>
+        <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" style="margin:auto 1.25rem 1.25rem;padding:.7rem 1rem;border-radius:.5rem;background:#f59e0b;color:#0f172a;font-weight:600;text-align:center;font-size:.9rem">Buy Me a Coffee</a>
+    </aside>
+    <script>
+    (function () {
+        var btn = document.getElementById('mobile-menu-btn');
+        var drawer = document.getElementById('site-drawer');
+        var overlay = document.getElementById('drawer-overlay');
+        var closeBtn = document.getElementById('drawer-close');
+        var slot = document.getElementById('mobile-auth-slot');
+        if (!btn || !drawer || !overlay) return;
+        function setOpen(open) {
+            drawer.classList.toggle('open', open);
+            overlay.classList.toggle('open', open);
+            drawer.setAttribute('aria-hidden', String(!open));
+            btn.setAttribute('aria-expanded', String(open));
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            document.body.style.overflow = open ? 'hidden' : '';
+            if (open) {
+                var auth = document.getElementById('auth-nav-btn');
+                if (auth && slot) {
+                    slot.innerHTML = auth.innerHTML;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+                if (closeBtn) closeBtn.focus();
+            }
+        }
+        btn.addEventListener('click', function () { setOpen(!drawer.classList.contains('open')); });
+        if (closeBtn) closeBtn.addEventListener('click', function () { setOpen(false); btn.focus(); });
+        overlay.addEventListener('click', function () { setOpen(false); });
+        drawer.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && drawer.classList.contains('open')) { setOpen(false); btn.focus(); }
+        });
+    })();
+    </script>
 
-        <!-- Features Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left mb-20">
-            <div class="glass-card p-8 rounded-2xl border border-darkBorder">
-                <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-accent mb-6">
-                    <i data-lucide="search" class="w-6 h-6"></i>
+    <!-- Main Content & Hero Section -->
+    <main>
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden py-24 px-6">
+            <div class="max-w-7xl mx-auto relative">
+                <div class="text-center mb-16 animate-fade-in">
+                    <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-6">
+                        Track, Collect & Share Your <span class="gradient-text">TTM Autographs</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+                        The ultimate community-driven database and resource hub for Through-The-Mail sports card collectors.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <a href="directory.html" class="px-8 py-4 gradient-bg text-white font-semibold rounded-xl shadow-glow hover:opacity-90 smooth-transition flex items-center gap-2">
+                            <i data-lucide="search" class="w-5 h-5"></i> Explore Signer Directory
+                        </a>
+                        <a href="guides.html" class="px-8 py-4 glass-card text-gray-200 font-semibold rounded-xl hover:bg-darkHover smooth-transition flex items-center gap-2 border border-darkBorder">
+                            <i data-lucide="book-open" class="w-5 h-5"></i> Hobby Resources
+                        </a>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Signer Directory</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-4">Search community-verified athlete addresses, success rates, and average response times.</p>
-                <a href="./directory.html" class="text-accent hover:text-accentHover text-sm font-semibold flex items-center gap-1">Browse Directory &rarr;</a>
-            </div>
 
-            <div class="glass-card p-8 rounded-2xl border border-darkBorder">
-                <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-accent mb-6">
-                    <i data-lucide="book-open" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-3">TTM Guides & Tools</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-4">Learn step-by-step TTM strategies, prepare your requests, and structure your mailings.</p>
-                <a href="./guides.html" class="text-accent hover:text-accentHover text-sm font-semibold flex items-center gap-1">Read Guides &rarr;</a>
-            </div>
+                <!-- Feature Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="glass-card p-8 rounded-2xl border border-darkBorder hover:border-accent/50 smooth-transition">
+                        <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center text-white mb-6 shadow-glow">
+                            <i data-lucide="search" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Signer Directory</h3>
+                        <p class="text-gray-400 text-sm mb-6">Search community-verified athlete addresses, success rates, and average response times.</p>
+                        <a href="directory.html" class="text-accent hover:text-accentHover font-semibold text-sm flex items-center gap-1">Browse Directory &rarr;</a>
+                    </div>
 
-            <div class="glass-card p-8 rounded-2xl border border-darkBorder">
-                <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-accent mb-6">
-                    <i data-lucide="package" class="w-6 h-6"></i>
+                    <div class="glass-card p-8 rounded-2xl border border-darkBorder hover:border-accent/50 smooth-transition">
+                        <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center text-white mb-6 shadow-glow">
+                            <i data-lucide="book-open" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">TTM Guides & Tools</h3>
+                        <p class="text-gray-400 text-sm mb-6">Learn step-by-step TTM strategies, prepare your requests, and structure your mailings.</p>
+                        <a href="guides.html" class="text-accent hover:text-accentHover font-semibold text-sm flex items-center gap-1">Read Guides &rarr;</a>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl border border-darkBorder hover:border-accent/50 smooth-transition">
+                        <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center text-white mb-6 shadow-glow">
+                            <i data-lucide="package" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Collector Supplies</h3>
+                        <p class="text-gray-400 text-sm mb-6">Get tested recommendations for penny sleeves, top loaders, SASE envelopes, and markers.</p>
+                        <a href="supplies.html" class="text-accent hover:text-accentHover font-semibold text-sm flex items-center gap-1">View Supplies &rarr;</a>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Collector Supplies</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-4">Get tested recommendations for penny sleeves, top loaders, SASE envelopes, and markers.</p>
-                <a href="./supplies.html" class="text-accent hover:text-accentHover text-sm font-semibold flex items-center gap-1">View Supplies &rarr;</a>
             </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Multi-Column Footer -->
-    <footer class="border-t border-darkBorder bg-darkCard/50 pt-12 pb-8 px-6 text-sm text-gray-400">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-            <!-- Brand Info -->
+    <!-- Footer -->
+    <footer class="glass border-t border-darkBorder mt-20 py-12 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-                <div class="flex items-center gap-3 mb-3">
-                    <img src="./favicon.svg" alt="Legendary Collection Logo" class="w-8 h-8 rounded-lg shadow-glow">
-                    <span class="text-lg font-bold text-white">Legendary Collection</span>
-                </div>
-                <p class="text-xs text-gray-400 leading-relaxed">
-                    Your trusted resource for TTM collecting and sports card community insights.
-                </p>
-            </div>
-
-            <!-- Quick Links -->
-            <div>
-                <h4 class="text-white font-semibold mb-3">Quick Links</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="./directory.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-accent"></i>Directory</a></li>
-                    <li><a href="./guides.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5 text-accent"></i>Guides</a></li>
-                    <li><a href="./dashboard.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-accent"></i>Dashboard</a></li>
-                    <li><a href="./signer.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-accent"></i>Add Signer</a></li>
-                </ul>
-            </div>
-
-            <!-- Resources -->
-            <div>
-                <h4 class="text-white font-semibold mb-3">Resources</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="./guides.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5 text-accent"></i>Beginner's TTM Guide</a></li>
-                    <li><a href="./resources.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="folder" class="w-3.5 h-3.5 text-accent"></i>Hobby Directory</a></li>
-                    <li><a href="./supplies.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="package" class="w-3.5 h-3.5 text-accent"></i>Collector Supplies</a></li>
-                    <li><a href="./community.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="users" class="w-3.5 h-3.5 text-accent"></i>Community Feed</a></li>
-                </ul>
-            </div>
-
-            <!-- Connect -->
-            <div>
-                <h4 class="text-white font-semibold mb-3">Connect</h4>
                 <div class="flex items-center gap-3 mb-4">
-                    <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" class="p-2 glass-card rounded-lg hover:bg-darkHover transition-colors text-amber-400" title="Support Us">
-                        <i data-lucide="coffee" class="w-5 h-5"></i>
-                    </a>
+                    <img src="data:image/webp;base64,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?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" alt="" width="32" height="32" class="w-8 h-8 rounded-lg shrink-0">
+                    <span class="text-lg font-bold text-white tracking-tight">Legendary Collection</span>
                 </div>
-                <button onclick="loginWithGoogle()" class="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
-                    <i data-lucide="shield" class="w-3.5 h-3.5"></i> Sign in with Google
-                </button>
+                <p class="text-gray-400 text-sm">Your trusted resource for TTM collecting and sports card community insights.</p>
             </div>
-        </div>
-
-        <!-- Sub-Footer -->
-        <div class="max-w-7xl mx-auto pt-6 border-t border-darkBorder flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="./about.html" class="hover:text-white transition-colors">About</a>
-                <a href="./contact.html" class="hover:text-white transition-colors">Contact</a>
-                <a href="./privacy.html" class="hover:text-white transition-colors">Privacy</a>
-                <a href="./terms.html" class="hover:text-white transition-colors">Terms</a>
-                <a href="./sitemap.xml" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition-colors flex items-center gap-1">
-                    <i data-lucide="link" class="w-3 h-3"></i> Sitemap XML
-                </a>
-            </div>
-            <p>&copy; 2026 Legendary Collection. Powered by Supabase & GitHub Pages.</p>
-        </div>
-    </footer>
-
-    <!-- Dynamic Site Navigation Script -->
-    <script src="./js/nav.js"></script>
-    <script type="module" src="./js/auth.js"></script>
-    <script type="module" src="./js/analytics.js"></script>
-    <script>
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    </script>
-</body>
-</html>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="directory.html" class="hover:text-white smooth-transition">Directory</a></li>
+                    <li><a href="guides.html" class="hover:text-white smooth-transition">Guides</a></li>
+                    <li><a href="dashboard.html" class="hover:text-white smooth-transition">Dashboard</a></li>
+                    <li><a href="signer.html

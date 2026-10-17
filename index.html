@@ -58,6 +58,7 @@
 </head>
 <body class="bg-darkBg text-gray-200 min-h-screen font-sans">
 
+    <!-- Header -->
     <header class="glass sticky top-0 z-50 smooth-transition">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 min-w-0">
@@ -75,7 +76,7 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Main Hero -->
     <main class="max-w-7xl mx-auto w-full px-6 py-16 text-center">
         <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
             Track, Collect & Share Your <span class="text-indigo-400">TTM Autographs</span>
@@ -83,7 +84,7 @@
         <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
             The ultimate community-driven database and resource hub for Through-The-Mail sports card collectors.
         </p>
-        <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-20">
             <a href="./directory.html" class="px-8 py-4 rounded-xl bg-accent text-white font-bold text-lg hover:bg-accentHover transition-colors shadow-glow">
                 Explore Signer Directory
             </a>
@@ -91,27 +92,100 @@
                 Hobby Resources
             </a>
         </div>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left mb-20">
+            <div class="glass-card p-8 rounded-2xl border border-darkBorder">
+                <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-accent mb-6">
+                    <i data-lucide="search" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Signer Directory</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">Search community-verified athlete addresses, success rates, and average response times.</p>
+                <a href="./directory.html" class="text-accent hover:text-accentHover text-sm font-semibold flex items-center gap-1">Browse Directory &rarr;</a>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl border border-darkBorder">
+                <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-accent mb-6">
+                    <i data-lucide="book-open" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">TTM Guides & Tools</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">Learn step-by-step TTM strategies, print customized fan letters, and structure your mailings.</p>
+                <a href="./guides.html" class="text-accent hover:text-accentHover text-sm font-semibold flex items-center gap-1">Read Guides &rarr;</a>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl border border-darkBorder">
+                <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-accent mb-6">
+                    <i data-lucide="package" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Collector Supplies</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">Get tested recommendations for penny sleeves, top loaders, SASE envelopes, and markers.</p>
+                <a href="./supplies.html" class="text-accent hover:text-accentHover text-sm font-semibold flex items-center gap-1">View Supplies &rarr;</a>
+            </div>
+        </div>
     </main>
 
-    <!-- Unified Site Footer -->
-    <footer class="glass border-t border-darkBorder py-10 px-6 mt-20 text-sm text-gray-400">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <!-- Multi-Column Footer -->
+    <footer class="border-t border-darkBorder bg-darkCard/50 pt-12 pb-8 px-6 text-sm text-gray-400">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+            <!-- Brand Info -->
             <div>
-                <p>&copy; 2026 <span class="font-semibold text-white">Legendary Collection</span>. Built for TTM sports collectors.</p>
-                <p class="text-xs text-gray-500 mt-1">Powered by Supabase & GitHub Pages.</p>
+                <div class="flex items-center gap-3 mb-3">
+                    <img src="./favicon.svg" alt="Legendary Collection Logo" class="w-8 h-8 rounded-lg shadow-glow">
+                    <span class="text-lg font-bold text-white">Legendary Collection</span>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Your trusted resource for TTM collecting and sports card community insights.
+                </p>
             </div>
-            
-            <nav class="flex flex-wrap items-center justify-center gap-6 text-sm" aria-label="Footer Navigation">
-                <a href="./sitemap.xml" target="_blank" rel="noopener noreferrer" class="hover:text-gold-400 transition-colors flex items-center gap-1.5">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                    Sitemap XML
-                </a>
-                <a href="index.html" class="hover:text-white transition-colors">Home</a>
-                <a href="./guides.html" class="hover:text-white transition-colors">Guides</a>
+
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-white font-semibold mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="./directory.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-accent"></i>Directory</a></li>
+                    <li><a href="./guides.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5 text-accent"></i>Guides</a></li>
+                    <li><a href="./dashboard.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-accent"></i>Dashboard</a></li>
+                    <li><a href="./signer.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-accent"></i>Add Signer</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div>
+                <h4 class="text-white font-semibold mb-3">Resources</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="./guides.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5 text-accent"></i>Beginner's TTM Guide</a></li>
+                    <li><a href="./resources.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="folder" class="w-3.5 h-3.5 text-accent"></i>Hobby Directory</a></li>
+                    <li><a href="./supplies.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="package" class="w-3.5 h-3.5 text-accent"></i>Collector Supplies</a></li>
+                    <li><a href="./community.html" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="users" class="w-3.5 h-3.5 text-accent"></i>Community Feed</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div>
+                <h4 class="text-white font-semibold mb-3">Connect</h4>
+                <div class="flex items-center gap-3 mb-4">
+                    <a href="https://www.buymeacoffee.com/LegendaryCollection" target="_blank" rel="noopener noreferrer" class="p-2 glass-card rounded-lg hover:bg-darkHover transition-colors text-amber-400" title="Support Us">
+                        <i data-lucide="coffee" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                <button onclick="loginWithGoogle()" class="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
+                    <i data-lucide="shield" class="w-3.5 h-3.5"></i> Sign in with Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Sub-Footer -->
+        <div class="max-w-7xl mx-auto pt-6 border-t border-darkBorder flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+            <div class="flex flex-wrap justify-center gap-4">
                 <a href="./about.html" class="hover:text-white transition-colors">About</a>
-                <a href="./contact.html" class="hover:text-white transition-colors">Privacy</a>
+                <a href="./contact.html" class="hover:text-white transition-colors">Contact</a>
+                <a href="./privacy.html" class="hover:text-white transition-colors">Privacy</a>
                 <a href="./terms.html" class="hover:text-white transition-colors">Terms</a>
-            </nav>
+                <a href="./sitemap.xml" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition-colors flex items-center gap-1">
+                    <i data-lucide="link" class="w-3 h-3"></i> Sitemap XML
+                </a>
+            </div>
+            <p>&copy; 2026 Legendary Collection. Powered by Supabase & GitHub Pages.</p>
         </div>
     </footer>
 

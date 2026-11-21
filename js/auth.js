@@ -71,8 +71,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                     <button onclick="loginWithGoogle()" class="px-4 py-2 glass-card text-white rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover border border-darkBorder">
                         Sign in with Google
                     </button>
-                    <a href="admin.html" class="px-4 py-2 glass-card text-accent rounded-lg text-sm font-semibold smooth-transition hover:bg-darkHover border border-darkBorder">
-                        Owner Sign In
                     </a>
                 </div>
             `;
